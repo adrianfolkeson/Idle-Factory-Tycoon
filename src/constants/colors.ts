@@ -1,0 +1,18 @@
+export const COLORS = {
+  bg: '#1A1A1A',
+  surface: '#252525',
+  surfaceAlt: '#2E2E2E',
+  border: '#3A3A3A',
+  brown: '#3D2914',
+  green: '#2D5A27',
+  gold: '#C4A000',
+  goldLight: '#F0C800',
+  white: '#E8E8E8',
+  grey: '#888888',
+  greyDark: '#555555',
+  red: '#8B0000',
+  redLight: '#CC3333',
+  rust: '#8B4513',
+  disabled: '#3A3A3A',
+  disabledText: '#666666',
+}

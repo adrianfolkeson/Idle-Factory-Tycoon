@@ -1,0 +1,273 @@
+import { GameState, GameAction, ActiveBoost } from '../types'
+import { ACHIEVEMENTS } from '../constants/achievements'
+import { getUpgradeCost, getUpgradeCount, getTodayString, getStreakCount, DAILY_REWARDS } from '../lib/gameEngine'
+import { WORLDS } from '../constants/worlds'
+
+function checkAchievements(state: GameState): string[] {
+  const newlyUnlocked: string[] = []
+  for (const ach of ACHIEVEMENTS) {
+    if (!state.unlockedAchievements.includes(ach.id) && ach.check(state)) {
+      newlyUnlocked.push(ach.id)
+    }
+  }
+  return newlyUnlocked
+}
+
+export function gameReducer(state: GameState, action: GameAction): GameState {
+  switch (action.type) {
+    case 'LOAD_SAVE': {
+      const s = action.state
+
+      // Migrate: add worldProgress entries for any worlds added since save was created
+      const migratedProgress = WORLDS.map(w => {
+        const existing = s.worldProgress?.find(p => p.worldId === w.id)
+        if (existing) return existing
+        return {
+          worldId: w.id,
+          upgrades: w.upgrades.map(u => ({ id: u.id, count: 0 })),
+          totalEarnedInWorld: 0,
+        }
+      })
+
+      // Migrate: expand worldCompletionBonuses if too short
+      const bonuses = s.worldCompletionBonuses ?? []
+      while (bonuses.length < WORLDS.length) bonuses.push(1)
+
+      // Migrate: purchasedWorlds
+      const purchased = s.purchasedWorlds ?? WORLDS
+        .filter(w => w.id === 0 || s.totalEarned >= w.unlockCost)
+        .map(w => w.id)
+
+      return {
+        ...s,
+        worldProgress: migratedProgress,
+        worldCompletionBonuses: bonuses,
+        purchasedWorlds: purchased,
+      }
+    }
+
+    case 'TAP': {
+      const next: GameState = {
+        ...state,
+        dollars: state.dollars + action.clickValue,
+        totalEarned: state.totalEarned + action.clickValue,
+        stats: { ...state.stats, totalTaps: state.stats.totalTaps + 1 },
+      }
+      const newAch = checkAchievements(next)
+      return newAch.length > 0
+        ? { ...next, unlockedAchievements: [...next.unlockedAchievements, ...newAch] }
+        : next
+    }
+
+    case 'TICK': {
+      if (action.earnings <= 0) return state
+      const next: GameState = {
+        ...state,
+        dollars: state.dollars + action.earnings,
+        totalEarned: state.totalEarned + action.earnings,
+      }
+      const wpIdx = next.worldProgress.findIndex(p => p.worldId === next.currentWorldId)
+      let withProgress = next
+      if (wpIdx >= 0) {
+        const wp = next.worldProgress[wpIdx]
+        const newProgress = [...next.worldProgress]
+        newProgress[wpIdx] = { ...wp, totalEarnedInWorld: wp.totalEarnedInWorld + action.earnings }
+        withProgress = { ...next, worldProgress: newProgress }
+      }
+      const newAch = checkAchievements(withProgress)
+      return newAch.length > 0
+        ? { ...withProgress, unlockedAchievements: [...withProgress.unlockedAchievements, ...newAch] }
+        : withProgress
+    }
+
+    case 'TICK_STATS': {
+      return {
+        ...state,
+        stats: {
+          ...state.stats,
+          totalTimePlayed: state.stats.totalTimePlayed + action.deltaMs,
+        },
+      }
+    }
+
+    case 'APPLY_OFFLINE_EARNINGS': {
+      if (action.amount <= 0) return state
+      const next: GameState = {
+        ...state,
+        dollars: state.dollars + action.amount,
+        totalEarned: state.totalEarned + action.amount,
+      }
+      const newAch = checkAchievements(next)
+      return newAch.length > 0
+        ? { ...next, unlockedAchievements: [...next.unlockedAchievements, ...newAch] }
+        : next
+    }
+
+    case 'BUY_UPGRADE': {
+      if (state.dollars < action.cost) return state
+      const wpIdx = state.worldProgress.findIndex(p => p.worldId === state.currentWorldId)
+      if (wpIdx < 0) return state
+      const progress = state.worldProgress[wpIdx]
+
+      const newUpgrades = progress.upgrades.map(u =>
+        u.id === action.upgradeId ? { ...u, count: u.count + 1 } : u
+      )
+      const newProgress = [...state.worldProgress]
+      newProgress[wpIdx] = { ...progress, upgrades: newUpgrades }
+
+      const next: GameState = {
+        ...state,
+        dollars: state.dollars - action.cost,
+        worldProgress: newProgress,
+        stats: {
+          ...state.stats,
+          totalUpgradesPurchased: state.stats.totalUpgradesPurchased + 1,
+        },
+      }
+      const newAch = checkAchievements(next)
+      return newAch.length > 0
+        ? { ...next, unlockedAchievements: [...next.unlockedAchievements, ...newAch] }
+        : next
+    }
+
+    case 'PURCHASE_WORLD': {
+      if (state.dollars < action.cost) return state
+      if (state.purchasedWorlds.includes(action.worldId)) return state
+      const newAch = checkAchievements({ ...state, purchasedWorlds: [...state.purchasedWorlds, action.worldId] })
+      const next: GameState = {
+        ...state,
+        dollars: state.dollars - action.cost,
+        purchasedWorlds: [...state.purchasedWorlds, action.worldId],
+      }
+      return newAch.length > 0
+        ? { ...next, unlockedAchievements: [...next.unlockedAchievements, ...newAch] }
+        : next
+    }
+
+    case 'SWITCH_WORLD': {
+      if (action.worldId === state.currentWorldId) return state
+      if (!state.purchasedWorlds.includes(action.worldId)) return state
+      return { ...state, currentWorldId: action.worldId }
+    }
+
+    case 'CLAIM_DAILY_REWARD': {
+      const today = getTodayString()
+      const newStreak = getStreakCount(state.dailyReward.lastClaimedDate, state.dailyReward.streak)
+      const rewardIndex = (newStreak - 1) % DAILY_REWARDS.length
+      const reward = action.reward
+
+      let next: GameState = {
+        ...state,
+        dailyReward: {
+          lastClaimedDate: today,
+          streak: newStreak,
+          claimedToday: true,
+        },
+      }
+
+      if (reward.kind === 'cash') {
+        next = {
+          ...next,
+          dollars: next.dollars + reward.amount,
+          totalEarned: next.totalEarned + reward.amount,
+        }
+      } else {
+        const boost: ActiveBoost = {
+          id: `daily_${Date.now()}`,
+          multiplier: reward.multiplier,
+          expiresAt: Date.now() + reward.durationMs,
+        }
+        next = { ...next, activeBoosts: [...next.activeBoosts, boost] }
+      }
+
+      const newAch = checkAchievements(next)
+      return newAch.length > 0
+        ? { ...next, unlockedAchievements: [...next.unlockedAchievements, ...newAch] }
+        : next
+    }
+
+    case 'ADD_BOOST': {
+      const filtered = state.activeBoosts.filter(b => b.id !== action.boost.id)
+      return { ...state, activeBoosts: [...filtered, action.boost] }
+    }
+
+    case 'EXPIRE_BOOSTS': {
+      const now = Date.now()
+      const active = state.activeBoosts.filter(b => b.expiresAt > now)
+      if (active.length === state.activeBoosts.length) return state
+      return { ...state, activeBoosts: active }
+    }
+
+    case 'SKUGGA_APPEARED': {
+      return {
+        ...state,
+        stats: { ...state.stats, skuggaSightings: state.stats.skuggaSightings + 1 },
+        skuggaLastAppeared: Date.now(),
+      }
+    }
+
+    case 'BUY_UPGRADE_N': {
+      let s = state
+      for (let i = 0; i < action.n; i++) {
+        const idx = s.worldProgress.findIndex(p => p.worldId === s.currentWorldId)
+        if (idx < 0) break
+        const progress = s.worldProgress[idx]
+        const count = getUpgradeCount(progress, action.upgradeId)
+        const cost = getUpgradeCost(action.upgradeId, count)
+        if (s.dollars < cost) break
+        const newUpgrades = progress.upgrades.map(u =>
+          u.id === action.upgradeId ? { ...u, count: u.count + 1 } : u
+        )
+        const newWorldProgress = [...s.worldProgress]
+        newWorldProgress[idx] = { ...progress, upgrades: newUpgrades }
+        s = {
+          ...s,
+          dollars: s.dollars - cost,
+          worldProgress: newWorldProgress,
+          stats: { ...s.stats, totalUpgradesPurchased: s.stats.totalUpgradesPurchased + 1 },
+        }
+      }
+      if (s === state) return state
+      const newAch = checkAchievements(s)
+      return newAch.length > 0
+        ? { ...s, unlockedAchievements: [...s.unlockedAchievements, ...newAch] }
+        : s
+    }
+
+    case 'COMBO_ACTIVATED': {
+      return {
+        ...state,
+        stats: { ...state.stats, combosActivated: state.stats.combosActivated + 1 },
+      }
+    }
+
+    case 'UNLOCK_ACHIEVEMENT': {
+      if (state.unlockedAchievements.includes(action.achievementId)) return state
+      return {
+        ...state,
+        unlockedAchievements: [...state.unlockedAchievements, action.achievementId],
+      }
+    }
+
+    case 'RESET_GAME': {
+      return {
+        version: 1,
+        currentWorldId: 0,
+        dollars: 0,
+        totalEarned: 0,
+        worldProgress: [],
+        dailyReward: { lastClaimedDate: null, streak: 0, claimedToday: false },
+        unlockedAchievements: [],
+        activeBoosts: [],
+        stats: { totalTimePlayed: 0, totalTaps: 0, totalUpgradesPurchased: 0, skuggaSightings: 0, combosActivated: 0 },
+        lastSavedAt: Date.now(),
+        worldCompletionBonuses: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        skuggaLastAppeared: 0,
+        purchasedWorlds: [0],
+      }
+    }
+
+    default:
+      return state
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Idle Factory Tycoon",
+    "slug": "idle-factory-tycoon",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "backgroundColor": "#1A1A1A",
+    "splash": {
+      "backgroundColor": "#1A1A1A",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.idlefactory.tycoon"
+    },
+    "android": {
+      "package": "com.idlefactory.tycoon",
+      "adaptiveIcon": {
+        "backgroundColor": "#1A1A1A"
+      }
+    }
+  }
+}
