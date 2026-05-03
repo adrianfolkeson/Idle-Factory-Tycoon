@@ -45,6 +45,8 @@ interface GameContextType {
   buyUpgrade: (upgradeId: string, n?: number) => boolean
   purchaseWorld: (worldId: number) => boolean
   switchWorld: (worldId: number) => void
+  canPrestige: boolean
+  prestige: () => void
   claimDailyReward: () => void
   resetGame: () => void
   showDailyReward: boolean
@@ -224,6 +226,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     saveGame({ ...s, currentWorldId: worldId })
   }, [])
 
+  const doPrestige = useCallback(() => {
+    dispatch({ type: 'PRESTIGE' })
+  }, [])
+
   const claimDailyReward = useCallback(() => {
     const s = stateRef.current
     const streakIdx = Math.max(0, ((s.dailyReward.streak) % DAILY_REWARDS.length))
@@ -240,6 +246,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const productionRate = computeProductionRate(state)
   const clickValue = computeClickValue(state)
+  const canPrestige = state.totalEarned >= 5e14
 
   if (!loaded) return null
 
@@ -259,6 +266,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         buyUpgrade,
         purchaseWorld,
         switchWorld,
+        canPrestige,
+        prestige: doPrestige,
         claimDailyReward,
         resetGame,
         showDailyReward,

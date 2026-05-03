@@ -5,9 +5,10 @@ import { ACHIEVEMENTS } from '../constants/achievements'
 import { COLORS } from '../constants/colors'
 import PixelIcon from '../components/ui/PixelIcon'
 import { formatMoney, formatTime, formatNumber } from '../lib/formatting'
+import { PRESTIGE_THRESHOLD } from '../lib/gameEngine'
 
 export default function StatsScreen() {
-  const { state, resetGame, setShowDailyReward } = useGame()
+  const { state, resetGame, setShowDailyReward, canPrestige, prestige } = useGame()
   const [confirmReset, setConfirmReset] = useState(false)
 
   const handleReset = () => {
@@ -70,6 +71,46 @@ export default function StatsScreen() {
             )
           })}
         </View>
+      </View>
+
+      {/* Prestige */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <PixelIcon name="crown" size={13} color={COLORS.gold} />
+          <Text style={styles.sectionTitle}>PRESTIGE</Text>
+        </View>
+        {state.prestige > 0 && (
+          <View style={styles.prestigeBadge}>
+            <PixelIcon name="star" size={12} color={COLORS.gold} />
+            <Text style={styles.prestigeCount}>Prestige {state.prestige} — {Math.round((state.prestigeMultiplier - 1) * 100)}% produktionsbonus</Text>
+          </View>
+        )}
+        {canPrestige ? (
+          <TouchableOpacity
+            style={styles.prestigeBtn}
+            onPress={() => {
+              Alert.alert(
+                'Prestige?',
+                `Återställ framsteg och få +35% permanent produktionsbonus.\nNuvarande: ${state.prestige > 0 ? Math.round((state.prestigeMultiplier - 1) * 100) + '%' : '0%'} → ${Math.round(((state.prestige ?? 0) + 1) * 35)}%`,
+                [
+                  { text: 'Avbryt', style: 'cancel' },
+                  { text: 'PRESTIGE!', style: 'destructive', onPress: prestige },
+                ]
+              )
+            }}
+            activeOpacity={0.8}
+          >
+            <PixelIcon name="crown" size={14} color="#000" />
+            <Text style={styles.prestigeBtnText}>PRESTIGE — ÅTERSTÄLL MED BONUS</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.prestigeLocked}>
+            <Text style={styles.prestigeLockedText}>Lås upp: tjäna totalt {formatMoney(PRESTIGE_THRESHOLD)}</Text>
+            <View style={styles.prestigeBar}>
+              <View style={[styles.prestigeBarFill, { width: `${Math.min(100, (state.totalEarned / PRESTIGE_THRESHOLD) * 100)}%` as any }]} />
+            </View>
+          </View>
+        )}
       </View>
 
       {/* Settings */}
@@ -240,5 +281,60 @@ const styles = StyleSheet.create({
     color: COLORS.greyDark,
     textAlign: 'center',
     marginTop: 4,
+  },
+  prestigeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#1A1400',
+    borderWidth: 1,
+    borderColor: COLORS.gold,
+    borderRadius: 6,
+    padding: 10,
+    marginBottom: 10,
+  },
+  prestigeCount: {
+    fontSize: 12,
+    fontFamily: 'Courier New',
+    color: COLORS.gold,
+    fontWeight: 'bold',
+  },
+  prestigeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: COLORS.gold,
+    paddingVertical: 14,
+    borderRadius: 6,
+    borderBottomWidth: 4,
+    borderColor: '#8B6000',
+  },
+  prestigeBtnText: {
+    fontSize: 13,
+    fontFamily: 'Courier New',
+    fontWeight: 'bold',
+    color: '#000',
+    letterSpacing: 1,
+  },
+  prestigeLocked: {
+    gap: 8,
+  },
+  prestigeLockedText: {
+    fontSize: 11,
+    fontFamily: 'Courier New',
+    color: COLORS.greyDark,
+    textAlign: 'center',
+  },
+  prestigeBar: {
+    height: 6,
+    backgroundColor: COLORS.border,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  prestigeBarFill: {
+    height: '100%',
+    backgroundColor: COLORS.gold,
+    borderRadius: 3,
   },
 })

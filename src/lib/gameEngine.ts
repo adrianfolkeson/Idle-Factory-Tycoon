@@ -1,9 +1,12 @@
 import { GameState, WorldProgress } from '../types'
 import { WORLDS } from '../constants/worlds'
 
-export const COST_SCALE = 1.15
-export const BASE_CLICK_VALUE = 0.1
-export const MAX_OFFLINE_MS = 4 * 60 * 60 * 1000
+export const COST_SCALE = 1.18            // was 1.15 — steeper exponential curve
+export const BASE_CLICK_VALUE = 0.05      // was 0.1 — slower early tapping
+export const MAX_OFFLINE_MS = 2 * 60 * 60 * 1000  // was 4h — 2h offline cap
+export const PRODUCTION_MULTIPLIER = 0.32 // global auto-production nerf
+export const CLICK_MULTIPLIER = 0.38      // global click-bonus nerf
+export const PRESTIGE_THRESHOLD = 5e14    // $500T total earned to unlock prestige
 export const SKUGGA_MULTIPLIER = 1.1
 export const SKUGGA_DURATION_MS = 30000
 export const SKUGGA_MIN_INTERVAL_MS = 120000
@@ -39,8 +42,9 @@ export function computeProductionRate(state: GameState): number {
 
   const boostMultiplier = getActiveBoostMultiplier(state)
   const worldBonus = state.worldCompletionBonuses[state.currentWorldId] ?? 1
+  const prestigeBonus = state.prestigeMultiplier ?? 1
 
-  return base * boostMultiplier * worldBonus
+  return base * PRODUCTION_MULTIPLIER * boostMultiplier * worldBonus * prestigeBonus
 }
 
 export function computeClickValue(state: GameState): number {
@@ -52,7 +56,7 @@ export function computeClickValue(state: GameState): number {
   let base = BASE_CLICK_VALUE
   for (const upgDef of world.upgrades) {
     const count = getUpgradeCount(progress, upgDef.id)
-    base += upgDef.clickBonus * count
+    base += upgDef.clickBonus * count * CLICK_MULTIPLIER
   }
 
   const boostMultiplier = getActiveBoostMultiplier(state)
@@ -87,7 +91,8 @@ function computeProductionRateWithoutBoosts(state: GameState): number {
   }
 
   const worldBonus = state.worldCompletionBonuses[state.currentWorldId] ?? 1
-  return base * worldBonus
+  const prestigeBonus = state.prestigeMultiplier ?? 1
+  return base * PRODUCTION_MULTIPLIER * worldBonus * prestigeBonus
 }
 
 export function createInitialWorldProgress(worldId: number): WorldProgress {
@@ -124,6 +129,8 @@ export function createInitialState(): GameState {
     worldCompletionBonuses: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     skuggaLastAppeared: 0,
     purchasedWorlds: [0],
+    prestige: 0,
+    prestigeMultiplier: 1,
   }
 }
 

@@ -75,6 +75,8 @@ export interface GameState {
   worldCompletionBonuses: number[]
   skuggaLastAppeared: number
   purchasedWorlds: number[]
+  prestige: number
+  prestigeMultiplier: number
 }
 
 export type GameAction =
@@ -91,6 +93,7 @@ export type GameAction =
   | { type: 'UNLOCK_ACHIEVEMENT'; achievementId: string }
   | { type: 'COMBO_ACTIVATED' }
   | { type: 'PURCHASE_WORLD'; worldId: number; cost: number }
+  | { type: 'PRESTIGE' }
   | { type: 'LOAD_SAVE'; state: GameState }
   | { type: 'TICK_STATS'; deltaMs: number }
   | { type: 'RESET_GAME' }

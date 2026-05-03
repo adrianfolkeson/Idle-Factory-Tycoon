@@ -43,6 +43,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         worldProgress: migratedProgress,
         worldCompletionBonuses: bonuses,
         purchasedWorlds: purchased,
+        prestige: s.prestige ?? 0,
+        prestigeMultiplier: s.prestigeMultiplier ?? 1,
       }
     }
 
@@ -243,9 +245,51 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'UNLOCK_ACHIEVEMENT': {
       if (state.unlockedAchievements.includes(action.achievementId)) return state
+      // Achievement cash rewards
+      const ACHIEVEMENT_REWARDS: Record<string, number> = {
+        first_buy: 50,
+        tap_100:   500,
+        tap_1000:  5000,
+        earn_1k:   2000,
+        earn_1m:   50000,
+        earn_1b:   5000000,
+        world_1:   100000,
+        world_2:   2000000,
+        world_3:   50000000,
+        combo_5:   10000,
+        skugga_10: 25000,
+        streak_7:  100000,
+      }
+      const reward = ACHIEVEMENT_REWARDS[action.achievementId] ?? 0
       return {
         ...state,
         unlockedAchievements: [...state.unlockedAchievements, action.achievementId],
+        dollars: state.dollars + reward,
+        totalEarned: state.totalEarned + reward,
+      }
+    }
+
+    case 'PRESTIGE': {
+      const newPrestige = (state.prestige ?? 0) + 1
+      const newMultiplier = 1 + newPrestige * 0.35  // +35% per prestige
+      return {
+        ...state,
+        // Keep: achievements, streak, stats, prestige count
+        prestige: newPrestige,
+        prestigeMultiplier: newMultiplier,
+        // Reset: dollars, world, upgrades
+        currentWorldId: 0,
+        dollars: 0,
+        totalEarned: 0,
+        purchasedWorlds: [0],
+        activeBoosts: [],
+        worldProgress: WORLDS.map(w => ({
+          worldId: w.id,
+          upgrades: w.upgrades.map(u => ({ id: u.id, count: 0 })),
+          totalEarnedInWorld: 0,
+        })),
+        worldCompletionBonuses: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        lastSavedAt: Date.now(),
       }
     }
 
@@ -264,6 +308,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         worldCompletionBonuses: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         skuggaLastAppeared: 0,
         purchasedWorlds: [0],
+        prestige: 0,
+        prestigeMultiplier: 1,
       }
     }
 
