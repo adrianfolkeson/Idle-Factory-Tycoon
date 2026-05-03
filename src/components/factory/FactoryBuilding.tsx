@@ -7,6 +7,10 @@ import GearSpinner from './GearSpinner'
 import BusseRobot from '../characters/BusseRobot'
 import BosseCharacter from '../characters/BosseCharacter'
 import SkuggaGhost from '../characters/SkuggaGhost'
+import {
+  EnergyScene, LabScene, SpaceRocketScene, VikingScene,
+  DinoScene, OceanScene, FireScene, JungleTempleScene, CyberpunkScene,
+} from './WorldScenes'
 
 // ─── Tier 1: Electric arc ──────────────────────────────────────────────────────
 function ElectricArc({ x1, x2, y, color }: { x1: number; x2: number; y: number; color: string }) {
@@ -503,6 +507,17 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
     <View style={[styles.scene, { backgroundColor: theme.sky }]}>
       {tier >= 3 && <SpaceBackground />}
       <SkuggaGhost visible={skuggaVisible} />
+
+      {/* ══════ WORLD-SPECIFIC SCENE OVERLAY ══════ */}
+      {worldId === 1 && <EnergyScene accent={theme.accent} />}
+      {worldId === 2 && <LabScene accent={theme.accent} />}
+      {worldId === 3 && <SpaceRocketScene accent={theme.accent} />}
+      {worldId === 4 && <VikingScene active={active} />}
+      {worldId === 5 && <DinoScene active={active} />}
+      {worldId === 6 && <OceanScene accent={theme.accent} />}
+      {worldId === 7 && <FireScene active={active} />}
+      {worldId === 8 && <JungleTempleScene active={active} />}
+      {worldId === 9 && <CyberpunkScene accent={theme.accent} />}
 
       {/* ══════════ CEILING ══════════ */}
       <View style={[styles.ceiling, { backgroundColor: darken(theme.buildingTop, 40) }]}>
