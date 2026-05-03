@@ -222,6 +222,14 @@ function BosseStanding({ tapping, scale, worldId }: { tapping: boolean; scale: n
           <View style={[styles.bodyBadge, { backgroundColor: c.detail }]} />
         )}
       </View>
+      {/* Scuba tank on back (world 6) */}
+      {worldId === 6 && (
+        <View style={{ position:'absolute', top:38, left:-5, width:9, height:22, backgroundColor:'#334455', borderRadius:4, borderWidth:1, borderColor:'#556677' }}>
+          <View style={{ position:'absolute', top:-3, left:1, width:7, height:5, backgroundColor:'#667788', borderRadius:2 }} />
+          <View style={{ position:'absolute', top:5,  left:2, right:1, height:2, backgroundColor:'#778899', borderRadius:1, opacity:0.6 }} />
+          <View style={{ position:'absolute', top:11, left:2, right:1, height:2, backgroundColor:'#778899', borderRadius:1, opacity:0.6 }} />
+        </View>
+      )}
       <View style={[styles.armL, { backgroundColor: SKIN }]} />
       <Animated.View style={[styles.armR, { backgroundColor: SKIN, transform: [{ rotate: armDeg }] }]} />
       <View style={styles.legsRow}>

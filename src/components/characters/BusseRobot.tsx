@@ -93,14 +93,148 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
   const armDeg = armAngle.interpolate({ inputRange: [-25, 0, 90], outputRange: ['-25deg', '0deg', '90deg'] })
   const scaleX = facingRight ? 1 : -1
 
-  // Walking leg oscillation (simple 2-state toggle via interpolation off posX)
+  // Walking leg oscillation
   const legSwing = posX.interpolate({
     inputRange: [0, 10, 20, 30, 40, 50, 62],
     outputRange: [0, 8, 0, -8, 0, 8, 0],
     extrapolate: 'clamp',
   })
-  const leftLegRot = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['14deg', '0deg', '-14deg'] })
-  const rightLegRot = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['-14deg', '0deg', '14deg'] })
+  const leftLegRot  = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['14deg',  '0deg', '-14deg'] })
+  const rightLegRot = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['-14deg', '0deg',  '14deg'] })
+
+  // ── World 5: BUSSE TRICERATOPS-ROBOT ──────────────────────────────────────────
+  if (worldId === 5) {
+    const leg1 = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['18deg',  '0deg', '-18deg'] })
+    const leg2 = legSwing.interpolate({ inputRange: [-10, 0, 10], outputRange: ['-18deg', '0deg',  '18deg'] })
+    const bodyBob = posX.interpolate({
+      inputRange: [0, 16, 32, 48, 62],
+      outputRange: [0, -3, 0, -3, 0],
+      extrapolate: 'clamp',
+    })
+    return (
+      <Animated.View style={{ transform: [{ translateX: posX }, { translateY: bodyBob }] }}>
+        <View style={{ alignItems: 'center', transform: [{ scaleX }] }}>
+          {/* ── Frill collar ── */}
+          <View style={{ width: 52, height: 16, backgroundColor: '#2A4A1A', borderRadius: 8, marginBottom: -6, zIndex: 2 }}>
+            {[0,1,2,3,4].map(i => (
+              <View key={i} style={{ position:'absolute', top:-8, left:4+i*9, width:8, height:12, backgroundColor:'#1A3A0A', borderRadius:4 }} />
+            ))}
+          </View>
+          {/* ── Head ── */}
+          <View style={{ width: 40, height: 24, backgroundColor: '#3A6020', borderRadius: 5, zIndex: 3 }}>
+            {/* 3 horns */}
+            <View style={{ position:'absolute', top:-18, left:14, width:10, height:20, backgroundColor:'#C8A050', borderRadius:4, transform:[{rotate:'3deg'}] }} />
+            <View style={{ position:'absolute', top:-10, left:2,  width:7,  height:13, backgroundColor:'#B89040', borderRadius:3, transform:[{rotate:'-20deg'}] }} />
+            <View style={{ position:'absolute', top:-10, right:3, width:7,  height:12, backgroundColor:'#B89040', borderRadius:3, transform:[{rotate:'20deg'}] }} />
+            {/* Eyes */}
+            <View style={{ position:'absolute', top:7, left:4, width:9, height:9, borderRadius:5, backgroundColor:'#FFAA00', borderWidth:1, borderColor:'#886600' }}>
+              <View style={{ position:'absolute', top:1, left:1, width:7, height:7, borderRadius:4, backgroundColor:'#111' }} />
+            </View>
+            <View style={{ position:'absolute', top:7, right:4, width:9, height:9, borderRadius:5, backgroundColor:'#FFAA00', borderWidth:1, borderColor:'#886600' }}>
+              <View style={{ position:'absolute', top:1, left:1, width:7, height:7, borderRadius:4, backgroundColor:'#111' }} />
+            </View>
+            {/* Beak */}
+            <View style={{ position:'absolute', bottom:3, left:6, right:6, height:5, backgroundColor:'#8B6914', borderRadius:2 }} />
+          </View>
+          {/* Neck */}
+          <View style={{ width:16, height:5, backgroundColor:'#2A5018', borderRadius:2 }} />
+          {/* ── Body ── */}
+          <View style={{ width:44, height:30, backgroundColor:'#2A5018', borderRadius:5, position:'relative' }}>
+            <View style={{ position:'absolute', top:3,  left:3,  width:18, height:10, backgroundColor:'#1A4010', borderRadius:3 }} />
+            <View style={{ position:'absolute', top:3,  right:3, width:18, height:10, backgroundColor:'#1A4010', borderRadius:3 }} />
+            <View style={{ position:'absolute', bottom:4, left:7, right:7, height:9, backgroundColor:'#1A4010', borderRadius:3 }} />
+            {/* Arm for picking boxes */}
+            <Animated.View style={{ position:'absolute', right:-8, top:4, transform:[{rotate:armDeg}] }}>
+              <View style={{ width:9, height:22, backgroundColor:'#2A5018', borderRadius:3 }}>
+                <View style={{ width:11, height:6, backgroundColor:'#1A4010', borderRadius:2 }} />
+              </View>
+              <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2, opacity:boxOpacity }}>
+                <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+              </Animated.View>
+            </Animated.View>
+          </View>
+          {/* Tail */}
+          <View style={{ position:'absolute', bottom:18, left:-14, width:20, height:10, backgroundColor:'#2A5018', borderRadius:5, transform:[{rotate:'-25deg'}] }} />
+          {/* ── 4 legs ── */}
+          <View style={{ flexDirection:'row', gap:3, marginTop:1 }}>
+            {[leg1, leg2, leg1, leg2].map((rot, i) => (
+              <Animated.View key={i} style={{ width:10, height:14, backgroundColor:'#2A5018', borderRadius:3, transform:[{rotate:rot}] }}>
+                <View style={{ position:'absolute', bottom:-4, left:-2, width:14, height:6, backgroundColor:'#1A4010', borderRadius:2 }} />
+              </Animated.View>
+            ))}
+          </View>
+        </View>
+      </Animated.View>
+    )
+  }
+
+  // ── World 6: BUSSE ROBOT-GOLDFISH ─────────────────────────────────────────────
+  if (worldId === 6) {
+    const tailWag = posX.interpolate({
+      inputRange: [0, 8, 16, 24, 32, 40, 50, 62],
+      outputRange: ['-20deg', '20deg', '-20deg', '20deg', '-20deg', '20deg', '-20deg', '20deg'],
+      extrapolate: 'clamp',
+    })
+    const bodyBob = posX.interpolate({
+      inputRange: [0, 15, 30, 45, 62],
+      outputRange: [0, -4, 0, -4, 0],
+      extrapolate: 'clamp',
+    })
+    const finWag = posX.interpolate({
+      inputRange: [0, 31, 62],
+      outputRange: ['10deg', '-10deg', '10deg'],
+      extrapolate: 'clamp',
+    })
+    return (
+      <Animated.View style={{ transform: [{ translateX: posX }, { translateY: bodyBob }] }}>
+        <View style={{ transform: [{ scaleX }] }}>
+          {/* ── Tail fin ── */}
+          <View style={{ position:'absolute', top:8, left:-18, flexDirection:'column', gap:2 }}>
+            <Animated.View style={{ transform:[{rotate:tailWag}] }}>
+              <View style={{ width:0, height:0, borderTopWidth:10, borderBottomWidth:10, borderRightWidth:18, borderTopColor:'transparent', borderBottomColor:'transparent', borderRightColor:'#CC5500' }} />
+            </Animated.View>
+            <Animated.View style={{ transform:[{rotate:tailWag},{scaleY:-1}] }}>
+              <View style={{ width:0, height:0, borderTopWidth:8, borderBottomWidth:8, borderRightWidth:14, borderTopColor:'transparent', borderBottomColor:'transparent', borderRightColor:'#FF6600' }} />
+            </Animated.View>
+          </View>
+          {/* ── Main body (oval fish) ── */}
+          <View style={{ width:42, height:30, backgroundColor:'#FF7700', borderRadius:15, overflow:'hidden', borderWidth:1, borderColor:'#CC5500' }}>
+            {/* Scale shimmer */}
+            {[0,1,2].map(i => (
+              <View key={i} style={{ position:'absolute', top:4+i*7, left:4+i*5, width:12, height:8, backgroundColor:'#FFA500', borderRadius:6, opacity:0.4 }} />
+            ))}
+            {/* Metallic belly */}
+            <View style={{ position:'absolute', bottom:2, left:8, right:8, height:10, backgroundColor:'#FFD700', borderRadius:5, opacity:0.5 }} />
+            {/* Robot eye (large, mechanical) */}
+            <View style={{ position:'absolute', top:7, right:5, width:14, height:14, borderRadius:7, backgroundColor:'#CCDDFF', borderWidth:2, borderColor:'#8899CC' }}>
+              <View style={{ position:'absolute', top:2, left:2, width:10, height:10, borderRadius:5, backgroundColor:'#1144AA' }}>
+                <View style={{ position:'absolute', top:2, left:2, width:6, height:6, borderRadius:3, backgroundColor:'#4488FF' }} />
+                <View style={{ position:'absolute', top:1, right:1, width:2, height:2, borderRadius:1, backgroundColor:'#FFFFFF' }} />
+              </View>
+            </View>
+            {/* Mouth grill */}
+            <View style={{ position:'absolute', bottom:5, right:4, width:8, height:5, backgroundColor:'#884400', borderRadius:2, overflow:'hidden' }}>
+              {[0,1].map(i => <View key={i} style={{ position:'absolute', top:1+i*2, left:0, right:0, height:1, backgroundColor:'#CC6600' }} />)}
+            </View>
+          </View>
+          {/* ── Dorsal fin ── */}
+          <View style={{ position:'absolute', top:-10, left:12 }}>
+            <View style={{ width:0, height:0, borderLeftWidth:8, borderRightWidth:8, borderBottomWidth:12, borderLeftColor:'transparent', borderRightColor:'transparent', borderBottomColor:'#FF5500' }} />
+          </View>
+          {/* ── Pectoral fin ── */}
+          <Animated.View style={{ position:'absolute', top:18, left:8, transform:[{rotate:finWag}] }}>
+            <View style={{ width:14, height:8, backgroundColor:'#FF6600', borderRadius:4, opacity:0.85 }} />
+          </Animated.View>
+          {/* ── Carry box (held near mouth) ── */}
+          <Animated.View style={{ position:'absolute', right:-BOX_W+2, top:10, opacity:boxOpacity }}>
+            <View style={{ width:BOX_W-2, height:BOX_H-2, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+          </Animated.View>
+          {/* ── Propeller tail (mechanical detail) ── */}
+          <View style={{ position:'absolute', top:12, left:-6, width:6, height:6, borderRadius:3, backgroundColor:'#888', borderWidth:1, borderColor:'#AAA' }} />
+        </View>
+      </Animated.View>
+    )
+  }
 
   return (
     <Animated.View style={{ transform: [{ translateX: posX }] }}>
