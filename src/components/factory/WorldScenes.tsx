@@ -76,7 +76,265 @@ export function LabScene({ accent }: { accent: string }) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// WORLD 3 — SPACE (ROCKET INTERIOR)
+// WORLD 3 — SPACE ESCAPE POD
+// ════════════════════════════════════════════════════════════════
+
+const WIN_W = SW * 0.84
+const WIN_H = SH * 0.38
+const WIN_TOP = 44
+
+// Seeded stable random
+function sr(seed: number) { const x = Math.sin(seed + 1) * 10000; return x - Math.floor(x) }
+
+function WindowStar({ i }: { i: number }) {
+  const op = useRef(new Animated.Value(sr(i * 7.3))).current
+  useEffect(() => {
+    Animated.loop(Animated.sequence([
+      Animated.delay(sr(i * 3.1) * 3000),
+      Animated.timing(op, { toValue: 0.1, duration: 600 + sr(i) * 800, useNativeDriver: true }),
+      Animated.timing(op, { toValue: 1,   duration: 600 + sr(i * 2) * 800, useNativeDriver: true }),
+    ])).start()
+  }, [])
+  const size = sr(i * 11) > 0.85 ? 3 : sr(i * 5) > 0.7 ? 2 : 1
+  return (
+    <Animated.View style={{
+      position: 'absolute',
+      top: sr(i * 4.7) * WIN_H,
+      left: sr(i * 6.3) * WIN_W,
+      width: size, height: size, borderRadius: size,
+      backgroundColor: sr(i * 9) > 0.9 ? '#FFEEAA' : sr(i * 13) > 0.8 ? '#AACCFF' : '#FFFFFF',
+      opacity: op,
+    }} />
+  )
+}
+
+type SpaceObjType = 'planet_purple' | 'planet_blue' | 'planet_red' | 'earth' | 'moon' | 'sun' | 'nebula'
+
+const SPACE_OBJS: SpaceObjType[] = [
+  'planet_purple', 'earth', 'moon', 'planet_blue', 'sun',
+  'planet_red', 'nebula', 'planet_purple', 'moon', 'earth',
+]
+
+function SpaceObject({ idx }: { idx: number }) {
+  const type = SPACE_OBJS[idx % SPACE_OBJS.length]
+  const fromRight = idx % 2 === 0
+  const x = useRef(new Animated.Value(fromRight ? WIN_W + 120 : -120)).current
+  const y = WIN_H * (0.15 + sr(idx * 3.7) * 0.6)
+  const speed = 18000 + sr(idx * 5.1) * 14000
+  const interval = 8000 + idx * 5000
+
+  useEffect(() => {
+    const cycle = () => {
+      x.setValue(fromRight ? WIN_W + 120 : -120)
+      Animated.sequence([
+        Animated.delay(interval + sr(idx) * 4000),
+        Animated.timing(x, {
+          toValue: fromRight ? -120 : WIN_W + 120,
+          duration: speed,
+          useNativeDriver: true,
+        }),
+      ]).start(cycle)
+    }
+    cycle()
+  }, [])
+
+  const renderObj = () => {
+    switch (type) {
+      case 'earth':
+        return (
+          <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#1A5A8A', overflow: 'hidden', shadowColor: '#4488FF', shadowOpacity: 0.6, shadowRadius: 12 }}>
+            <View style={{ position: 'absolute', top: 8,  left: 10, width: 28, height: 20, backgroundColor: '#2A8A3A', borderRadius: 6 }} />
+            <View style={{ position: 'absolute', top: 30, left: 22, width: 22, height: 14, backgroundColor: '#2A8A3A', borderRadius: 5 }} />
+            <View style={{ position: 'absolute', top: 4,  left: 30, width: 14, height: 10, backgroundColor: '#2A8A3A', borderRadius: 4 }} />
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 14, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 30 }} />
+          </View>
+        )
+      case 'moon':
+        return (
+          <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#8A8A7A', overflow: 'hidden', shadowColor: '#FFFFFF', shadowOpacity: 0.3, shadowRadius: 8 }}>
+            {[{ t: 8, l: 6, s: 10 }, { t: 20, l: 24, s: 8 }, { t: 6, l: 28, s: 6 }, { t: 28, l: 8, s: 7 }].map((c, i) => (
+              <View key={i} style={{ position: 'absolute', top: c.t, left: c.l, width: c.s, height: c.s, borderRadius: c.s / 2, backgroundColor: '#6A6A5A' }} />
+            ))}
+          </View>
+        )
+      case 'sun':
+        return (
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#FFD700', shadowColor: '#FFAA00', shadowOpacity: 1, shadowRadius: 30, elevation: 10 }}>
+              <View style={{ position: 'absolute', top: 6, left: 6, right: 6, bottom: 6, borderRadius: 29, backgroundColor: '#FFEE44' }} />
+              {/* Solar flares */}
+              {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+                <View key={i} style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 4, backgroundColor: '#FFA500', borderRadius: 2, opacity: 0.7,
+                  transform: [{ rotate: `${deg}deg` }, { translateX: 28 }, { translateY: -2 }] }} />
+              ))}
+            </View>
+          </View>
+        )
+      case 'planet_purple':
+        return (
+          <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: '#6A2A8A', overflow: 'hidden', shadowColor: '#AA44FF', shadowOpacity: 0.5, shadowRadius: 10 }}>
+            <View style={{ position: 'absolute', top: 14, left: 0, right: 0, height: 8, backgroundColor: 'rgba(255,200,255,0.15)' }} />
+            <View style={{ position: 'absolute', top: 28, left: 0, right: 0, height: 5, backgroundColor: 'rgba(255,200,255,0.10)' }} />
+          </View>
+        )
+      case 'planet_blue':
+        return (
+          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1A3A8A', overflow: 'hidden', shadowColor: '#4488FF', shadowOpacity: 0.5, shadowRadius: 8 }}>
+            <View style={{ position: 'absolute', top: 10, left: 0, right: 0, height: 5, backgroundColor: 'rgba(200,220,255,0.2)' }} />
+            <View style={{ position: 'absolute', top: 22, left: 0, right: 0, height: 4, backgroundColor: 'rgba(200,220,255,0.15)' }} />
+          </View>
+        )
+      case 'planet_red':
+        return (
+          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#8A2A1A', overflow: 'hidden', shadowColor: '#FF4422', shadowOpacity: 0.4, shadowRadius: 8 }}>
+            <View style={{ position: 'absolute', top: 12, left: 0, right: 0, height: 6, backgroundColor: 'rgba(255,180,150,0.15)' }} />
+            <View style={{ position: 'absolute', top: 26, left: 8, width: 18, height: 4, backgroundColor: 'rgba(200,80,60,0.4)', borderRadius: 2 }} />
+          </View>
+        )
+      case 'nebula':
+        return (
+          <View style={{ width: 90, height: 55, borderRadius: 28, backgroundColor: 'transparent', overflow: 'hidden' }}>
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#2A0A4A', opacity: 0.6, borderRadius: 28 }} />
+            <View style={{ position: 'absolute', top: 5, left: 10, width: 50, height: 30, backgroundColor: '#6A0088', opacity: 0.4, borderRadius: 20 }} />
+            <View style={{ position: 'absolute', top: 15, left: 30, width: 40, height: 25, backgroundColor: '#0044AA', opacity: 0.35, borderRadius: 18 }} />
+            <View style={{ position: 'absolute', top: 8, left: 5, width: 2, height: 2, borderRadius: 1, backgroundColor: '#FFF' }} />
+            <View style={{ position: 'absolute', top: 20, left: 50, width: 2, height: 2, borderRadius: 1, backgroundColor: '#FFF' }} />
+          </View>
+        )
+      default: return null
+    }
+  }
+
+  return (
+    <Animated.View style={{ position: 'absolute', top: y, transform: [{ translateX: x }] }}>
+      {renderObj()}
+    </Animated.View>
+  )
+}
+
+function ZeroGDust() {
+  const x = useRef(new Animated.Value(Math.random() * SW)).current
+  const y = useLoop(-5, 5, 3000 + Math.random() * 2000, Math.random() * 2000)
+  return (
+    <Animated.View style={{
+      position: 'absolute', top: '60%', left: x,
+      width: 2, height: 2, borderRadius: 1,
+      backgroundColor: '#AAAAAA', opacity: 0.3,
+      transform: [{ translateY: y }],
+    }} />
+  )
+}
+
+export function SpaceEscapePodScene({ accent, active }: { accent: string; active: boolean }) {
+  const warningFlash = useLoopNonNative(0.2, 0.8, 800)
+  const ledGlow = useLoopNonNative(0.4, 0.9, 1200)
+
+  return (
+    <View style={StyleSheet.absoluteFillObject}>
+      {/* ── Pod interior background ── */}
+      <View style={{ flex: 1, backgroundColor: '#0D0D18' }} />
+
+      {/* ── THE BIG WINDOW ── */}
+      <View style={{
+        position: 'absolute',
+        top: WIN_TOP, left: (SW - WIN_W) / 2,
+        width: WIN_W, height: WIN_H,
+        backgroundColor: '#000008',
+        borderRadius: 20,
+        overflow: 'hidden',
+        borderWidth: 8, borderColor: '#2A2A3A',
+      }}>
+        {/* Star field */}
+        {Array.from({ length: 55 }, (_, i) => <WindowStar key={i} i={i} />)}
+        {/* Drifting space objects */}
+        {Array.from({ length: 6 }, (_, i) => <SpaceObject key={i} idx={i} />)}
+        {/* Subtle space gradient */}
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: WIN_H * 0.3, backgroundColor: 'rgba(10,5,30,0.4)' }} />
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: WIN_H * 0.2, backgroundColor: 'rgba(5,5,20,0.5)' }} />
+      </View>
+
+      {/* ── Window frame / hull ── */}
+      {/* Top hull beam */}
+      <View style={{ position: 'absolute', top: WIN_TOP - 12, left: 0, right: 0, height: 20, backgroundColor: '#1A1A28', borderBottomWidth: 2, borderBottomColor: '#333344' }}>
+        {/* Bolts */}
+        {[SW*0.08, SW*0.22, SW*0.38, SW*0.52, SW*0.68, SW*0.82].map((x, i) => (
+          <View key={i} style={{ position: 'absolute', top: 7, left: x, width: 6, height: 6, borderRadius: 3, backgroundColor: '#3A3A4A' }} />
+        ))}
+        {/* Warning light */}
+        <Animated.View style={{ position: 'absolute', top: 5, right: 20, width: 10, height: 10, borderRadius: 5, backgroundColor: '#FF2200', opacity: warningFlash }} />
+        {/* LED strip */}
+        <Animated.View style={{ position: 'absolute', bottom: 0, left: (SW - WIN_W) / 2, width: WIN_W, height: 3, backgroundColor: accent, opacity: ledGlow }} />
+      </View>
+      {/* Left hull wall */}
+      <View style={{ position: 'absolute', top: WIN_TOP, left: 0, width: (SW - WIN_W) / 2, height: WIN_H, backgroundColor: '#141420' }}>
+        <View style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 2, backgroundColor: '#2A2A3A' }} />
+        {/* Wall panel details */}
+        {[20, 60, 100].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, left: 4, right: 8, height: 24, backgroundColor: '#1A1A2A', borderWidth: 1, borderColor: '#2A2A3A', borderRadius: 2 }} />
+        ))}
+        {/* Bolts on frame */}
+        {[8, WIN_H - 12].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, right: 4, width: 6, height: 6, borderRadius: 3, backgroundColor: '#3A3A4A' }} />
+        ))}
+      </View>
+      {/* Right hull wall */}
+      <View style={{ position: 'absolute', top: WIN_TOP, right: 0, width: (SW - WIN_W) / 2, height: WIN_H, backgroundColor: '#141420' }}>
+        <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 2, backgroundColor: '#2A2A3A' }} />
+        {[30, 70, 110].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, left: 8, right: 4, height: 24, backgroundColor: '#1A1A2A', borderWidth: 1, borderColor: '#2A2A3A', borderRadius: 2 }} />
+        ))}
+        {[8, WIN_H - 12].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, left: 4, width: 6, height: 6, borderRadius: 3, backgroundColor: '#3A3A4A' }} />
+        ))}
+      </View>
+      {/* Bottom hull beam (below window) */}
+      <View style={{
+        position: 'absolute',
+        top: WIN_TOP + WIN_H,
+        left: 0, right: 0, height: 16,
+        backgroundColor: '#1A1A28',
+        borderTopWidth: 2, borderTopColor: '#333344',
+      }}>
+        {[SW*0.1, SW*0.3, SW*0.5, SW*0.7, SW*0.9].map((x, i) => (
+          <View key={i} style={{ position: 'absolute', top: 5, left: x, width: 6, height: 6, borderRadius: 3, backgroundColor: '#3A3A4A' }} />
+        ))}
+      </View>
+
+      {/* ── Pod floor / interior zone ── */}
+      <View style={{
+        position: 'absolute',
+        top: WIN_TOP + WIN_H + 16,
+        left: 0, right: 0, bottom: 0,
+        backgroundColor: '#0D0D18',
+      }}>
+        {/* Metal floor grating lines */}
+        {[...Array(5)].map((_, i) => (
+          <View key={i} style={{ position: 'absolute', top: i * 14, left: 0, right: 0, height: 1, backgroundColor: '#2A2A3A', opacity: 0.5 }} />
+        ))}
+        {[...Array(10)].map((_, i) => (
+          <View key={i} style={{ position: 'absolute', top: 0, bottom: 0, left: i * (SW / 10), width: 1, backgroundColor: '#2A2A3A', opacity: 0.3 }} />
+        ))}
+        {/* Control panels on sides */}
+        <View style={{ position: 'absolute', top: 8, left: 4, width: 40, height: 50, backgroundColor: '#1A1A2A', borderRadius: 3, borderWidth: 1, borderColor: '#3A3A4A' }}>
+          {[0, 1, 2].map(i => <View key={i} style={{ position: 'absolute', top: 8 + i * 14, left: 6, width: 28, height: 8, backgroundColor: '#0A0A1A', borderRadius: 2 }}>
+            <Animated.View style={{ position: 'absolute', top: 2, left: 2, width: 6, height: 4, borderRadius: 1, backgroundColor: i === 0 ? accent : i === 1 ? '#00FF88' : '#FF4444', opacity: ledGlow }} />
+          </View>)}
+        </View>
+        <View style={{ position: 'absolute', top: 8, right: 4, width: 40, height: 50, backgroundColor: '#1A1A2A', borderRadius: 3, borderWidth: 1, borderColor: '#3A3A4A' }}>
+          {[0, 1].map(i => <View key={i} style={{ position: 'absolute', top: 10 + i * 18, left: 6, width: 28, height: 10, backgroundColor: '#0A0A1A', borderRadius: 2 }}>
+            <Animated.View style={{ position: 'absolute', top: 3, right: 4, width: 5, height: 4, borderRadius: 1, backgroundColor: i === 0 ? '#FFAA00' : '#00AAFF', opacity: warningFlash }} />
+          </View>)}
+        </View>
+        {/* Floating dust particles */}
+        {active && [0,1,2,3,4].map(i => <ZeroGDust key={i} />)}
+      </View>
+
+    </View>
+  )
+}
+
+// ════════════════════════════════════════════════════════════════
+// WORLD 3 — SPACE (ROCKET INTERIOR) — kept for overlay use
 // ════════════════════════════════════════════════════════════════
 function Porthole({ x, y }: { x: number; y: number }) {
   const twinkle = useLoop(0.4, 1, 1200, Math.random() * 800)

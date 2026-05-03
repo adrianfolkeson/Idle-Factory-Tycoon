@@ -8,7 +8,7 @@ import BusseRobot from '../characters/BusseRobot'
 import BosseCharacter from '../characters/BosseCharacter'
 import SkuggaGhost from '../characters/SkuggaGhost'
 import {
-  EnergyScene, LabScene, SpaceRocketScene, VikingScene,
+  EnergyScene, LabScene, SpaceEscapePodScene, SpaceRocketScene, VikingScene,
   DinoScene, OceanScene, FireScene, JungleTempleScene, CyberpunkScene,
 } from './WorldScenes'
 
@@ -502,7 +502,7 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
   const active = productionRate > 0
   const hasHardHat = autoUpgradeCount > 0
   const bossRelaxing = autoUpgradeCount > 0
-  const isOutdoor = worldId >= 4  // Viking, Dino, Ocean, Fire, Jungle, Cyberpunk — no factory structure
+  const isOutdoor = worldId >= 3  // Space pod + all outdoor worlds — no factory chrome
 
   // ── OUTDOOR worlds: world scene IS the full background, no factory chrome ──
   if (isOutdoor) {
@@ -511,6 +511,7 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
         <SkuggaGhost visible={skuggaVisible} />
 
         {/* Full-bleed world environment */}
+        {worldId === 3 && <SpaceEscapePodScene accent={theme.accent} active={active} />}
         {worldId === 4 && <VikingScene active={active} />}
         {worldId === 5 && <DinoScene active={active} />}
         {worldId === 6 && <OceanScene accent={theme.accent} />}
@@ -575,7 +576,6 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
 
       {worldId === 1 && <EnergyScene accent={theme.accent} />}
       {worldId === 2 && <LabScene accent={theme.accent} />}
-      {worldId === 3 && <SpaceRocketScene accent={theme.accent} />}
 
       {/* ══════════ CEILING ══════════ */}
       <View style={[styles.ceiling, { backgroundColor: darken(theme.buildingTop, 40) }]}>
