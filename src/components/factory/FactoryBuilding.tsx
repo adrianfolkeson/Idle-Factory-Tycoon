@@ -502,22 +502,80 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
   const active = productionRate > 0
   const hasHardHat = autoUpgradeCount > 0
   const bossRelaxing = autoUpgradeCount > 0
+  const isOutdoor = worldId >= 4  // Viking, Dino, Ocean, Fire, Jungle, Cyberpunk — no factory structure
 
+  // ── OUTDOOR worlds: world scene IS the full background, no factory chrome ──
+  if (isOutdoor) {
+    return (
+      <View style={[styles.scene, { backgroundColor: theme.sky }]}>
+        <SkuggaGhost visible={skuggaVisible} />
+
+        {/* Full-bleed world environment */}
+        {worldId === 4 && <VikingScene active={active} />}
+        {worldId === 5 && <DinoScene active={active} />}
+        {worldId === 6 && <OceanScene accent={theme.accent} />}
+        {worldId === 7 && <FireScene active={active} />}
+        {worldId === 8 && <JungleTempleScene active={active} />}
+        {worldId === 9 && <CyberpunkScene accent={theme.accent} />}
+
+        {/* BUSSE working area — floats in world */}
+        <View style={styles.outdoorWorkZone}>
+          <View style={styles.outdoorBusseWrap}>
+            <View style={styles.boxPileWrap}><BoxStack /></View>
+            <BusseRobot color={theme.accent} hardHat={hasHardHat} worldId={worldId} />
+          </View>
+        </View>
+
+        {/* Nano-particles for high tiers */}
+        {tier >= 2 && active && (
+          <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+            {[0,1,2,3,4].map(i => (
+              <NanoParticle key={i} x={SW*(0.1+i*0.18)} delay={i*600} color={theme.accent} />
+            ))}
+          </View>
+        )}
+
+        {/* Conveyor belt */}
+        <View style={styles.beltWrap}>
+          <View style={[styles.beltFrame, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+          <ConveyorBelt
+            width={SW}
+            color={active ? '#555' : '#333'}
+            stripeColor={active ? theme.accent : '#444'}
+            active={active}
+          />
+          {[SW*0.1, SW*0.35, SW*0.6, SW*0.85].map((x,i) => (
+            <View key={i} style={[styles.beltLeg, { left: x }]} />
+          ))}
+        </View>
+
+        {/* Floor — transparent so world shows through */}
+        <View style={[styles.floor, { backgroundColor: 'rgba(0,0,0,0.35)' }]}>
+          <View style={styles.safetyStripe}>
+            {[...Array(16)].map((_,i) => (
+              <View key={i} style={[styles.safetyCell, { backgroundColor: i%2===0 ? theme.accent : 'transparent' }]} />
+            ))}
+          </View>
+          <View style={styles.floorPropsWrap}>
+            <WorldFloorProps worldId={worldId} accent={theme.accent} active={active} />
+          </View>
+          <View style={styles.bosseWrap}>
+            <BosseCharacter tapping={tapping} size={52} relaxing={bossRelaxing} worldId={worldId} />
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  // ── FACTORY worlds (0-3): full factory chrome ──
   return (
     <View style={[styles.scene, { backgroundColor: theme.sky }]}>
       {tier >= 3 && <SpaceBackground />}
       <SkuggaGhost visible={skuggaVisible} />
 
-      {/* ══════ WORLD-SPECIFIC SCENE OVERLAY ══════ */}
       {worldId === 1 && <EnergyScene accent={theme.accent} />}
       {worldId === 2 && <LabScene accent={theme.accent} />}
       {worldId === 3 && <SpaceRocketScene accent={theme.accent} />}
-      {worldId === 4 && <VikingScene active={active} />}
-      {worldId === 5 && <DinoScene active={active} />}
-      {worldId === 6 && <OceanScene accent={theme.accent} />}
-      {worldId === 7 && <FireScene active={active} />}
-      {worldId === 8 && <JungleTempleScene active={active} />}
-      {worldId === 9 && <CyberpunkScene accent={theme.accent} />}
 
       {/* ══════════ CEILING ══════════ */}
       <View style={[styles.ceiling, { backgroundColor: darken(theme.buildingTop, 40) }]}>
@@ -1196,6 +1254,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0, left: 20,
     zIndex: 5,
+  },
+  // ── Outdoor world layout ──
+  outdoorWorkZone: {
+    flex: 1,
+    position: 'relative',
+    justifyContent: 'flex-end',
+  },
+  outdoorBusseWrap: {
+    position: 'absolute',
+    bottom: 10,
+    left: SW * 0.1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
   },
   floorPropsWrap: {
     position: 'absolute',
