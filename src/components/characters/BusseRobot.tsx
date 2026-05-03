@@ -93,6 +93,16 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
   const armDeg = armAngle.interpolate({ inputRange: [-25, 0, 90], outputRange: ['-25deg', '0deg', '90deg'] })
   const scaleX = facingRight ? 1 : -1
 
+  // Lava glow for world 7 magma robot (non-native — used for color/opacity props)
+  const lavaGlow = useRef(new Animated.Value(0.5)).current
+  useEffect(() => {
+    if (worldId !== 7) return
+    Animated.loop(Animated.sequence([
+      Animated.timing(lavaGlow, { toValue: 1,   duration: 500, useNativeDriver: false }),
+      Animated.timing(lavaGlow, { toValue: 0.4, duration: 700, useNativeDriver: false }),
+    ])).start()
+  }, [worldId])
+
   // Walking leg oscillation
   const legSwing = posX.interpolate({
     inputRange: [0, 10, 20, 30, 40, 50, 62],
@@ -231,6 +241,162 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
           </Animated.View>
           {/* ── Propeller tail (mechanical detail) ── */}
           <View style={{ position:'absolute', top:12, left:-6, width:6, height:6, borderRadius:3, backgroundColor:'#888', borderWidth:1, borderColor:'#AAA' }} />
+        </View>
+      </Animated.View>
+    )
+  }
+
+  // ── World 3: BUSSE ALIEN-ROBOT ────────────────────────────────────────────────
+  if (worldId === 3) {
+    const antennaBob = posX.interpolate({ inputRange:[0,31,62], outputRange:['-8deg','8deg','-8deg'], extrapolate:'clamp' })
+    return (
+      <Animated.View style={{ transform:[{ translateX:posX }] }}>
+        <View style={{ alignItems:'center', transform:[{ scaleX }] }}>
+          <Animated.View style={{ alignItems:'center', transform:[{ rotate:antennaBob }] }}>
+            <View style={{ width:3, height:10, backgroundColor:'#00CCAA', borderRadius:2 }} />
+            <View style={{ width:8, height:8, borderRadius:4, backgroundColor:'#00FFCC' }} />
+          </Animated.View>
+          <View style={{ width:34, height:28, backgroundColor:'#1A3A2A', borderRadius:17, borderWidth:1.5, borderColor:'#00AA88', marginTop:-4, alignItems:'center', justifyContent:'center' }}>
+            <View style={{ flexDirection:'row', gap:4 }}>
+              {[0,1].map(i => (
+                <View key={i} style={{ width:12, height:10, borderRadius:6, backgroundColor:'#000', borderWidth:1.5, borderColor:'#00FFCC' }}>
+                  <View style={{ position:'absolute', top:1, left:1, width:4, height:4, borderRadius:2, backgroundColor:'#00FFCC', opacity:0.7 }} />
+                  {i===0 && <View style={{ position:'absolute', top:1, right:1, width:2, height:2, borderRadius:1, backgroundColor:'#FFF', opacity:0.5 }} />}
+                </View>
+              ))}
+            </View>
+            <View style={{ width:14, height:2, backgroundColor:'#00AA88', borderRadius:1, marginTop:4 }} />
+            <View style={{ position:'absolute', top:4, left:6, right:6, height:2, backgroundColor:'#00FFAA', opacity:0.4, borderRadius:1 }} />
+          </View>
+          <View style={{ width:8, height:6, backgroundColor:'#1A3A2A', borderRadius:2 }} />
+          <View style={{ width:30, height:22, backgroundColor:'#0D2A1A', borderRadius:4, borderWidth:1, borderColor:'#00AA88', alignItems:'center', justifyContent:'center' }}>
+            <View style={{ position:'absolute', top:4, left:4, right:4, height:1.5, backgroundColor:'#00FFAA', opacity:0.5, borderRadius:1 }} />
+            <View style={{ position:'absolute', top:10, left:4, right:4, height:1.5, backgroundColor:'#00CCFF', opacity:0.4, borderRadius:1 }} />
+            <View style={{ width:12, height:10, backgroundColor:'#0A1A10', borderRadius:3, borderWidth:1, borderColor:'#00FFAA' }} />
+          </View>
+          <Animated.View style={{ position:'absolute', right:-7, top:38, transform:[{ rotate:armDeg }] }}>
+            <View style={{ width:7, height:20, backgroundColor:'#1A3A2A', borderRadius:3, borderWidth:1, borderColor:'#00AA88' }}>
+              <View style={{ width:9, height:6, backgroundColor:'#0D2A1A', borderRadius:2 }} />
+            </View>
+            <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+            </Animated.View>
+          </Animated.View>
+          <View style={{ position:'absolute', left:-7, top:38, width:7, height:20, backgroundColor:'#1A3A2A', borderRadius:3, borderWidth:1, borderColor:'#00AA88' }} />
+          <View style={{ flexDirection:'row', gap:8, marginTop:1 }}>
+            {[leftLegRot, rightLegRot].map((rot,i) => (
+              <Animated.View key={i} style={{ width:8, height:16, backgroundColor:'#1A3A2A', borderRadius:4, transform:[{ rotate:rot }] }}>
+                <View style={{ position:'absolute', bottom:-4, left:-3, width:14, height:6, backgroundColor:'#0D2A1A', borderRadius:3, borderWidth:1, borderColor:'#00AA88' }} />
+              </Animated.View>
+            ))}
+          </View>
+        </View>
+      </Animated.View>
+    )
+  }
+
+  // ── World 7: BUSSE MAGMA-ROBOT ────────────────────────────────────────────────
+  if (worldId === 7) {
+    return (
+      <Animated.View style={{ transform:[{ translateX:posX }] }}>
+        <View style={{ alignItems:'center', transform:[{ scaleX }] }}>
+          <View style={{ width:30, height:22, backgroundColor:'#111', borderRadius:4, borderWidth:2, borderColor:'#2A2A2A', alignItems:'center', justifyContent:'center' }}>
+            <Animated.View style={{ flexDirection:'row', gap:6, opacity:lavaGlow }}>
+              <View style={{ width:10, height:6, backgroundColor:'#FF3300', borderRadius:3 }} />
+              <View style={{ width:10, height:6, backgroundColor:'#FF3300', borderRadius:3 }} />
+            </Animated.View>
+            <Animated.View style={{ position:'absolute', bottom:4, left:6, right:6, height:2, backgroundColor:'#FF5500', opacity:lavaGlow, borderRadius:1 }} />
+          </View>
+          <View style={{ width:12, height:5, backgroundColor:'#111', borderRadius:1 }}>
+            <Animated.View style={{ position:'absolute', top:1, left:1, right:1, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+          </View>
+          <View style={{ width:42, height:28, backgroundColor:'#111', borderRadius:3, borderWidth:2, borderColor:'#2A2A2A', alignItems:'center', justifyContent:'center', position:'relative' }}>
+            <View style={{ position:'absolute', left:-4, top:5, width:8, height:8, borderRadius:4, backgroundColor:'#222' }} />
+            <View style={{ position:'absolute', right:-4, top:5, width:8, height:8, borderRadius:4, backgroundColor:'#222' }} />
+            <Animated.View style={{ position:'absolute', top:5, left:4, width:22, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+            <Animated.View style={{ position:'absolute', top:13, right:6, width:16, height:2, backgroundColor:'#FF6600', opacity:lavaGlow, borderRadius:1 }} />
+            <Animated.View style={{ position:'absolute', bottom:5, left:8, right:8, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+            <Animated.View style={{ width:18, height:14, borderRadius:3, borderWidth:1.5, borderColor:'#FF4400', backgroundColor:'#2A0800', opacity:lavaGlow }} />
+          </View>
+          <View style={{ position:'absolute', left:-10, top:34, width:10, height:22, backgroundColor:'#111', borderRadius:3, borderWidth:1, borderColor:'#2A2A2A' }}>
+            <Animated.View style={{ position:'absolute', top:7, left:1, right:1, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+          </View>
+          <Animated.View style={{ position:'absolute', right:-10, top:31, transform:[{ rotate:armDeg }] }}>
+            <View style={{ width:10, height:22, backgroundColor:'#111', borderRadius:3, borderWidth:1, borderColor:'#333' }}>
+              <Animated.View style={{ position:'absolute', top:7, left:1, right:1, height:2, backgroundColor:'#FF6600', opacity:lavaGlow, borderRadius:1 }} />
+            </View>
+            <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+            </Animated.View>
+          </Animated.View>
+          <View style={{ width:36, height:5, backgroundColor:'#1A1A1A', borderRadius:2, marginTop:1 }}>
+            <Animated.View style={{ position:'absolute', top:1, left:4, right:4, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+          </View>
+          <View style={{ flexDirection:'row', gap:6, marginTop:1 }}>
+            {[leftLegRot, rightLegRot].map((rot,i) => (
+              <Animated.View key={i} style={{ width:14, height:18, backgroundColor:'#111', borderRadius:3, borderWidth:1.5, borderColor:'#2A2A2A', transform:[{ rotate:rot }] }}>
+                <Animated.View style={{ position:'absolute', top:6, left:2, right:2, height:2, backgroundColor:'#FF4400', opacity:lavaGlow, borderRadius:1 }} />
+                <View style={{ position:'absolute', bottom:-5, left:-2, width:18, height:7, backgroundColor:'#222', borderRadius:2 }}>
+                  <Animated.View style={{ position:'absolute', top:2, left:3, right:3, height:2, backgroundColor:'#FF3300', opacity:lavaGlow, borderRadius:1 }} />
+                </View>
+              </Animated.View>
+            ))}
+          </View>
+        </View>
+      </Animated.View>
+    )
+  }
+
+  // ── World 8: BUSSE MUMMY-ROBOT ────────────────────────────────────────────────
+  if (worldId === 8) {
+    return (
+      <Animated.View style={{ transform:[{ translateX:posX }] }}>
+        <View style={{ alignItems:'center', transform:[{ scaleX }] }}>
+          <View style={{ width:28, height:22, backgroundColor:'#8B6914', borderRadius:3, alignItems:'center', justifyContent:'center' }}>
+            <View style={{ flexDirection:'row', gap:5, marginBottom:2 }}>
+              {[0,1].map(i => (
+                <View key={i} style={{ width:9, height:9, borderRadius:5, backgroundColor:'#FFB800', borderWidth:1, borderColor:'#AA7700' }}>
+                  <View style={{ position:'absolute', top:2, left:2, width:5, height:5, borderRadius:3, backgroundColor:'#3A2000' }} />
+                </View>
+              ))}
+            </View>
+            <View style={{ position:'absolute', top:3,  left:-2, right:-2, height:4, backgroundColor:'#E8DDCC', borderRadius:2, opacity:0.85 }} />
+            <View style={{ position:'absolute', top:14, left:-3, right:-1, height:4, backgroundColor:'#DDCCBB', borderRadius:2, opacity:0.9, transform:[{rotate:'3deg'}] }} />
+            <View style={{ position:'absolute', bottom:1, left:2, right:-2, height:3, backgroundColor:'#E8DDCC', borderRadius:1, opacity:0.8 }} />
+          </View>
+          <View style={{ width:10, height:5, backgroundColor:'#7A5A14', borderRadius:2 }}>
+            <View style={{ position:'absolute', top:1, left:0, right:0, height:3, backgroundColor:'#E8DDCC', opacity:0.8, borderRadius:1 }} />
+          </View>
+          <View style={{ width:36, height:26, backgroundColor:'#7A5A14', borderRadius:3, alignItems:'center', justifyContent:'center', position:'relative' }}>
+            <View style={{ width:14, height:16, backgroundColor:'#5A4008', borderRadius:2, borderWidth:1, borderColor:'#C4A000', alignItems:'center', gap:2, paddingTop:2 }}>
+              {[0,1,2].map(i => <View key={i} style={{ width:8-i*2, height:2, backgroundColor:'#C4A000', borderRadius:1, opacity:0.7 }} />)}
+            </View>
+            <View style={{ position:'absolute', top:3, left:-3, right:-1, height:4, backgroundColor:'#DDCCBB', opacity:0.75, borderRadius:1, transform:[{rotate:'-2deg'}] }} />
+            <View style={{ position:'absolute', top:12, left:-1, right:-3, height:4, backgroundColor:'#E8DDCC', opacity:0.7, borderRadius:1, transform:[{rotate:'3deg'}] }} />
+            <View style={{ position:'absolute', bottom:3, left:-2, right:0, height:4, backgroundColor:'#DDCCBB', opacity:0.8, borderRadius:1, transform:[{rotate:'-1deg'}] }} />
+          </View>
+          <Animated.View style={{ position:'absolute', right:-8, top:33, transform:[{ rotate:armDeg }] }}>
+            <View style={{ width:9, height:21, backgroundColor:'#7A5A14', borderRadius:3 }}>
+              <View style={{ position:'absolute', top:4, left:-1, right:-1, height:3, backgroundColor:'#E8DDCC', opacity:0.7, borderRadius:1, transform:[{rotate:'5deg'}] }} />
+              <View style={{ position:'absolute', bottom:2, width:11, height:6, backgroundColor:'#5A4008', borderRadius:2 }} />
+            </View>
+            <View style={{ position:'absolute', bottom:-8, right:0, width:4, height:10, backgroundColor:'#E8DDCC', opacity:0.6, borderRadius:2, transform:[{rotate:'15deg'}] }} />
+            <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+            </Animated.View>
+          </Animated.View>
+          <View style={{ position:'absolute', left:-8, top:33, width:9, height:21, backgroundColor:'#7A5A14', borderRadius:3 }}>
+            <View style={{ position:'absolute', top:6, left:-1, right:-1, height:3, backgroundColor:'#E8DDCC', opacity:0.7, borderRadius:1, transform:[{rotate:'-4deg'}] }} />
+          </View>
+          <View style={{ width:32, height:5, backgroundColor:'#6A4A10', borderRadius:2, marginTop:1 }} />
+          <View style={{ flexDirection:'row', gap:5, marginTop:1 }}>
+            {[leftLegRot, rightLegRot].map((rot,i) => (
+              <Animated.View key={i} style={{ width:12, height:16, backgroundColor:'#7A5A14', borderRadius:3, transform:[{ rotate:rot }] }}>
+                <View style={{ position:'absolute', top:4, left:-1, right:-1, height:3, backgroundColor:'#E8DDCC', opacity:0.65, borderRadius:1 }} />
+                <View style={{ position:'absolute', bottom:-4, left:-2, width:16, height:6, backgroundColor:'#5A4008', borderRadius:2 }} />
+              </Animated.View>
+            ))}
+          </View>
         </View>
       </Animated.View>
     )

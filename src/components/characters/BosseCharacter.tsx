@@ -22,11 +22,11 @@ const COSTUMES: Record<number, Costume> = {
   0: { hatColor: '#FFB800', hatAccent: '#CC8800', overalls: '#2244AA', bib: '#3355CC', strap: '#3355CC' },
   1: { hatColor: '#FF8800', hatAccent: '#CC5500', overalls: '#AA5500', bib: '#CC7700', strap: '#FFB800', detail: '#FFE000' },
   2: { hatColor: '#EEEEEE', hatAccent: '#CCCCCC', overalls: '#E8E8E8', bib: '#FFFFFF', strap: '#CCCCCC', detail: '#9B4FE0' },
-  3: { hatColor: '#99BBEE', hatAccent: '#5588CC', overalls: '#778899', bib: '#99AACC', strap: '#AABBDD', detail: '#00AAFF' },
+  3: { hatColor: '#E8EEFF', hatAccent: '#8899CC', overalls: '#D8E8F8', bib: '#FFFFFF', strap: '#BBCCEE', detail: '#2244AA' },
   4: { hatColor: '#888888', hatAccent: '#555555', overalls: '#5A3A14', bib: '#7A5A2A', strap: '#6A4820', detail: '#C8860A' },
   5: { hatColor: '#D4C090', hatAccent: '#A89060', overalls: '#8B7440', bib: '#A89050', strap: '#988040', detail: '#7EC800' },
   6: { hatColor: '#333333', hatAccent: '#111111', overalls: '#004466', bib: '#006688', strap: '#0077AA', detail: '#00BBFF' },
-  7: { hatColor: '#CC2200', hatAccent: '#881100', overalls: '#882200', bib: '#AA3300', strap: '#CC4400', detail: '#FF5500' },
+  7: { hatColor: '#1A1A1A', hatAccent: '#111111', overalls: '#1A1A1A', bib: '#FF4400', strap: '#FF5500', detail: '#FF4400' },
   8: { hatColor: '#8B6914', hatAccent: '#5A4008', overalls: '#2A5A18', bib: '#3A7A24', strap: '#356A22', detail: '#00CC55' },
   9: { hatColor: '#111122', hatAccent: '#0022AA', overalls: '#111122', bib: '#FF00CC', strap: '#CC00AA', detail: '#FF00CC' },
 }
@@ -65,11 +65,22 @@ function Hat2({ c }: { c: Costume }) { // Lab cap + glasses
   )
 }
 
-function Hat3({ c }: { c: Costume }) { // Space dome helmet
+function Hat3({ c }: { c: Costume }) { // NASA astronaut helmet
   return (
     <View style={styles.hatWrap}>
-      <View style={[styles.spaceDome, { backgroundColor: c.hatColor, borderColor: c.hatAccent }]}>
-        <View style={styles.spaceVisor} />
+      <View style={{ alignItems:'center' }}>
+        <View style={{ width:30, height:24, borderRadius:15, backgroundColor:'#E8EEFF', borderWidth:2.5, borderColor:'#AABBDD', overflow:'hidden', alignItems:'center', justifyContent:'center' }}>
+          {/* Gold NASA band */}
+          <View style={{ position:'absolute', top:4, left:0, right:0, height:4, backgroundColor:'#FFB800', opacity:0.45 }} />
+          {/* Blue visor */}
+          <View style={{ width:20, height:10, backgroundColor:'#2244AA', borderRadius:5, opacity:0.9 }}>
+            <View style={{ position:'absolute', top:2, left:2, width:8, height:3, backgroundColor:'#88AAFF', borderRadius:2, opacity:0.55 }} />
+          </View>
+          {/* Highlight */}
+          <View style={{ position:'absolute', top:4, left:5, width:8, height:6, backgroundColor:'rgba(255,255,255,0.35)', borderRadius:4 }} />
+        </View>
+        {/* Collar ring */}
+        <View style={{ width:32, height:5, backgroundColor:'#CCDDEE', borderRadius:2, marginTop:-1, borderWidth:1, borderColor:'#AABBCC' }} />
       </View>
     </View>
   )
@@ -107,12 +118,26 @@ function Hat6({ c }: { c: Costume }) { // Diving helmet
   )
 }
 
-function Hat7({ c }: { c: Costume }) { // Fire chief helmet
+function Hat7({ c }: { c: Costume }) { // Full lava armor helmet
   return (
     <View style={styles.hatWrap}>
-      <View style={[styles.fireHelmTop, { backgroundColor: c.hatColor }]} />
-      <View style={[styles.fireHelmBrim, { backgroundColor: c.hatAccent }]} />
-      <View style={[styles.fireHelmVisor, { backgroundColor: '#FF8800', opacity: 0.7 }]} />
+      <View style={{ alignItems:'center' }}>
+        {/* Dome */}
+        <View style={{ width:26, height:14, backgroundColor:'#1A1A1A', borderRadius:7, borderWidth:1.5, borderColor:'#333', alignItems:'center' }}>
+          <View style={{ position:'absolute', top:-5, width:4, height:6, backgroundColor:'#FF4400', borderRadius:2 }} />
+          <View style={{ position:'absolute', top:3, left:0, right:0, height:2, backgroundColor:'#FF4400', opacity:0.3, borderRadius:1 }} />
+        </View>
+        {/* Face guard with orange visor slit */}
+        <View style={{ width:28, height:14, backgroundColor:'#1A1A1A', borderWidth:1.5, borderColor:'#333', alignItems:'center', justifyContent:'center', marginTop:-1 }}>
+          <View style={{ width:20, height:5, backgroundColor:'#FF4400', borderRadius:2, opacity:0.9 }}>
+            <View style={{ position:'absolute', top:1, left:2, right:2, height:2, backgroundColor:'#FF8800', borderRadius:1, opacity:0.6 }} />
+          </View>
+          {/* Vent slots */}
+          {[0,1,2].map(i=><View key={i} style={{ position:'absolute', bottom:2, left:5+i*6, width:3, height:2.5, backgroundColor:'#333', borderRadius:1 }}/>)}
+        </View>
+        {/* Chin guard */}
+        <View style={{ width:24, height:4, backgroundColor:'#222', borderRadius:2, marginTop:-1 }} />
+      </View>
     </View>
   )
 }
@@ -382,9 +407,92 @@ function SmallHat({ worldId, c }: { worldId: number; c: Costume }) {
   )
 }
 
+// ── Dancing Bosse (cyberpunk world, max upgrade) ──────────────────────────────
+function BosseDancing({ scale }: { scale: number }) {
+  const bounce  = useRef(new Animated.Value(0)).current
+  const armL    = useRef(new Animated.Value(-20)).current
+  const armR    = useRef(new Animated.Value(-20)).current
+  const hatBob  = useRef(new Animated.Value(0)).current
+  const legL    = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    Animated.loop(Animated.sequence([
+      Animated.timing(bounce, { toValue: -10, duration: 180, useNativeDriver: true }),
+      Animated.timing(bounce, { toValue: 0,   duration: 180, useNativeDriver: true }),
+    ])).start()
+    Animated.loop(Animated.sequence([
+      Animated.timing(armL, { toValue: -75, duration: 240, useNativeDriver: true }),
+      Animated.timing(armL, { toValue: -20, duration: 240, useNativeDriver: true }),
+    ])).start()
+    Animated.loop(Animated.sequence([
+      Animated.delay(240),
+      Animated.timing(armR, { toValue: -75, duration: 240, useNativeDriver: true }),
+      Animated.timing(armR, { toValue: -20, duration: 240, useNativeDriver: true }),
+    ])).start()
+    Animated.loop(Animated.sequence([
+      Animated.timing(hatBob, { toValue: 4,  duration: 180, useNativeDriver: true }),
+      Animated.timing(hatBob, { toValue: -4, duration: 180, useNativeDriver: true }),
+    ])).start()
+    Animated.loop(Animated.sequence([
+      Animated.timing(legL, { toValue: 14, duration: 200, useNativeDriver: true }),
+      Animated.timing(legL, { toValue: 0,  duration: 200, useNativeDriver: true }),
+    ])).start()
+  }, [])
+
+  const armLDeg = armL.interpolate({ inputRange: [-90, 0], outputRange: ['-90deg', '0deg'] })
+  const armRDeg = armR.interpolate({ inputRange: [-90, 0], outputRange: ['-90deg', '0deg'] })
+  const legLDeg = legL.interpolate({ inputRange: [0, 14], outputRange: ['0deg', '25deg'] })
+  const c = COSTUMES[9]
+
+  return (
+    <Animated.View style={[styles.standing, { transform: [{ translateY: bounce }, { scale }] }]}>
+      {/* Party hat */}
+      <Animated.View style={{ alignItems:'center', transform:[{ translateX: hatBob }] }}>
+        <View style={{ width:4, height:4, borderRadius:2, backgroundColor:'#FFFF00', marginBottom:-2 }} />
+        <View style={{ width:0, height:0, borderLeftWidth:12, borderRightWidth:12, borderBottomWidth:22,
+          borderLeftColor:'transparent', borderRightColor:'transparent', borderBottomColor:'#FF00CC' }}>
+        </View>
+        <View style={{ position:'absolute', bottom:7, left:-9, right:-9, height:2, backgroundColor:'#FFFF00', borderRadius:1 }} />
+        <View style={{ position:'absolute', bottom:3, left:-11, right:-11, height:2, backgroundColor:'#00FFCC', borderRadius:1 }} />
+        <View style={{ width:24, height:4, backgroundColor:'#FF00CC', borderRadius:2, marginTop:-1 }} />
+      </Animated.View>
+      {/* Head */}
+      <View style={styles.head}>
+        <View style={styles.eyeRow}>
+          <View style={[styles.eye, { backgroundColor:'#FF00CC' }]} />
+          <View style={[styles.eye, { backgroundColor:'#00FFCC' }]} />
+        </View>
+        <View style={styles.moustache} />
+        <View style={{ width:14, height:3, backgroundColor:'#FF8800', borderRadius:2 }} />
+      </View>
+      <View style={styles.neck} />
+      {/* Body */}
+      <View style={[styles.body, { backgroundColor:c.overalls }]}>
+        <View style={[styles.bib, { backgroundColor:c.bib }]} />
+        <View style={[styles.strapL, { backgroundColor:c.strap }]} />
+        <View style={[styles.strapR, { backgroundColor:c.strap }]} />
+        <View style={[styles.bodyBadge, { backgroundColor:c.detail }]} />
+      </View>
+      {/* Arms waving */}
+      <Animated.View style={[styles.armL, { backgroundColor:SKIN, transform:[{ rotate:armLDeg }] }]} />
+      <Animated.View style={[styles.armR, { backgroundColor:SKIN, transform:[{ rotate:armRDeg }] }]} />
+      {/* Legs shuffle */}
+      <View style={styles.legsRow}>
+        <Animated.View style={[styles.leg, { backgroundColor:c.overalls, transform:[{ rotate:legLDeg }] }]}>
+          <View style={[styles.boot, { backgroundColor:BROWN }]} />
+        </Animated.View>
+        <Animated.View style={[styles.leg, { backgroundColor:c.overalls, transform:[{ rotate: legL.interpolate({ inputRange:[0,14], outputRange:['0deg','-25deg'] }) }] }]}>
+          <View style={[styles.boot, { backgroundColor:BROWN }]} />
+        </Animated.View>
+      </View>
+    </Animated.View>
+  )
+}
+
 export default function BosseCharacter({ tapping = false, size = 42, relaxing = false, worldId = 0 }: Props) {
   const scale = size / 42
   const wid = Math.min(worldId, 9)
+  if (relaxing && wid === 9) return <BosseDancing scale={scale} />
   if (relaxing) return <BosseRelaxing scale={scale} worldId={wid} />
   return <BosseStanding tapping={tapping} scale={scale} worldId={wid} />
 }

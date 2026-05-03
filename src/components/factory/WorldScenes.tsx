@@ -862,33 +862,89 @@ function Ember({ x, delay }: { x: number; delay: number }) {
   )
 }
 
+function LavaBubble({ x, delay }: { x: number; delay: number }) {
+  const scale = useRef(new Animated.Value(0)).current
+  const op    = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    const run = () => {
+      scale.setValue(0); op.setValue(0.9)
+      Animated.sequence([
+        Animated.delay(delay),
+        Animated.parallel([
+          Animated.timing(scale, { toValue: 1.4, duration: 700, useNativeDriver: false }),
+          Animated.timing(op,    { toValue: 0,   duration: 700, useNativeDriver: false }),
+        ]),
+        Animated.delay(800 + Math.random() * 1200),
+      ]).start(run)
+    }
+    run()
+  }, [])
+  return (
+    <Animated.View style={{
+      position: 'absolute', bottom: 8, left: x,
+      width: 12, height: 12, borderRadius: 6,
+      backgroundColor: '#FF4400', opacity: op,
+      transform: [{ scale }],
+    }} />
+  )
+}
+
 export function FireScene({ active }: { active: boolean }) {
+  const ceilGlow = useLoopNonNative(0.25, 0.55, 900)
+
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-      {/* Magma ceiling glow */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 40, backgroundColor: '#FF2200', opacity: 0.15 }} />
-      {/* Cave rock walls */}
-      <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 24, backgroundColor: '#1A0800', borderRightWidth: 3, borderRightColor: '#330800' }} />
-      <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 24, backgroundColor: '#1A0800', borderLeftWidth: 3, borderLeftColor: '#330800' }} />
-      {/* Rock texture bumps */}
-      {[30, 70, 120, 160].map((y, i) => (
-        <React.Fragment key={i}>
-          <View style={{ position: 'absolute', top: y, left: 0, width: 24, height: 10, backgroundColor: '#220A00' }} />
-          <View style={{ position: 'absolute', top: y, right: 0, width: 24, height: 10, backgroundColor: '#220A00' }} />
-        </React.Fragment>
+      {/* ── Magma dome ceiling ── */}
+      <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 55, backgroundColor: '#FF2200', opacity: ceilGlow }} />
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 55, backgroundColor: '#1A0800', opacity: 0.55 }} />
+      {/* Stalactites hanging from ceiling */}
+      {[SW*0.06, SW*0.18, SW*0.31, SW*0.44, SW*0.57, SW*0.69, SW*0.80, SW*0.92].map((x, i) => (
+        <View key={i} style={{
+          position: 'absolute', top: 0, left: x,
+          width: 10 + (i % 3) * 5, height: 20 + (i % 4) * 12,
+          backgroundColor: '#2A0800', borderBottomLeftRadius: 8, borderBottomRightRadius: 8,
+        }}>
+          <View style={{ position: 'absolute', bottom: -4, left: '30%', width: '40%', height: 8, backgroundColor: '#FF3300', opacity: 0.3, borderRadius: 2 }} />
+        </View>
       ))}
-      {/* Lava flows */}
+
+      {/* ── Cave rock walls ── */}
+      <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 28, backgroundColor: '#1A0800', borderRightWidth: 3, borderRightColor: '#330800' }}>
+        {[25, 60, 100, 145, 185].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, left: 0, width: 28, height: 14 + (i%3)*4, backgroundColor: '#220A00', borderRadius: 2 }} />
+        ))}
+        <View style={{ position: 'absolute', top: 60, left: 4, width: 6, height: 80, backgroundColor: '#FF3300', opacity: 0.15, borderRadius: 3 }} />
+      </View>
+      <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 28, backgroundColor: '#1A0800', borderLeftWidth: 3, borderLeftColor: '#330800' }}>
+        {[35, 75, 115, 160].map((y, i) => (
+          <View key={i} style={{ position: 'absolute', top: y, right: 0, width: 28, height: 16 + (i%3)*4, backgroundColor: '#220A00', borderRadius: 2 }} />
+        ))}
+        <View style={{ position: 'absolute', top: 80, right: 4, width: 6, height: 70, backgroundColor: '#FF3300', opacity: 0.15, borderRadius: 3 }} />
+      </View>
+
+      {/* ── Lava flows on walls ── */}
       <LavaFlow side="left" />
       <LavaFlow side="right" />
-      {/* Glowing lava floor edges */}
-      <View style={{ position: 'absolute', bottom: 0, left: 24, right: 24, height: 12, backgroundColor: '#FF4400', opacity: 0.3, borderRadius: 4 }} />
-      {/* Embers */}
+
+      {/* ── Lava lake at floor ── */}
+      <View style={{ position: 'absolute', bottom: 0, left: 28, right: 28, height: 28, backgroundColor: '#CC2200', borderRadius: 6, overflow: 'hidden' }}>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 8, backgroundColor: '#FF4400', opacity: 0.7 }} />
+        <View style={{ position: 'absolute', top: 4, left: '15%', width: '25%', height: 6, backgroundColor: '#FF6600', opacity: 0.5, borderRadius: 3 }} />
+        <View style={{ position: 'absolute', top: 6, left: '55%', width: '20%', height: 5, backgroundColor: '#FF6600', opacity: 0.4, borderRadius: 3 }} />
+        {/* Bubbles */}
+        {[SW*0.15, SW*0.35, SW*0.55, SW*0.75].map((x, i) => (
+          <LavaBubble key={i} x={x - 28} delay={i * 500} />
+        ))}
+      </View>
+
+      {/* ── Embers ── */}
       {active && [SW*0.15, SW*0.3, SW*0.5, SW*0.65, SW*0.8].map((x, i) => (
         <Ember key={i} x={x} delay={i * 600} />
       ))}
-      {/* Heat shimmer cracks on floor */}
-      {[SW*0.2, SW*0.45, SW*0.7].map((x, i) => (
-        <View key={i} style={{ position: 'absolute', bottom: 8, left: x, width: 20, height: 3, backgroundColor: '#FF2200', opacity: 0.4, borderRadius: 1 }} />
+
+      {/* ── Floor lava cracks ── */}
+      {[SW*0.2, SW*0.42, SW*0.65].map((x, i) => (
+        <View key={i} style={{ position: 'absolute', bottom: 28, left: x, width: 22, height: 3, backgroundColor: '#FF3300', opacity: 0.45, borderRadius: 1 }} />
       ))}
     </View>
   )
