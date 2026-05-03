@@ -195,7 +195,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const buyUpgrade = useCallback((upgradeId: string, n = 1): boolean => {
     const s = stateRef.current
-    const progress = s.worldProgress[s.currentWorldId]
+    const progress = s.worldProgress?.find(p => p.worldId === s.currentWorldId)
     if (!progress) return false
     const count = getUpgradeCount(progress, upgradeId)
     const cost = getUpgradeCost(upgradeId, count)
