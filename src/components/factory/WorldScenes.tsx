@@ -212,12 +212,12 @@ function SpaceObject({ idx }: { idx: number }) {
   )
 }
 
-function ZeroGDust() {
-  const x = useRef(new Animated.Value(Math.random() * SW)).current
-  const y = useLoop(-5, 5, 3000 + Math.random() * 2000, Math.random() * 2000)
+function ZeroGDust({ index }: { index: number }) {
+  const xPos = sr(index * 17.3 + 5) * SW   // stable static position
+  const y = useLoop(-5, 5, 3000 + sr(index * 7.1) * 2000, sr(index * 3.3) * 2000)
   return (
     <Animated.View style={{
-      position: 'absolute', top: '60%', left: x,
+      position: 'absolute', top: '60%', left: xPos,
       width: 2, height: 2, borderRadius: 1,
       backgroundColor: '#AAAAAA', opacity: 0.3,
       transform: [{ translateY: y }],
@@ -326,7 +326,7 @@ export function SpaceEscapePodScene({ accent, active }: { accent: string; active
           </View>)}
         </View>
         {/* Floating dust particles */}
-        {active && [0,1,2,3,4].map(i => <ZeroGDust key={i} />)}
+        {active && [0,1,2,3,4].map(i => <ZeroGDust key={i} index={i} />)}
       </View>
 
     </View>
