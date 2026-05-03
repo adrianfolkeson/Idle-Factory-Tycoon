@@ -33,7 +33,7 @@ function useLoopNonNative(from: number, to: number, duration: number, delay = 0)
 // WORLD 1 — ENERGY FACTORY
 // ════════════════════════════════════════════════════════════════
 function EnergyCoil({ x, y, color }: { x: number; y: number; color: string }) {
-  const arc = useLoopNonNative(0, 1, 400 + Math.random() * 300)
+  const arc = useLoop(0, 1, 400 + Math.random() * 300)
   return (
     <View style={{ position: 'absolute', top: y, left: x }}>
       <View style={{ width: 8, height: 40, backgroundColor: '#333', borderRadius: 2 }} />
@@ -226,8 +226,8 @@ function ZeroGDust({ index }: { index: number }) {
 }
 
 export function SpaceEscapePodScene({ accent, active }: { accent: string; active: boolean }) {
-  const warningFlash = useLoopNonNative(0.2, 0.8, 800)
-  const ledGlow = useLoopNonNative(0.4, 0.9, 1200)
+  const warningFlash = useLoop(0.2, 0.8, 800)
+  const ledGlow = useLoop(0.4, 0.9, 1200)
 
   return (
     <View style={StyleSheet.absoluteFillObject}>
@@ -245,9 +245,9 @@ export function SpaceEscapePodScene({ accent, active }: { accent: string; active
         borderWidth: 8, borderColor: '#2A2A3A',
       }}>
         {/* Star field */}
-        {Array.from({ length: 55 }, (_, i) => <WindowStar key={i} i={i} />)}
+        {Array.from({ length: 22 }, (_, i) => <WindowStar key={i} i={i} />)}
         {/* Drifting space objects */}
-        {Array.from({ length: 6 }, (_, i) => <SpaceObject key={i} idx={i} />)}
+        {Array.from({ length: 4 }, (_, i) => <SpaceObject key={i} idx={i} />)}
         {/* Subtle space gradient */}
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: WIN_H * 0.3, backgroundColor: 'rgba(10,5,30,0.4)' }} />
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: WIN_H * 0.2, backgroundColor: 'rgba(5,5,20,0.5)' }} />
@@ -402,8 +402,8 @@ export function SpaceRocketScene({ accent }: { accent: string }) {
 // WORLD 4 — VIKING GREAT HALL
 // ════════════════════════════════════════════════════════════════
 function Torch({ x, y, active }: { x: number; y: number; active: boolean }) {
-  const flicker = useLoopNonNative(0.6, 1, 120 + Math.random() * 80)
-  const flicker2 = useLoopNonNative(0.8, 1, 90, 40)
+  const flicker = useLoop(0.6, 1, 120 + Math.random() * 80)
+  const flicker2 = useLoop(0.8, 1, 90, 40)
   return (
     <View style={{ position: 'absolute', top: y, left: x }}>
       <View style={{ width: 6, height: 20, backgroundColor: '#5A3A14', borderRadius: 2 }} />
@@ -419,7 +419,7 @@ function Torch({ x, y, active }: { x: number; y: number; active: boolean }) {
 }
 
 function ForgeGlow({ active }: { active: boolean }) {
-  const glow = useLoopNonNative(0.3, 0.9, 600)
+  const glow = useLoop(0.3, 0.9, 600)
   if (!active) return null
   return (
     <Animated.View style={{
@@ -720,7 +720,7 @@ function BubbleStream({ x, delay }: { x: number; delay: number }) {
 }
 
 function CausticLight({ x, y }: { x: number; y: number }) {
-  const op = useLoopNonNative(0, 0.15, 1500 + Math.random() * 800, Math.random() * 1000)
+  const op = useLoop(0, 0.15, 1500 + Math.random() * 800, Math.random() * 1000)
   return (
     <Animated.View style={{
       position: 'absolute', top: y, left: x,
@@ -871,8 +871,8 @@ function LavaBubble({ x, delay }: { x: number; delay: number }) {
       Animated.sequence([
         Animated.delay(delay),
         Animated.parallel([
-          Animated.timing(scale, { toValue: 1.4, duration: 700, useNativeDriver: false }),
-          Animated.timing(op,    { toValue: 0,   duration: 700, useNativeDriver: false }),
+          Animated.timing(scale, { toValue: 1.4, duration: 700, useNativeDriver: true }),
+          Animated.timing(op,    { toValue: 0,   duration: 700, useNativeDriver: true }),
         ]),
         Animated.delay(800 + Math.random() * 1200),
       ]).start(run)
@@ -890,7 +890,7 @@ function LavaBubble({ x, delay }: { x: number; delay: number }) {
 }
 
 export function FireScene({ active }: { active: boolean }) {
-  const ceilGlow = useLoopNonNative(0.25, 0.55, 900)
+  const ceilGlow = useLoop(0.25, 0.55, 900)
 
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
@@ -954,8 +954,8 @@ export function FireScene({ active }: { active: boolean }) {
 // WORLD 8 — JUNGLE TEMPLE
 // ════════════════════════════════════════════════════════════════
 function TorchFlame({ x, y, active }: { x: number; y: number; active: boolean }) {
-  const f1 = useLoopNonNative(0.5, 1, 110, 0)
-  const f2 = useLoopNonNative(0.7, 1, 90, 50)
+  const f1 = useLoop(0.5, 1, 110, 0)
+  const f2 = useLoop(0.7, 1, 90, 50)
   return (
     <View style={{ position: 'absolute', top: y, left: x, alignItems: 'center' }}>
       <View style={{ width: 8, height: 24, backgroundColor: '#3A2010', borderRadius: 2 }}>
@@ -1062,7 +1062,7 @@ function RainDrop({ x, delay }: { x: number; delay: number }) {
 }
 
 function NeonSign({ x, y, color, width = 50 }: { x: number; y: number; color: string; width?: number }) {
-  const flicker = useLoopNonNative(0.3, 1, 200 + Math.random() * 300, Math.random() * 500)
+  const flicker = useLoop(0.3, 1, 200 + Math.random() * 300, Math.random() * 500)
   return (
     <Animated.View style={{ position: 'absolute', top: y, left: x, opacity: flicker }}>
       <View style={{ width, height: 16, borderWidth: 2, borderColor: color, borderRadius: 3, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center', shadowColor: color, shadowOpacity: 0.8, shadowRadius: 6 }}>

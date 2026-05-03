@@ -22,15 +22,15 @@ function ElectricArc({ x1, x2, y, color }: { x1: number; x2: number; y: number; 
       Animated.sequence([
         Animated.delay(1500 + Math.random() * 2000),
         Animated.parallel([
-          Animated.timing(op,   { toValue: 1,  duration: 60,  useNativeDriver: false }),
+          Animated.timing(op,   { toValue: 1,  duration: 60,  useNativeDriver: true }),
           Animated.timing(offY, { toValue: -4, duration: 60,  useNativeDriver: false }),
         ]),
         Animated.parallel([
-          Animated.timing(op,   { toValue: 0.4, duration: 50, useNativeDriver: false }),
+          Animated.timing(op,   { toValue: 0.4, duration: 50, useNativeDriver: true }),
           Animated.timing(offY, { toValue: 3,   duration: 50, useNativeDriver: false }),
         ]),
-        Animated.timing(op, { toValue: 1, duration: 40, useNativeDriver: false }),
-        Animated.timing(op, { toValue: 0, duration: 80, useNativeDriver: false }),
+        Animated.timing(op, { toValue: 1, duration: 40, useNativeDriver: true }),
+        Animated.timing(op, { toValue: 0, duration: 80, useNativeDriver: true }),
       ]).start(flash)
     }
     flash()
@@ -56,11 +56,11 @@ function NanoParticle({ x, delay, color }: { x: number; delay: number; color: st
       Animated.sequence([
         Animated.delay(delay),
         Animated.parallel([
-          Animated.timing(y,  { toValue: -70, duration: 3000, useNativeDriver: false }),
-          Animated.timing(sx, { toValue: 1.8, duration: 3000, useNativeDriver: false }),
+          Animated.timing(y,  { toValue: -70, duration: 3000, useNativeDriver: true }),
+          Animated.timing(sx, { toValue: 1.8, duration: 3000, useNativeDriver: true }),
           Animated.sequence([
-            Animated.timing(op, { toValue: 0.8, duration: 600,  useNativeDriver: false }),
-            Animated.timing(op, { toValue: 0,   duration: 2400, useNativeDriver: false }),
+            Animated.timing(op, { toValue: 0.8, duration: 600,  useNativeDriver: true }),
+            Animated.timing(op, { toValue: 0,   duration: 2400, useNativeDriver: true }),
           ]),
         ]),
       ]).start(run)
@@ -74,141 +74,9 @@ function NanoParticle({ x, delay, color }: { x: number; delay: number; color: st
         width: 5, height: 5, borderRadius: 3,
         backgroundColor: color,
         opacity: op,
-        transform: [{ scaleX: sx }],
+        transform: [{ translateY: y }, { scaleX: sx }],
       }}
     />
-  )
-}
-
-// ─── Tier 3: Space background — scrolling parallax ────────────────────────────
-
-// Seeded pseudo-random so layout is stable across renders
-function seededRand(seed: number): number {
-  const x = Math.sin(seed + 1) * 10000
-  return x - Math.floor(x)
-}
-
-// Single scrolling layer (stars, planet, asteroid)
-function SpaceLayer({ speed, children, height }: { speed: number; children: React.ReactNode; height: number }) {
-  const x = useRef(new Animated.Value(0)).current
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(x, { toValue: -SW, duration: speed, useNativeDriver: true })
-    ).start()
-  }, [])
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={{ position: 'absolute', top: 0, left: 0, width: SW * 2, height, transform: [{ translateX: x }] }}
-    >
-      {children}
-    </Animated.View>
-  )
-}
-
-function TwinkleStar({ x, y, size, delay }: { x: number; y: number; size: number; delay: number }) {
-  const op = useRef(new Animated.Value(seededRand(x + y))).current
-  useEffect(() => {
-    Animated.loop(Animated.sequence([
-      Animated.delay(delay),
-      Animated.timing(op, { toValue: 0.15, duration: 700 + seededRand(x) * 800, useNativeDriver: false }),
-      Animated.timing(op, { toValue: 1,    duration: 700 + seededRand(y) * 800, useNativeDriver: false }),
-    ])).start()
-  }, [])
-  return (
-    <Animated.View style={{
-      position: 'absolute', top: y, left: x,
-      width: size, height: size, borderRadius: size / 2,
-      backgroundColor: '#FFFFFF', opacity: op,
-    }} />
-  )
-}
-
-function Planet({ x, y, radius, color, ringColor }: { x: number; y: number; radius: number; color: string; ringColor?: string }) {
-  return (
-    <View style={{ position: 'absolute', top: y - radius, left: x - radius }}>
-      <View style={{
-        width: radius * 2, height: radius * 2, borderRadius: radius,
-        backgroundColor: color,
-        shadowColor: color, shadowOpacity: 0.8, shadowRadius: radius * 0.4,
-        elevation: 4,
-      }}>
-        {/* Atmospheric stripe */}
-        <View style={{ position: 'absolute', top: radius * 0.3, left: 0, right: 0, height: radius * 0.25, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 4 }} />
-      </View>
-      {ringColor && (
-        <View style={{
-          position: 'absolute',
-          top: radius * 0.7, left: -radius * 0.5,
-          width: radius * 3, height: radius * 0.4,
-          borderRadius: radius,
-          borderWidth: radius * 0.15, borderColor: ringColor,
-          backgroundColor: 'transparent',
-          transform: [{ scaleY: 0.35 }],
-        }} />
-      )}
-    </View>
-  )
-}
-
-function Asteroid({ x, y, size }: { x: number; y: number; size: number }) {
-  return (
-    <View style={{
-      position: 'absolute', top: y, left: x,
-      width: size, height: size * 0.7,
-      backgroundColor: '#5A4A3A', borderRadius: size * 0.3,
-      transform: [{ rotate: '25deg' }],
-    }}>
-      <View style={{ position: 'absolute', top: 2, left: 3, width: size * 0.2, height: size * 0.2, borderRadius: size * 0.1, backgroundColor: '#3A2A1A' }} />
-      <View style={{ position: 'absolute', top: size * 0.3, left: size * 0.5, width: size * 0.15, height: size * 0.15, borderRadius: size * 0.08, backgroundColor: '#3A2A1A' }} />
-    </View>
-  )
-}
-
-function SpaceBackground() {
-  // Far layer: dense small stars (slow)
-  const farStars = Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    x: seededRand(i * 7.3) * SW * 2,
-    y: seededRand(i * 3.7) * 220,
-    size: seededRand(i * 11.1) > 0.7 ? 2 : 1,
-    delay: seededRand(i * 5.2) * 2000,
-  }))
-  // Mid layer: medium stars + planet (medium speed)
-  const midStars = Array.from({ length: 25 }, (_, i) => ({
-    id: i,
-    x: seededRand(i * 13.1) * SW * 2,
-    y: seededRand(i * 6.4) * 200,
-    size: 2,
-    delay: seededRand(i * 9.1) * 1500,
-  }))
-  // Near layer: asteroids (fast)
-  const asteroids = Array.from({ length: 5 }, (_, i) => ({
-    id: i,
-    x: seededRand(i * 17.3) * SW * 2,
-    y: 20 + seededRand(i * 8.7) * 180,
-    size: 10 + seededRand(i * 4.4) * 16,
-  }))
-
-  return (
-    <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-      {/* Far parallax — slowest */}
-      <SpaceLayer speed={22000} height={240}>
-        {farStars.map(s => <TwinkleStar key={s.id} x={s.x} y={s.y} size={s.size} delay={s.delay} />)}
-        <Planet x={SW * 0.3}  y={60}  radius={28} color="#8B4E9C" ringColor="rgba(200,150,255,0.5)" />
-        <Planet x={SW * 1.1} y={90}  radius={18} color="#4E6E9C" />
-      </SpaceLayer>
-      {/* Mid parallax */}
-      <SpaceLayer speed={14000} height={240}>
-        {midStars.map(s => <TwinkleStar key={s.id} x={s.x} y={s.y} size={s.size} delay={s.delay} />)}
-        <Planet x={SW * 0.75} y={45}  radius={14} color="#9C7A4E" />
-        <Planet x={SW * 1.5}  y={110} radius={22} color="#4E9C6A" ringColor="rgba(150,255,200,0.4)" />
-      </SpaceLayer>
-      {/* Near parallax — asteroids, fastest */}
-      <SpaceLayer speed={8000} height={240}>
-        {asteroids.map(a => <Asteroid key={a.id} x={a.x} y={a.y} size={a.size} />)}
-      </SpaceLayer>
-    </View>
   )
 }
 
@@ -226,11 +94,11 @@ function RocketExhaust({ x, active }: { x: number; active: boolean }) {
         Animated.sequence([
           Animated.delay(i * 300),
           Animated.parallel([
-            Animated.timing(p.y,  { toValue: 24,  duration: 600, useNativeDriver: false }),
-            Animated.timing(p.sc, { toValue: 1.6, duration: 600, useNativeDriver: false }),
+            Animated.timing(p.y,  { toValue: 24,  duration: 600, useNativeDriver: true }),
+            Animated.timing(p.sc, { toValue: 1.6, duration: 600, useNativeDriver: true }),
             Animated.sequence([
-              Animated.timing(p.op, { toValue: 0.9, duration: 200, useNativeDriver: false }),
-              Animated.timing(p.op, { toValue: 0,   duration: 400, useNativeDriver: false }),
+              Animated.timing(p.op, { toValue: 0.9, duration: 200, useNativeDriver: true }),
+              Animated.timing(p.op, { toValue: 0,   duration: 400, useNativeDriver: true }),
             ]),
           ]),
         ]).start(run)
@@ -292,8 +160,8 @@ function PendantLight({ active, x }: { active: boolean; x: number }) {
   useEffect(() => {
     if (!active) return
     Animated.loop(Animated.sequence([
-      Animated.timing(glow, { toValue: 0.9, duration: 1100, useNativeDriver: false }),
-      Animated.timing(glow, { toValue: 0.5, duration: 1100, useNativeDriver: false }),
+      Animated.timing(glow, { toValue: 0.9, duration: 1100, useNativeDriver: true }),
+      Animated.timing(glow, { toValue: 0.5, duration: 1100, useNativeDriver: true }),
     ])).start()
   }, [active])
   return (
@@ -313,8 +181,8 @@ function FactWindow({ glowing, showGear, color, size = 54 }: { glowing: boolean;
   useEffect(() => {
     if (!glowing) return
     Animated.loop(Animated.sequence([
-      Animated.timing(glow, { toValue: 0.9, duration: 900, useNativeDriver: false }),
-      Animated.timing(glow, { toValue: 0.55, duration: 1300, useNativeDriver: false }),
+      Animated.timing(glow, { toValue: 0.9, duration: 900, useNativeDriver: true }),
+      Animated.timing(glow, { toValue: 0.55, duration: 1300, useNativeDriver: true }),
     ])).start()
   }, [glowing])
   return (
@@ -374,10 +242,10 @@ function Tank({ color }: { color: string }) {
         Animated.sequence([
           Animated.delay(i * 800),
           Animated.parallel([
-            Animated.timing(b.y,  { toValue: -30, duration: 1200, useNativeDriver: false }),
+            Animated.timing(b.y,  { toValue: -30, duration: 1200, useNativeDriver: true }),
             Animated.sequence([
-              Animated.timing(b.op, { toValue: 0.6, duration: 300, useNativeDriver: false }),
-              Animated.timing(b.op, { toValue: 0,   duration: 900, useNativeDriver: false }),
+              Animated.timing(b.op, { toValue: 0.6, duration: 300, useNativeDriver: true }),
+              Animated.timing(b.op, { toValue: 0,   duration: 900, useNativeDriver: true }),
             ]),
           ]),
         ]).start(run)
@@ -465,10 +333,10 @@ function SteamPuff({ x, active }: { x: number; active: boolean }) {
         Animated.sequence([
           Animated.delay(i*700),
           Animated.parallel([
-            Animated.timing(p.y,  { toValue:-28, duration:1000, useNativeDriver:false }),
+            Animated.timing(p.y,  { toValue:-28, duration:1000, useNativeDriver:true }),
             Animated.sequence([
-              Animated.timing(p.op, { toValue:0.6, duration:300, useNativeDriver:false }),
-              Animated.timing(p.op, { toValue:0,   duration:700, useNativeDriver:false }),
+              Animated.timing(p.op, { toValue:0.6, duration:300, useNativeDriver:true }),
+              Animated.timing(p.op, { toValue:0,   duration:700, useNativeDriver:true }),
             ]),
           ]),
         ]).start(run)
@@ -571,7 +439,6 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
   // ── FACTORY worlds (0-3): full factory chrome ──
   return (
     <View style={[styles.scene, { backgroundColor: theme.sky }]}>
-      {tier >= 3 && <SpaceBackground />}
       <SkuggaGhost visible={skuggaVisible} />
 
       {worldId === 1 && <EnergyScene accent={theme.accent} />}

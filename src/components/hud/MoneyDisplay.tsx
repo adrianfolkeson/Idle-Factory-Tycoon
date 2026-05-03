@@ -60,7 +60,7 @@ export default function MoneyDisplay() {
             <Text style={styles.nudge}>{s.nudge}</Text>
           </View>
         ) : (
-          <Text style={[styles.rate, { color: COLORS.green }]}>+{formatRate(productionRate)} passivt</Text>
+          <Text style={[styles.rate, { color: COLORS.greenLight }]}>+{formatRate(productionRate)} passivt</Text>
         )}
       </View>
     </View>
@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
   bottomRow: {},
   nudgeRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dollars: {
-    fontSize: 36,
+    fontSize: 40,
     fontFamily: 'Courier New',
-    fontWeight: 'bold',
+    fontWeight: '900',
     letterSpacing: 1,
   },
   rate: {

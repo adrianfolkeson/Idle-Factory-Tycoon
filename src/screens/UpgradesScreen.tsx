@@ -144,12 +144,15 @@ export default function UpgradesScreen() {
                 disabled={!canAffordOne}
                 activeOpacity={0.7}
               >
-                <Text style={[styles.buyPrice, !canAffordOne && styles.buyPriceDisabled]}>
-                  {formatMoney(bulkCost)}
-                </Text>
-                <Text style={[styles.buyLabel, !canAffordOne && styles.buyLabelDisabled]}>
-                  {bulk === 1 ? 'KÖP' : bulk === 'max' ? `×${maxN}` : `×${bulk}`}
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Text style={[styles.buyPrice, !canAffordOne && styles.buyPriceDisabled]}>
+                    {formatMoney(bulkCost)}
+                  </Text>
+                  <Text style={styles.separator}>·</Text>
+                  <Text style={[styles.buyLabel, !canAffordOne && styles.buyLabelDisabled]}>
+                    {bulk === 1 ? 'KÖP' : bulk === 'max' ? `×${maxN}` : `×${bulk}`}
+                  </Text>
+                </View>
               </TouchableOpacity>
             </View>
           )
@@ -220,10 +223,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     borderLeftWidth: 4,
-    borderRadius: 4,
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderRadius: 8,
+    padding: 14,
     gap: 10,
   },
   cardRecommended: {
@@ -259,7 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   upgName: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Courier New',
     fontWeight: 'bold',
     color: COLORS.white,
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Courier New',
     color: COLORS.grey,
     marginBottom: 6,
-    lineHeight: 14,
+    lineHeight: 16,
   },
   statsRow: {
     flexDirection: 'column',
@@ -305,12 +306,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   buyBtn: {
-    width: 72,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: 'center',
-    borderWidth: 2,
-    borderBottomWidth: 4,
-    borderRadius: 4,
+    borderWidth: 1.5,
+    borderBottomWidth: 3,
+    borderRadius: 6,
+    width: '100%',
   },
   buyBtnActive: {
     backgroundColor: '#1A2A1A',
@@ -338,6 +339,11 @@ const styles = StyleSheet.create({
   },
   buyLabelDisabled: {
     color: COLORS.greyDark,
+  },
+  separator: {
+    color: COLORS.greyDark,
+    fontSize: 14,
+    fontFamily: 'Courier New',
   },
   bottomPad: { height: 20 },
 })
