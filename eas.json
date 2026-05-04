@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 5.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": { "simulator": true }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": { "resourceClass": "m-medium" },
+      "android": { "buildType": "apk" }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "INSERT_APPLE_ID",
+        "ascAppId": "INSERT_APP_STORE_CONNECT_APP_ID",
+        "appleTeamId": "INSERT_TEAM_ID"
+      },
+      "android": {
+        "track": "production"
+      }
+    }
+  }
+}

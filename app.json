@@ -6,20 +6,45 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
-    "backgroundColor": "#1A1A1A",
+    "backgroundColor": "#0C0C0C",
     "splash": {
-      "backgroundColor": "#1A1A1A",
+      "backgroundColor": "#0C0C0C",
       "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.idlefactory.tycoon"
+      "bundleIdentifier": "com.idlefactory.tycoon",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "Vi använder denna för att visa relevanta annonser."
+      }
     },
     "android": {
       "package": "com.idlefactory.tycoon",
       "adaptiveIcon": {
-        "backgroundColor": "#1A1A1A"
-      }
-    }
+        "backgroundColor": "#0C0C0C"
+      },
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "plugins": [
+      "@sentry/react-native",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#C4A000",
+          "sounds": []
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-2551267052794968~7393450062",
+          "iosAppId": "ca-app-pub-2551267052794968~7393450062"
+        }
+      ]
+    ]
   }
 }

@@ -7,7 +7,11 @@ import PixelIcon from '../components/ui/PixelIcon'
 import { formatMoney, formatTime, formatNumber } from '../lib/formatting'
 import { PRESTIGE_THRESHOLD } from '../lib/gameEngine'
 
-export default function StatsScreen() {
+interface StatsProps {
+  onOpenPrivacy?: () => void
+}
+
+export default function StatsScreen({ onOpenPrivacy }: StatsProps) {
   const { state, resetGame, setShowDailyReward, canPrestige, prestige } = useGame()
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -144,6 +148,13 @@ export default function StatsScreen() {
           <PixelIcon name="warning" size={10} color={COLORS.redLight} />
         </TouchableOpacity>
 
+        {onOpenPrivacy && (
+          <TouchableOpacity onPress={onOpenPrivacy} style={{ marginTop: 4 }}>
+            <Text style={[styles.version, { color: COLORS.greyDark, textDecorationLine: 'underline' }]}>
+              Integritetspolicy
+            </Text>
+          </TouchableOpacity>
+        )}
         <Text style={styles.version}>Idle Factory Tycoon v1.0.0</Text>
         <Text style={styles.version}>av Bosse & BUSSE</Text>
       </View>
