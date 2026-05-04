@@ -1042,100 +1042,216 @@ export function JungleTempleScene({ active }: { active: boolean }) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// WORLD 9 — CYBERPUNK
 // ════════════════════════════════════════════════════════════════
-function RainDrop({ x, delay }: { x: number; delay: number }) {
-  const y = useRef(new Animated.Value(-10)).current
+// WORLD 9 — NEO-STOCKHOLM (DYSTOPIAN FINALE)
+// ════════════════════════════════════════════════════════════════
+
+function AcidRain({ x, delay, speed }: { x: number; delay: number; speed: number }) {
+  const y = useRef(new Animated.Value(-20)).current
   useEffect(() => {
     const run = () => {
-      y.setValue(-10)
+      y.setValue(-20)
       Animated.sequence([
         Animated.delay(delay),
-        Animated.timing(y, { toValue: SH * 0.5, duration: 800 + Math.random() * 400, useNativeDriver: true }),
+        Animated.timing(y, { toValue: SH * 0.65, duration: speed, useNativeDriver: true }),
       ]).start(run)
     }
     run()
   }, [])
   return (
-    <Animated.View style={{ position: 'absolute', left: x, width: 1, height: 12, backgroundColor: '#88AACC', opacity: 0.3, transform: [{ translateY: y }] }} />
+    <Animated.View style={{ position: 'absolute', left: x, width: 1, height: 18,
+      backgroundColor: '#AACCFF', opacity: 0.25, transform: [{ translateY: y }] }} />
   )
 }
 
-function NeonSign({ x, y, color, width = 50 }: { x: number; y: number; color: string; width?: number }) {
-  const flicker = useLoop(0.3, 1, 200 + Math.random() * 300, Math.random() * 500)
+function ExplosionPulse({ x, y: yPos }: { x: number; y: number }) {
+  const op = useLoop(0.05, 0.35, 1800 + Math.random() * 1200, Math.random() * 2000)
+  const sc = useLoop(0.8, 1.3, 1800 + Math.random() * 1200, Math.random() * 2000)
   return (
-    <Animated.View style={{ position: 'absolute', top: y, left: x, opacity: flicker }}>
-      <View style={{ width, height: 16, borderWidth: 2, borderColor: color, borderRadius: 3, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center', shadowColor: color, shadowOpacity: 0.8, shadowRadius: 6 }}>
-        {[...Array(3)].map((_, i) => (
-          <View key={i} style={{ width: width - 10 - i * 8, height: 2, backgroundColor: color, marginVertical: 1, opacity: 0.6 }} />
+    <Animated.View style={{ position: 'absolute', top: yPos, left: x,
+      width: 30, height: 30, borderRadius: 15,
+      backgroundColor: '#FF4400', opacity: op,
+      transform: [{ scale: sc }] }} />
+  )
+}
+
+function RuinedBuilding({ x, width, height, hasFire }: { x: number; width: number; height: number; hasFire?: boolean }) {
+  // Broken top silhouette using notched shape
+  return (
+    <View style={{ position: 'absolute', bottom: 0, left: x }}>
+      <View style={{ width, height, backgroundColor: '#0A0008', overflow: 'hidden' }}>
+        {/* Broken top chunks */}
+        <View style={{ position:'absolute', top:0, right:0, width:width*0.3, height:height*0.25, backgroundColor: '#060006' }} />
+        <View style={{ position:'absolute', top:height*0.1, left:0, width:width*0.2, height:height*0.2, backgroundColor: '#060006' }} />
+        {/* Dark windows — some lit */}
+        {[0.2,0.35,0.5,0.65,0.8].map((fy, i) => (
+          <View key={i} style={{ position:'absolute', top:height*fy, left:width*0.2,
+            width:8, height:6, backgroundColor: i%3===0?'#FF0044':'#FF00CC', opacity:i%3===0?0.5:0.2 }} />
+        ))}
+        {[0.25,0.45,0.6,0.75].map((fy, i) => (
+          <View key={i} style={{ position:'absolute', top:height*fy, right:width*0.2,
+            width:6, height:5, backgroundColor: i%2===0?'#00FFFF':'#FFFF00', opacity:0.2 }} />
         ))}
       </View>
+      {/* Fire on top */}
+      {hasFire && (
+        <ExplosionPulse x={width * 0.3} y={-24} />
+      )}
+    </View>
+  )
+}
+
+function WarningSignVarlden({ x, y: yPos }: { x: number; y: number }) {
+  const flicker1 = useLoop(0.4, 1, 150, 0)
+  const flicker2 = useLoop(0.1, 0.8, 200, 80)
+  return (
+    <View style={{ position: 'absolute', top: yPos, left: x }}>
+      {/* Main sign "VÄRLDEN ÄR ÖVER" */}
+      <Animated.View style={{ borderWidth: 2, borderColor: '#FF0000', borderRadius: 2,
+        paddingHorizontal: 6, paddingVertical: 3, backgroundColor: 'rgba(40,0,0,0.8)',
+        shadowColor: '#FF0000', shadowOpacity: 0.9, shadowRadius: 8, opacity: flicker1 }}>
+        <Animated.Text style={{ fontFamily: 'Courier New', fontSize: 9, fontWeight: 'bold',
+          color: '#FF0000', letterSpacing: 2, opacity: flicker2 }}>
+          VÄRLDEN ÄR ÖVER
+        </Animated.Text>
+      </Animated.View>
+      {/* Sub-text "men du fixade det!" */}
+      <View style={{ alignItems: 'center', marginTop: 2 }}>
+        <Animated.Text style={{ fontFamily: 'Courier New', fontSize: 7, color: '#00FF88',
+          opacity: flicker1, letterSpacing: 1 }}>
+          ...men du fixade det!
+        </Animated.Text>
+      </View>
+    </View>
+  )
+}
+
+function DataCascade({ x }: { x: number }) {
+  const y = useRef(new Animated.Value(-30)).current
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(y, { toValue: SH * 0.7, duration: 1500 + Math.random() * 1000, useNativeDriver: true })
+    ).start()
+  }, [])
+  const chars = ['01','FF','00','▓','▒','░','ER','SY','RM']
+  return (
+    <Animated.View style={{ position: 'absolute', left: x, transform: [{ translateY: y }] }}>
+      {chars.slice(0,5).map((c, i) => (
+        <View key={i} style={{ width: 14, height: 10, backgroundColor: i%2===0?'#FF00CC':'#00FFFF',
+          opacity: 0.35 - i*0.05, marginVertical: 1, borderRadius: 1,
+          justifyContent:'center', alignItems:'center' }} />
+      ))}
     </Animated.View>
   )
 }
 
-function DataStream({ x }: { x: number }) {
-  const y = useRef(new Animated.Value(-20)).current
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(y, { toValue: SH * 0.7, duration: 2000 + Math.random() * 1000, useNativeDriver: true })
-    ).start()
-  }, [])
+function RobotRuin({ x, flipped }: { x: number; flipped?: boolean }) {
   return (
-    <Animated.View style={{ position: 'absolute', left: x, transform: [{ translateY: y }] }}>
-      {[0,1,2,3,4].map(i => (
-        <View key={i} style={{ width: 8, height: 8, backgroundColor: i % 2 === 0 ? '#FF00CC' : '#00FFFF', opacity: 0.4 - i * 0.07, marginVertical: 2, borderRadius: 1 }} />
-      ))}
-    </Animated.View>
+    <View style={{ position: 'absolute', bottom: 4, left: x,
+      transform: [{ scaleX: flipped ? -1 : 1 }] }}>
+      {/* Fallen robot head */}
+      <View style={{ width: 18, height: 14, backgroundColor: '#1A1A2A', borderRadius: 2,
+        borderWidth: 1, borderColor: '#FF0044', transform: [{ rotate: flipped?'25deg':'-20deg' }] }}>
+        <View style={{ position:'absolute', top:3, left:2, width:5, height:5, borderRadius:3,
+          backgroundColor: '#FF0044', opacity: 0.6 }} />
+        <View style={{ position:'absolute', top:3, right:2, width:5, height:5, borderRadius:3,
+          backgroundColor: '#FF0044', opacity: 0.3 }} />
+      </View>
+      {/* Arm debris */}
+      <View style={{ position:'absolute', bottom:-4, right:-10, width:20, height:5,
+        backgroundColor:'#111122', borderRadius:2, transform:[{rotate:'40deg'}],
+        borderWidth:1, borderColor:'#333' }} />
+    </View>
   )
 }
 
 export function CyberpunkScene({ accent }: { accent: string }) {
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-      {/* Glass walls showing city */}
-      <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 28, backgroundColor: 'rgba(20,0,40,0.8)', borderRightWidth: 2, borderRightColor: accent }}>
-        {/* City windows */}
-        {[20,40,70,100,130,160].map((y, i) => (
-          <View key={i} style={{ position: 'absolute', top: y, left: 4, width: i%2===0?16:10, height: 6, backgroundColor: i%3===0?'#00FFFF':'#FF00CC', opacity: 0.3 }} />
-        ))}
-      </View>
-      <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 28, backgroundColor: 'rgba(20,0,40,0.8)', borderLeftWidth: 2, borderLeftColor: accent }}>
-        {[30,55,85,115,145].map((y, i) => (
-          <View key={i} style={{ position: 'absolute', top: y, right: 4, width: i%2===0?14:8, height: 6, backgroundColor: i%3===0?'#FFFF00':accent, opacity: 0.3 }} />
-        ))}
-      </View>
-      {/* Neon ceiling strip */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 8, backgroundColor: accent, opacity: 0.3 }} />
-      {/* Neon floor strip */}
-      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, backgroundColor: accent, opacity: 0.5 }} />
-      {/* Neon grid floor */}
-      <View style={{ position: 'absolute', bottom: 0, left: 28, right: 28, height: 30 }}>
-        {[...Array(5)].map((_, i) => (
-          <View key={i} style={{ position: 'absolute', bottom: i * 6, left: 0, right: 0, height: 1, backgroundColor: accent, opacity: 0.2 }} />
-        ))}
-        {[...Array(8)].map((_, i) => (
-          <View key={i} style={{ position: 'absolute', bottom: 0, left: i * (SW / 8), width: 1, height: 30, backgroundColor: accent, opacity: 0.15 }} />
-        ))}
-      </View>
-      {/* Neon signs */}
-      <NeonSign x={35}     y={50} color="#FF00CC" width={55} />
-      <NeonSign x={SW-95}  y={65} color="#00FFFF" width={55} />
-      <NeonSign x={SW*0.35} y={30} color={accent}   width={40} />
-      {/* Rain on glass */}
-      {[...Array(12)].map((_, i) => (
-        <RainDrop key={i} x={4 + i * 2} delay={i * 70} />
+
+      {/* ── SKY: Deep dystopian purple-black ── */}
+      <View style={{ position:'absolute', top:0, left:0, right:0, height:SH*0.5,
+        backgroundColor:'#04000E' }} />
+
+      {/* ── RUINED CITY SKYLINE (behind glass) ── */}
+      <RuinedBuilding x={0}          width={55}  height={110} hasFire />
+      <RuinedBuilding x={50}         width={30}  height={75} />
+      <RuinedBuilding x={SW*0.22}    width={45}  height={90} hasFire />
+      <RuinedBuilding x={SW*0.4}     width={35}  height={65} />
+      <RuinedBuilding x={SW*0.55}    width={50}  height={100} hasFire />
+      <RuinedBuilding x={SW*0.72}    width={28}  height={70} />
+      <RuinedBuilding x={SW*0.82}    width={55}  height={95} hasFire />
+
+      {/* ── "VÄRLDEN ÄR ÖVER" sign ── */}
+      <WarningSignVarlden x={SW*0.28} y={18} />
+
+      {/* ── Heavy acid rain ── */}
+      {[...Array(22)].map((_, i) => (
+        <AcidRain key={i} x={i * (SW / 22)} delay={i * 45} speed={600 + (i % 5) * 80} />
       ))}
-      {/* Data streams */}
-      {[SW*0.15, SW*0.3, SW*0.55, SW*0.72].map((x, i) => (
-        <DataStream key={i} x={x} />
-      ))}
-      {/* Holographic display */}
-      <View style={{ position: 'absolute', top: 75, left: SW*0.42, width: 50, height: 35, borderWidth: 1, borderColor: '#00FFFF', borderRadius: 3, backgroundColor: 'rgba(0,255,255,0.05)' }}>
-        {[0,1,2].map(i => (
-          <View key={i} style={{ position: 'absolute', top: 6 + i * 8, left: 4, width: 30 - i * 6, height: 2, backgroundColor: '#00FFFF', opacity: 0.5 }} />
+
+      {/* ── Glass walls (thick, cracked look) ── */}
+      <View style={{ position:'absolute', top:0, left:0, bottom:0, width:32,
+        backgroundColor:'rgba(10,0,20,0.85)', borderRightWidth:2.5, borderRightColor:accent }}>
+        <View style={{ position:'absolute', top:40, left:8, width:20, height:1, backgroundColor:'#444', transform:[{rotate:'30deg'}] }} />
+        <View style={{ position:'absolute', top:80, left:4, width:24, height:1, backgroundColor:'#333', transform:[{rotate:'-20deg'}] }} />
+        {[20,55,90,130,165].map((y,i) => (
+          <View key={i} style={{ position:'absolute', top:y, left:4, width:i%2===0?18:10, height:8,
+            backgroundColor:i%3===0?'#FF0044':i%3===1?'#FF00CC':'#00FFFF', opacity:0.35 }} />
         ))}
       </View>
+      <View style={{ position:'absolute', top:0, right:0, bottom:0, width:32,
+        backgroundColor:'rgba(10,0,20,0.85)', borderLeftWidth:2.5, borderLeftColor:accent }}>
+        <View style={{ position:'absolute', top:60, right:6, width:22, height:1, backgroundColor:'#444', transform:[{rotate:'25deg'}] }} />
+        {[30,65,100,140].map((y,i) => (
+          <View key={i} style={{ position:'absolute', top:y, right:4, width:i%2===0?14:10, height:8,
+            backgroundColor:i%2===0?'#00FFFF':'#FFFF00', opacity:0.3 }} />
+        ))}
+      </View>
+
+      {/* ── Neon ceiling — SYSTEM CRITICAL ── */}
+      <View style={{ position:'absolute', top:0, left:32, right:32, height:10,
+        backgroundColor:'#FF0000', opacity:0.25 }} />
+      <View style={{ position:'absolute', top:10, left:32, right:32, height:3,
+        backgroundColor:accent, opacity:0.6 }} />
+
+      {/* ── Data cascades (Matrix-style falling code) ── */}
+      {[SW*0.12, SW*0.28, SW*0.52, SW*0.68, SW*0.85].map((x,i) => (
+        <DataCascade key={i} x={x} />
+      ))}
+
+      {/* ── Neon signs (3 world-themed) ── */}
+      {/* "NEO-STOCKHOLM" */}
+      <View style={{ position:'absolute', top:35, left:36, right:36,
+        borderWidth:1.5, borderColor:'#FF00CC', borderRadius:2, paddingVertical:3, paddingHorizontal:8,
+        backgroundColor:'rgba(40,0,30,0.7)', alignItems:'center',
+        shadowColor:'#FF00CC', shadowOpacity:0.8, shadowRadius:10 }}>
+        <Animated.Text style={{ fontFamily:'Courier New', fontSize:8, fontWeight:'bold',
+          color:'#FF00CC', letterSpacing:3, opacity:useLoop(0.5,1,400,0) }}>
+          NEO-STOCKHOLM 2089
+        </Animated.Text>
+      </View>
+
+      {/* ── Floor: neon holographic grid ── */}
+      <View style={{ position:'absolute', bottom:0, left:32, right:32, height:36 }}>
+        {[0,6,12,18,24,30].map((b,i) => (
+          <View key={i} style={{ position:'absolute', bottom:b, left:0, right:0, height:1,
+            backgroundColor:accent, opacity:0.15+i*0.03 }} />
+        ))}
+        {[...Array(9)].map((_,i) => (
+          <View key={i} style={{ position:'absolute', bottom:0, left:i*(SW-64)/9, width:1, height:36,
+            backgroundColor:accent, opacity:0.12 }} />
+        ))}
+        {/* Neon floor strip */}
+        <View style={{ position:'absolute', bottom:0, left:0, right:0, height:3,
+          backgroundColor:accent, opacity:0.7,
+          shadowColor:accent, shadowOpacity:0.9, shadowRadius:8 }} />
+      </View>
+
+      {/* ── Robot ruins on floor ── */}
+      <RobotRuin x={SW*0.12} />
+      <RobotRuin x={SW*0.68} flipped />
+      <RobotRuin x={SW*0.42} />
     </View>
   )
 }
