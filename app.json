@@ -29,20 +29,12 @@
       ]
     },
     "plugins": [
-      "@sentry/react-native",
       [
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
           "color": "#C4A000",
           "sounds": []
-        }
-      ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-2551267052794968~7393450062",
-          "iosAppId": "ca-app-pub-2551267052794968~7393450062"
         }
       ],
       "expo-audio"
