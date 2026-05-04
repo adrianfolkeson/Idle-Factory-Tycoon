@@ -58,19 +58,45 @@ export function EnergyScene({ accent }: { accent: string }) {
 // ════════════════════════════════════════════════════════════════
 export function LabScene({ accent }: { accent: string }) {
   const scanLine = useRef(new Animated.Value(-10)).current
+  const pipette1 = useLoop(-4, 4, 1800, 0)
+  const pipette2 = useLoop(-3, 3, 2200, 900)
   useEffect(() => {
     Animated.loop(
-      Animated.timing(scanLine, { toValue: SH * 0.6, duration: 3000, useNativeDriver: true })
+      Animated.timing(scanLine, { toValue: SH * 0.65, duration: 2800, useNativeDriver: true })
     ).start()
   }, [])
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-      {/* Holographic scan line */}
-      <Animated.View style={{ position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: accent, opacity: 0.25, transform: [{ translateY: scanLine }] }} />
-      {/* Lab grid on walls */}
-      {[...Array(6)].map((_, i) => (
-        <View key={i} style={{ position: 'absolute', top: 0, bottom: 0, left: i * (SW / 6), width: 1, backgroundColor: accent, opacity: 0.08 }} />
+      {/* White clinical ceiling strip */}
+      <View style={{ position:'absolute', top:0, left:0, right:0, height:10, backgroundColor:'#E8F4F8', opacity:0.12 }} />
+      {/* Lab tile grid on walls */}
+      {[...Array(7)].map((_,i) => (
+        <View key={i} style={{ position:'absolute', top:0, bottom:0, left:i*(SW/7), width:1, backgroundColor:'#AADDEE', opacity:0.07 }} />
       ))}
+      {[...Array(5)].map((_,i) => (
+        <View key={i} style={{ position:'absolute', left:0, right:0, top:i*(SH/5), height:1, backgroundColor:'#AADDEE', opacity:0.05 }} />
+      ))}
+      {/* Scan line */}
+      <Animated.View style={{ position:'absolute', left:0, right:0, height:2,
+        backgroundColor:accent, opacity:0.2, transform:[{translateY:scanLine}] }} />
+      {/* Wall specimen shelves */}
+      <View style={{ position:'absolute', top:50, left:0, width:30, height:60, backgroundColor:'rgba(200,230,240,0.08)', borderRightWidth:1, borderRightColor:'#AADDEE' }}>
+        {[10,28,46].map((y,i) => (
+          <View key={i} style={{ position:'absolute', top:y, left:4, width:20, height:12,
+            backgroundColor:['rgba(0,200,220,0.3)','rgba(255,100,150,0.3)','rgba(100,220,150,0.3)'][i],
+            borderRadius:4, borderWidth:1, borderColor:'rgba(0,200,220,0.4)' }} />
+        ))}
+      </View>
+      <View style={{ position:'absolute', top:50, right:0, width:30, height:60, backgroundColor:'rgba(200,230,240,0.08)', borderLeftWidth:1, borderLeftColor:'#AADDEE' }}>
+        {[10,28,46].map((y,i) => (
+          <View key={i} style={{ position:'absolute', top:y, right:4, width:20, height:12,
+            backgroundColor:['rgba(255,200,50,0.3)','rgba(0,200,220,0.3)','rgba(200,100,255,0.25)'][i],
+            borderRadius:4, borderWidth:1, borderColor:'rgba(0,200,220,0.4)' }} />
+        ))}
+      </View>
+      {/* Floating pipettes */}
+      <Animated.View style={{ position:'absolute', top:80, left:SW*0.35, width:4, height:28, backgroundColor:'rgba(0,200,220,0.5)', borderRadius:2, transform:[{translateY:pipette1}] }} />
+      <Animated.View style={{ position:'absolute', top:90, left:SW*0.6, width:4, height:22, backgroundColor:'rgba(255,100,150,0.5)', borderRadius:2, transform:[{translateY:pipette2}] }} />
     </View>
   )
 }

@@ -21,7 +21,7 @@ interface Costume {
 const COSTUMES: Record<number, Costume> = {
   0: { hatColor: '#FFB800', hatAccent: '#CC8800', overalls: '#2244AA', bib: '#3355CC', strap: '#3355CC' },
   1: { hatColor: '#FF8800', hatAccent: '#CC5500', overalls: '#AA5500', bib: '#CC7700', strap: '#FFB800', detail: '#FFE000' },
-  2: { hatColor: '#EEEEEE', hatAccent: '#CCCCCC', overalls: '#E8E8E8', bib: '#FFFFFF', strap: '#CCCCCC', detail: '#9B4FE0' },
+  2: { hatColor: '#F8F8F8', hatAccent: '#DDDDDD', overalls: '#F2F2F2', bib: '#FFFFFF', strap: '#E0E0E0', detail: '#00CCDD' },
   3: { hatColor: '#E8EEFF', hatAccent: '#8899CC', overalls: '#D8E8F8', bib: '#FFFFFF', strap: '#BBCCEE', detail: '#2244AA' },
   4: { hatColor: '#888888', hatAccent: '#555555', overalls: '#5A3A14', bib: '#7A5A2A', strap: '#6A4820', detail: '#C8860A' },
   5: { hatColor: '#D4C090', hatAccent: '#A89060', overalls: '#8B7440', bib: '#A89050', strap: '#988040', detail: '#7EC800' },
@@ -56,11 +56,21 @@ function Hat1({ c }: { c: Costume }) { // Energy hard hat + bolt
   )
 }
 
-function Hat2({ c }: { c: Costume }) { // Lab cap + glasses
+function Hat2({ c }: { c: Costume }) { // Lab cap + big round glasses
   return (
     <View style={styles.hatWrap}>
+      <View style={[styles.labCapTop, { backgroundColor: c.hatColor }]} />
       <View style={[styles.labCapBrim, { backgroundColor: c.hatAccent }]} />
-      <View style={[styles.labCapTop,  { backgroundColor: c.hatColor }]} />
+      {/* Big circular professor glasses sit on brim */}
+      <View style={styles.labGlassesRow}>
+        <View style={[styles.labLens, { borderColor: '#555' }]}>
+          <View style={styles.labLensGlass} />
+        </View>
+        <View style={styles.labBridge} />
+        <View style={[styles.labLens, { borderColor: '#555' }]}>
+          <View style={styles.labLensGlass} />
+        </View>
+      </View>
     </View>
   )
 }
@@ -506,9 +516,13 @@ const styles = StyleSheet.create({
   hatBrim: { width: 30, height: 4, borderRadius: 2 },
   hatTop:  { width: 22, height: 8, borderRadius: 2, marginTop: -2, alignItems: 'center', overflow: 'hidden' },
 
-  // World 2: lab cap
-  labCapBrim: { width: 24, height: 3, borderRadius: 1 },
-  labCapTop:  { width: 18, height: 7, borderRadius: 4, marginTop: -1 },
+  // World 2: lab cap + big glasses
+  labCapBrim: { width: 26, height: 3, borderRadius: 1 },
+  labCapTop:  { width: 18, height: 7, borderRadius: 4 },
+  labGlassesRow: { flexDirection:'row', alignItems:'center', marginTop:1 },
+  labLens: { width:10, height:10, borderRadius:5, borderWidth:2, backgroundColor:'rgba(180,240,255,0.18)' },
+  labLensGlass: { position:'absolute', top:1, left:1, width:4, height:4, borderRadius:2, backgroundColor:'rgba(255,255,255,0.35)' },
+  labBridge: { width:4, height:1.5, backgroundColor:'#555' },
   labGlasses: { position:'absolute', bottom:3, left:3, right:3, height:2, backgroundColor:'rgba(150,200,255,0.5)', borderRadius:1 },
 
   // World 3: space dome

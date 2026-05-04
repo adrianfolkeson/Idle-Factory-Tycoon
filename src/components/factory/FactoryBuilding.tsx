@@ -201,26 +201,140 @@ function FactWindow({ glowing, showGear, color, size = 54 }: { glowing: boolean;
 }
 
 // ─── Stacked product boxes ──────────────────────────────────────────────────────
-function BoxStack() {
+// ─── World-specific cargo items ────────────────────────────────────────────────
+function CargoItem({ worldId, size = 18 }: { worldId: number; size?: number }) {
+  const s = size
+  switch(worldId) {
+    case 1: // Light bulb
+      return (
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:s*0.5, height:s*0.65, borderRadius:s*0.25, backgroundColor:'#FFEE88', borderWidth:1, borderColor:'#FFD700' }}>
+            <View style={{ position:'absolute', top:2, left:2, width:4, height:4, borderRadius:2, backgroundColor:'rgba(255,255,255,0.6)' }} />
+          </View>
+          <View style={{ width:s*0.35, height:s*0.2, backgroundColor:'#AAAAAA', borderRadius:1, marginTop:-1 }} />
+          <View style={{ width:s*0.25, height:s*0.15, backgroundColor:'#888', borderRadius:1 }} />
+        </View>
+      )
+    case 2: // Medicine bottle
+      return (
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:s*0.45, height:s*0.2, backgroundColor:'#FFFFFF', borderRadius:2 }} />
+          <View style={{ width:s*0.55, height:s*0.7, borderRadius:3, backgroundColor:'rgba(0,200,220,0.8)', borderWidth:1, borderColor:'#00AACC' }}>
+            <View style={{ position:'absolute', top:3, left:2, right:2, height:1.5, backgroundColor:'rgba(255,255,255,0.5)' }} />
+          </View>
+        </View>
+      )
+    case 3: // Asteroid rock
+      return (
+        <View style={{ width:s, height:s*0.8, backgroundColor:'#5A5A6A', borderRadius:s*0.25, borderWidth:1, borderColor:'#8888AA', transform:[{rotate:'15deg'}] }}>
+          <View style={{ position:'absolute', top:2, left:2, width:4, height:3, borderRadius:2, backgroundColor:'#3A3A4A' }} />
+        </View>
+      )
+    case 4: // Viking sword
+      return (
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:3, height:s, backgroundColor:'#C8C8D8', borderRadius:1, borderWidth:1, borderColor:'#888' }} />
+          <View style={{ position:'absolute', top:s*0.3, width:s*0.7, height:3, backgroundColor:'#8B6914', borderRadius:1 }} />
+          <View style={{ position:'absolute', top:s*0.7, width:5, height:5, borderRadius:3, backgroundColor:'#C8860A' }} />
+        </View>
+      )
+    case 5: // Dino egg
+      return (
+        <View style={{ width:s*0.75, height:s, borderRadius:s*0.4, borderTopLeftRadius:s*0.38, borderTopRightRadius:s*0.38, backgroundColor:'#88BB44', borderWidth:1, borderColor:'#6A9930' }}>
+          {[{t:s*0.2,l:3},{t:s*0.45,l:8},{t:s*0.3,l:1}].map((p,i)=>(
+            <View key={i} style={{ position:'absolute', top:p.t, left:p.l, width:4, height:4, borderRadius:2, backgroundColor:'#6A9930', opacity:0.6 }} />
+          ))}
+        </View>
+      )
+    case 6: // Oyster pearl
+      return (
+        <View style={{ alignItems:'center', justifyContent:'center' }}>
+          <View style={{ width:s, height:s*0.6, borderRadius:s*0.15, backgroundColor:'#8B8B7A', borderWidth:1, borderColor:'#AAA990' }}>
+            <View style={{ position:'absolute', top:'30%', left:'25%', width:s*0.4, height:s*0.35, borderRadius:s*0.18, backgroundColor:'#F8F0FF', borderWidth:1, borderColor:'#DDD0EE' }}>
+              <View style={{ position:'absolute', top:1, left:1, width:3, height:3, borderRadius:2, backgroundColor:'rgba(255,255,255,0.7)' }} />
+            </View>
+          </View>
+        </View>
+      )
+    case 7: // Magma stone
+      return (
+        <View style={{ width:s*0.85, height:s*0.75, backgroundColor:'#3A1A00', borderRadius:s*0.2, borderWidth:1.5, borderColor:'#FF4400', transform:[{rotate:'-10deg'}] }}>
+          {[{t:2,l:2},{t:6,l:8},{t:3,l:14}].map((p,i)=>(
+            <View key={i} style={{ position:'absolute', top:p.t, left:p.l, width:3, height:2, backgroundColor:'#FF6600', opacity:0.7, borderRadius:1 }} />
+          ))}
+        </View>
+      )
+    case 8: // Treasure
+      return (
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:s, height:s*0.7, backgroundColor:'#5A3A08', borderRadius:2, borderWidth:1, borderColor:'#C4A000' }}>
+            <View style={{ position:'absolute', top:0, left:0, right:0, height:3, backgroundColor:'#C4A000' }} />
+            <View style={{ position:'absolute', top:5, left:3, width:4, height:4, borderRadius:2, backgroundColor:'#FFD700' }} />
+            <View style={{ position:'absolute', top:5, left:9, width:3, height:3, borderRadius:2, backgroundColor:'#FF4444' }} />
+          </View>
+        </View>
+      )
+    case 9: // Miniature Busse robot
+      return (
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:3, height:5, backgroundColor:'#999', borderRadius:1 }} />
+          <View style={{ width:s*0.5, height:s*0.4, backgroundColor:'#FF00CC', borderRadius:2, borderWidth:1, borderColor:'#FF88FF' }}>
+            <View style={{ position:'absolute', top:2, left:1, width:3, height:3, borderRadius:2, backgroundColor:'#00FFFF' }} />
+          </View>
+          <View style={{ width:s*0.4, height:s*0.3, backgroundColor:'#CC00AA', borderRadius:1 }} />
+          <View style={{ flexDirection:'row', gap:2, marginTop:1 }}>
+            <View style={{ width:4, height:5, backgroundColor:'#FF00CC', borderRadius:1 }} />
+            <View style={{ width:4, height:5, backgroundColor:'#FF00CC', borderRadius:1 }} />
+          </View>
+        </View>
+      )
+    default: // Factory boxes
+      return (
+        <View style={styles.b3d}>
+          <View style={[styles.b3dFront, {backgroundColor:'#7B4A08'}]} />
+          <View style={[styles.b3dTop,   {backgroundColor:'#9B6010'}]} />
+          <View style={[styles.b3dSide,  {backgroundColor:darken('#7B4A08',35)}]} />
+        </View>
+      )
+  }
+}
+
+function BoxStack({ worldId = 0 }: { worldId?: number }) {
+  if (worldId === 0) {
+    return (
+      <View>
+        <View style={styles.boxRow2}>
+          {[['#7B4A08','#9B6010'],['#5A3208','#7B4808']].map(([c,t],i) => (
+            <View key={i} style={[styles.b3d]}>
+              <View style={[styles.b3dFront,{backgroundColor:c}]} />
+              <View style={[styles.b3dTop,{backgroundColor:t}]} />
+              <View style={[styles.b3dSide,{backgroundColor:darken(c,35)}]} />
+            </View>
+          ))}
+        </View>
+        <View style={styles.boxRow3}>
+          {[['#8B5E0A','#A07015'],['#6A4808','#8A6010'],['#7B4A08','#9B6010']].map(([c,t],i) => (
+            <View key={i} style={[styles.b3d]}>
+              <View style={[styles.b3dFront,{backgroundColor:c}]} />
+              <View style={[styles.b3dTop,{backgroundColor:t}]} />
+              <View style={[styles.b3dSide,{backgroundColor:darken(c,35)}]} />
+            </View>
+          ))}
+        </View>
+      </View>
+    )
+  }
+  // Other worlds: pile of world-specific items
   return (
     <View>
       <View style={styles.boxRow2}>
-        {[['#7B4A08','#9B6010'],['#5A3208','#7B4808']].map(([c,t],i) => (
-          <View key={i} style={[styles.b3d]}>
-            <View style={[styles.b3dFront,{backgroundColor:c}]} />
-            <View style={[styles.b3dTop,{backgroundColor:t}]} />
-            <View style={[styles.b3dSide,{backgroundColor:darken(c,35)}]} />
-          </View>
-        ))}
+        <CargoItem worldId={worldId} size={18} />
+        <CargoItem worldId={worldId} size={18} />
       </View>
       <View style={styles.boxRow3}>
-        {[['#8B5E0A','#A07015'],['#6A4808','#8A6010'],['#7B4A08','#9B6010']].map(([c,t],i) => (
-          <View key={i} style={[styles.b3d]}>
-            <View style={[styles.b3dFront,{backgroundColor:c}]} />
-            <View style={[styles.b3dTop,{backgroundColor:t}]} />
-            <View style={[styles.b3dSide,{backgroundColor:darken(c,35)}]} />
-          </View>
-        ))}
+        <CargoItem worldId={worldId} size={18} />
+        <CargoItem worldId={worldId} size={18} />
+        <CargoItem worldId={worldId} size={18} />
       </View>
     </View>
   )
@@ -390,7 +504,7 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
         {/* BUSSE working area — floats in world */}
         <View style={styles.outdoorWorkZone}>
           <View style={styles.outdoorBusseWrap}>
-            <View style={styles.boxPileWrap}><BoxStack /></View>
+            <View style={styles.boxPileWrap}><BoxStack worldId={worldId} /></View>
             <BusseRobot color={theme.accent} hardHat={hasHardHat} worldId={worldId} />
           </View>
         </View>

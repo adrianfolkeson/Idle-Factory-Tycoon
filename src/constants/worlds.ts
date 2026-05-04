@@ -157,14 +157,14 @@ export const WORLDS: WorldDef[] = [
     description: 'Vetenskap! BUSSE har en doktorstitel nu (oklart var ifrån).',
     unlockCost: 1_500_000_000,
     theme: {
-      primary: '#2A0A4A',
-      secondary: '#0A1A4A',
-      accent: '#9B4FE0',
-      sky: '#0D0520',
-      ground: '#050010',
-      buildingTop: '#3A1060',
-      buildingBody: '#200840',
-      windowColor: '#9B4FE0',
+      primary: '#0A1E30',
+      secondary: '#051018',
+      accent: '#00CCDD',
+      sky: '#06101A',
+      ground: '#040A10',
+      buildingTop: '#0F2235',
+      buildingBody: '#0A1828',
+      windowColor: '#00CCDD',
     },
     upgrades: [
       {

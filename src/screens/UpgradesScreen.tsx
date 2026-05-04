@@ -6,6 +6,8 @@ import { COLORS } from '../constants/colors'
 import { formatMoney, formatRate } from '../lib/formatting'
 import { getUpgradeCost, getUpgradeCount } from '../lib/gameEngine'
 import PixelIcon from '../components/ui/PixelIcon'
+import UpgradeBurst, { UpgradeBurstRef } from '../components/factory/UpgradeBurst'
+import { useRef } from 'react'
 
 type BulkMode = 1 | 10 | 'max'
 
@@ -28,6 +30,7 @@ function getMaxAffordable(upgradeId: string, dollars: number, startCount: number
 export default function UpgradesScreen() {
   const { state, buyUpgrade } = useGame()
   const [bulk, setBulk] = useState<BulkMode>(1)
+  const burstRef = useRef<UpgradeBurstRef>(null)
   const world = WORLDS[state.currentWorldId]
   const progress = state.worldProgress?.find(p => p.worldId === state.currentWorldId)
   if (!world || !progress) return null
@@ -49,6 +52,7 @@ export default function UpgradesScreen() {
 
   return (
     <View style={styles.container}>
+      <UpgradeBurst ref={burstRef} />
       <View style={[styles.header, { borderBottomColor: world.theme.accent }]}>
         <View style={styles.headerTop}>
           <View>
@@ -140,7 +144,7 @@ export default function UpgradesScreen() {
 
               <TouchableOpacity
                 style={[styles.buyBtn, canAffordOne ? styles.buyBtnActive : styles.buyBtnDisabled, { borderColor: canAffordOne ? world.theme.accent : COLORS.border }]}
-                onPress={() => buyUpgrade(upg.id, buyN)}
+                onPress={() => { buyUpgrade(upg.id, buyN); burstRef.current?.trigger(world.theme.accent) }}
                 disabled={!canAffordOne}
                 activeOpacity={0.7}
               >

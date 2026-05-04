@@ -246,6 +246,68 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
     )
   }
 
+  // ── World 2: BUSSE LAB-ROBOT ──────────────────────────────────────────────────
+  if (worldId === 2) {
+    return (
+      <Animated.View style={{ transform:[{translateX:posX}] }}>
+        <View style={{ alignItems:'center', transform:[{scaleX}] }}>
+          {/* Lab head — white chrome with magnifying visor */}
+          <View style={{ width:28, height:22, backgroundColor:'#E8EEF2', borderRadius:4, borderWidth:1.5, borderColor:'#AABBCC', alignItems:'center', justifyContent:'center' }}>
+            {/* Giant round monocle lens */}
+            <View style={{ width:16, height:16, borderRadius:8, borderWidth:2.5, borderColor:'#00CCDD', backgroundColor:'rgba(0,200,220,0.12)', alignItems:'center', justifyContent:'center' }}>
+              <View style={{ width:8, height:8, borderRadius:4, backgroundColor:'rgba(0,180,200,0.3)' }} />
+              <View style={{ position:'absolute', top:2, left:2, width:3, height:3, borderRadius:2, backgroundColor:'rgba(255,255,255,0.6)' }} />
+            </View>
+            {/* Antenna with lab sample */}
+            <View style={{ position:'absolute', top:-10, right:4, width:3, height:10, backgroundColor:'#AABBCC', borderRadius:1 }}>
+              <View style={{ position:'absolute', top:-5, left:-3, width:9, height:6, borderRadius:3, backgroundColor:'#00CCDD', opacity:0.8 }} />
+            </View>
+          </View>
+          {/* Neck */}
+          <View style={{ width:10, height:5, backgroundColor:'#D0D8E0', borderRadius:2 }} />
+          {/* Body — white lab coat style */}
+          <View style={{ width:36, height:26, backgroundColor:'#EEF2F5', borderRadius:3, borderWidth:1.5, borderColor:'#AABBCC', alignItems:'center', justifyContent:'center', position:'relative' }}>
+            <View style={{ position:'absolute', left:-4, top:5, width:8, height:8, borderRadius:4, backgroundColor:'#CCDDEE' }} />
+            <View style={{ position:'absolute', right:-4, top:5, width:8, height:8, borderRadius:4, backgroundColor:'#CCDDEE' }} />
+            {/* Lab coat lapels */}
+            <View style={{ position:'absolute', top:0, left:8, width:6, height:16, backgroundColor:'#FFFFFF', borderRadius:2 }} />
+            <View style={{ position:'absolute', top:0, right:8, width:6, height:16, backgroundColor:'#FFFFFF', borderRadius:2 }} />
+            {/* Pocket */}
+            <View style={{ width:10, height:8, backgroundColor:'#DDE8EE', borderRadius:1, borderWidth:1, borderColor:'#AABBCC' }}>
+              <View style={{ position:'absolute', top:2, left:2, width:2, height:4, backgroundColor:'#00CCDD', borderRadius:1 }} />
+              <View style={{ position:'absolute', top:2, left:5, width:2, height:3, backgroundColor:'#FF4466', borderRadius:1 }} />
+            </View>
+          </View>
+          {/* Arm (animated, holds test tube) */}
+          <Animated.View style={{ position:'absolute', right:-8, top:31, transform:[{rotate:armDeg}] }}>
+            <View style={{ width:8, height:20, backgroundColor:'#CCDDEE', borderRadius:3, borderWidth:1, borderColor:'#AABBCC' }}>
+              <View style={{ width:10, height:6, backgroundColor:'#BBCCDD', borderRadius:2 }} />
+            </View>
+            {/* Test tube in hand */}
+            <Animated.View style={{ position:'absolute', bottom:-BOX_H, right:-4, opacity:boxOpacity }}>
+              <View style={{ width:8, height:BOX_H+4, backgroundColor:'#88DDEE', borderRadius:4, borderWidth:1, borderColor:'#00CCDD', opacity:0.85 }}>
+                <View style={{ position:'absolute', bottom:0, left:0, right:0, height:'40%', backgroundColor:'#00CCDD', borderRadius:4, opacity:0.6 }} />
+              </View>
+            </Animated.View>
+          </Animated.View>
+          <View style={{ position:'absolute', left:-8, top:31, width:8, height:20, backgroundColor:'#CCDDEE', borderRadius:3, borderWidth:1, borderColor:'#AABBCC' }}>
+            <View style={{ width:10, height:6, backgroundColor:'#BBCCDD', borderRadius:2 }} />
+          </View>
+          {/* Waist */}
+          <View style={{ width:32, height:4, backgroundColor:'#CCDDEE', borderRadius:2, marginTop:1 }} />
+          {/* Legs */}
+          <View style={{ flexDirection:'row', gap:5, marginTop:1 }}>
+            {[leftLegRot, rightLegRot].map((rot,i) => (
+              <Animated.View key={i} style={{ width:12, height:16, backgroundColor:'#DDE8EE', borderRadius:3, borderWidth:1, borderColor:'#AABBCC', transform:[{rotate:rot}] }}>
+                <View style={{ position:'absolute', bottom:-4, left:-2, width:16, height:6, backgroundColor:'#CCDDEE', borderRadius:3 }} />
+              </Animated.View>
+            ))}
+          </View>
+        </View>
+      </Animated.View>
+    )
+  }
+
   // ── World 3: BUSSE ALIEN-ROBOT ────────────────────────────────────────────────
   if (worldId === 3) {
     const antennaBob = posX.interpolate({ inputRange:[0,31,62], outputRange:['-8deg','8deg','-8deg'], extrapolate:'clamp' })
@@ -481,11 +543,64 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
             <View style={styles.armJoint} />
             <View style={[styles.hand, { backgroundColor: '#555' }]} />
           </View>
-          {/* Box held in right hand */}
+          {/* World-specific cargo in right hand */}
           <Animated.View style={[styles.carryBox, { opacity: boxOpacity }]}>
-            <View style={styles.carryBoxFront} />
-            <View style={styles.carryBoxTop} />
-            <View style={styles.carryBoxSide} />
+            {worldId === 1 ? (
+              // Light bulb
+              <View style={{ alignItems:'center' }}>
+                <View style={{ width:10, height:13, borderRadius:5, backgroundColor:'#FFEE88', borderWidth:1, borderColor:'#FFD700' }} />
+                <View style={{ width:7, height:4, backgroundColor:'#888', borderRadius:1 }} />
+              </View>
+            ) : worldId === 2 ? (
+              // Medicine bottle
+              <View style={{ alignItems:'center' }}>
+                <View style={{ width:6, height:3, backgroundColor:'#FFF', borderRadius:1 }} />
+                <View style={{ width:10, height:14, borderRadius:2, backgroundColor:'rgba(0,200,220,0.8)', borderWidth:1, borderColor:'#00AACC' }} />
+              </View>
+            ) : worldId === 3 ? (
+              // Asteroid
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#5A5A6A', borderRadius:5, borderWidth:1, borderColor:'#8888AA', transform:[{rotate:'15deg'}] }}>
+                <View style={{ position:'absolute', top:2, left:2, width:4, height:3, borderRadius:2, backgroundColor:'#3A3A4A' }} />
+              </View>
+            ) : worldId === 4 ? (
+              // Sword
+              <View style={{ alignItems:'center', width:BOX_W, height:BOX_H }}>
+                <View style={{ width:3, height:BOX_H, backgroundColor:'#C8C8D8', borderRadius:1 }} />
+                <View style={{ position:'absolute', top:4, width:BOX_W, height:3, backgroundColor:'#8B6914', borderRadius:1 }} />
+              </View>
+            ) : worldId === 5 ? (
+              // Dino egg
+              <View style={{ width:12, height:BOX_H+2, borderRadius:6, backgroundColor:'#88BB44', borderWidth:1, borderColor:'#6A9930' }} />
+            ) : worldId === 6 ? (
+              // Pearl
+              <View style={{ width:BOX_W, height:BOX_H, borderRadius:3, backgroundColor:'#8B8B7A', borderWidth:1, borderColor:'#AAA990', justifyContent:'center', alignItems:'center' }}>
+                <View style={{ width:8, height:8, borderRadius:4, backgroundColor:'#F8F0FF', borderWidth:1, borderColor:'#DDD0EE' }} />
+              </View>
+            ) : worldId === 7 ? (
+              // Magma stone
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#3A1A00', borderRadius:4, borderWidth:1.5, borderColor:'#FF4400', transform:[{rotate:'-8deg'}] }} />
+            ) : worldId === 8 ? (
+              // Treasure chest
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#5A3A08', borderRadius:2, borderWidth:1, borderColor:'#C4A000' }}>
+                <View style={{ position:'absolute', top:0, left:0, right:0, height:3, backgroundColor:'#C4A000' }} />
+                <View style={{ position:'absolute', top:5, left:3, width:4, height:4, borderRadius:2, backgroundColor:'#FFD700' }} />
+              </View>
+            ) : worldId === 9 ? (
+              // Mini Busse
+              <View style={{ alignItems:'center' }}>
+                <View style={{ width:10, height:8, backgroundColor:'#FF00CC', borderRadius:2, borderWidth:1, borderColor:'#FF88FF' }}>
+                  <View style={{ position:'absolute', top:1, left:1, width:3, height:3, borderRadius:2, backgroundColor:'#00FFFF' }} />
+                </View>
+                <View style={{ width:8, height:6, backgroundColor:'#CC00AA', borderRadius:1 }} />
+              </View>
+            ) : (
+              // Default box (world 0)
+              <>
+                <View style={styles.carryBoxFront} />
+                <View style={styles.carryBoxTop} />
+                <View style={styles.carryBoxSide} />
+              </>
+            )}
           </Animated.View>
         </Animated.View>
 

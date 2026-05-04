@@ -47,6 +47,7 @@ interface GameContextType {
   switchWorld: (worldId: number) => void
   canPrestige: boolean
   prestige: () => void
+  showPrestigeCelebration: boolean
   claimDailyReward: () => void
   resetGame: () => void
   showDailyReward: boolean
@@ -226,8 +227,12 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     saveGame({ ...s, currentWorldId: worldId })
   }, [])
 
+  const [showPrestigeCelebration, setShowPrestigeCelebration] = useState(false)
+
   const doPrestige = useCallback(() => {
     dispatch({ type: 'PRESTIGE' })
+    setShowPrestigeCelebration(true)
+    setTimeout(() => setShowPrestigeCelebration(false), 4000)
   }, [])
 
   const claimDailyReward = useCallback(() => {
@@ -268,6 +273,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         switchWorld,
         canPrestige,
         prestige: doPrestige,
+        showPrestigeCelebration,
         claimDailyReward,
         resetGame,
         showDailyReward,

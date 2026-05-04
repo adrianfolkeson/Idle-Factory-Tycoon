@@ -11,6 +11,7 @@ import PixelIcon from '../components/ui/PixelIcon'
 import FactoryBuilding from '../components/factory/FactoryBuilding'
 import FloatingDollars, { useFloatingDollars } from '../components/hud/FloatingDollar'
 import AdRewardModal from '../components/modals/AdRewardModal'
+import DailyChallenges from '../components/factory/DailyChallenges'
 import { ActiveBoost } from '../types'
 
 const { width: SW } = Dimensions.get('window')
@@ -111,6 +112,9 @@ export default function FactoryScreen() {
           worldId={state.currentWorldId}
         />
       </View>
+
+      {/* Daily challenges */}
+      <DailyChallenges accent={accent} />
 
       {/* Bottom bar: ad button + tap button */}
       <View style={styles.bottomBar}>
