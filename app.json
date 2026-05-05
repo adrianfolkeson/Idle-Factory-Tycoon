@@ -15,7 +15,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.idlefactory.tycoon",
       "infoPlist": {
-        "NSUserTrackingUsageDescription": "Vi använder denna för att visa relevanta annonser."
+        "NSUserTrackingUsageDescription": "Vi använder denna för att visa relevanta annonser.",
+        "GADApplicationIdentifier": "ca-app-pub-3940256099942544~1458002511"
       }
     },
     "android": {
@@ -37,7 +38,14 @@
           "sounds": []
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+        }
+      ]
     ]
   }
 }
