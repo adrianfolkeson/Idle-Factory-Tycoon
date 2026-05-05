@@ -12,7 +12,8 @@ interface StatsProps {
 }
 
 export default function StatsScreen({ onOpenPrivacy }: StatsProps) {
-  const { state, resetGame, setShowDailyReward, canPrestige, prestige, devUnlockAll } = useGame()
+  const { state, resetGame, setShowDailyReward, canPrestige, prestige, devUnlockAll,
+          adsRemoved, buyRemoveAds, buyStarterPack, restoreIAP } = useGame()
   const [confirmReset, setConfirmReset] = useState(false)
 
   const handleReset = () => {
@@ -123,6 +124,46 @@ export default function StatsScreen({ onOpenPrivacy }: StatsProps) {
           <PixelIcon name="gear" size={13} color={COLORS.gold} />
           <Text style={styles.sectionTitle}>INSTÄLLNINGAR</Text>
         </View>
+
+        {/* ── In-App Purchases ── */}
+        {!adsRemoved && (
+          <TouchableOpacity style={[styles.settingBtn, { borderColor: COLORS.gold, backgroundColor: '#1A1400' }]}
+            onPress={() => buyRemoveAds()} activeOpacity={0.7}>
+            <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+              <PixelIcon name="star" size={13} color={COLORS.gold} />
+              <View>
+                <Text style={[styles.settingText, { color: COLORS.gold }]}>Ta bort annonser</Text>
+                <Text style={{ fontSize:10, fontFamily:'Courier New', color:COLORS.grey }}>Engångsköp · $2.99</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+        {adsRemoved && (
+          <View style={[styles.settingBtn, { borderColor:COLORS.greenLight, backgroundColor:'#061A08' }]}>
+            <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+              <PixelIcon name="check" size={13} color={COLORS.greenLight} />
+              <Text style={[styles.settingText, { color:COLORS.greenLight }]}>Annonser borttagna</Text>
+            </View>
+          </View>
+        )}
+
+        <TouchableOpacity style={[styles.settingBtn, { borderColor:'#AA44FF', backgroundColor:'#0A0018' }]}
+          onPress={() => buyStarterPack(() => {})} activeOpacity={0.7}>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+            <PixelIcon name="gift" size={13} color='#AA44FF' />
+            <View>
+              <Text style={[styles.settingText, { color:'#AA44FF' }]}>Startpaket</Text>
+              <Text style={{ fontSize:10, fontFamily:'Courier New', color:COLORS.grey }}>$10K + 2x boost 1h · $0.99</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.settingBtn} onPress={() => restoreIAP()} activeOpacity={0.7}>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+            <PixelIcon name="arrow_up" size={13} color={COLORS.grey} />
+            <Text style={styles.settingText}>Återställ köp</Text>
+          </View>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.settingBtn}

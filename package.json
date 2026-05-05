@@ -14,6 +14,7 @@
     "expo-audio": "~1.1.1",
     "expo-av": "~16.0.8",
     "expo-haptics": "~14.0.1",
+    "expo-in-app-purchases": "^14.5.0",
     "expo-notifications": "~0.32.17",
     "expo-status-bar": "~3.0.9",
     "expo-store-review": "~9.0.9",

@@ -36,6 +36,7 @@ function AppInner() {
     offlineEarnings, dismissOfflineEarnings,
     showDailyReward, setShowDailyReward,
     showPrestigeCelebration,
+    adsRemoved,
   } = useGame()
 
   // World transition opacity
@@ -99,8 +100,8 @@ function AppInner() {
         {renderScreen()}
       </Animated.View>
 
-      {/* Ad banner sits between screen and tab bar — no overlap */}
-      <Ads />
+      {/* Ad banner — hidden if user purchased Remove Ads */}
+      {!adsRemoved && <Ads />}
 
       <TabBar active={activeTab} onPress={setActiveTab} upgradeBadge={upgradeBadge} />
 

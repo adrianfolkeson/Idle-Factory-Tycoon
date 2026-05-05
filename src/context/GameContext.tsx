@@ -12,6 +12,7 @@ import { GameState, GameAction, ActiveBoost } from '../types'
 import { gameReducer } from '../reducers/gameReducer'
 import { saveGame, loadGame, clearSave } from '../lib/storage'
 import { soundManager } from '../lib/soundManager'
+import { initIAP, isAdsRemoved, purchaseRemoveAds, purchaseStarterPack, restorePurchases, disconnectIAP } from '../lib/iap'
 import {
   createInitialState,
   computeProductionRate,
@@ -50,6 +51,10 @@ interface GameContextType {
   prestige: () => void
   showPrestigeCelebration: boolean
   devUnlockAll: () => void
+  adsRemoved: boolean
+  buyRemoveAds: () => Promise<boolean>
+  buyStarterPack: (onSuccess: (cash: number) => void) => Promise<boolean>
+  restoreIAP: () => Promise<void>
   claimDailyReward: () => void
   resetGame: () => void
   showDailyReward: boolean
@@ -231,6 +236,37 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const [showPrestigeCelebration, setShowPrestigeCelebration] = useState(false)
+  const [adsRemoved, setAdsRemovedState] = useState(false)
+
+  // Init IAP + check existing remove-ads purchase
+  useEffect(() => {
+    initIAP()
+    isAdsRemoved().then(v => { if (v) setAdsRemovedState(true) })
+    return () => { disconnectIAP() }
+  }, [])
+
+  const buyRemoveAds = useCallback(async (): Promise<boolean> => {
+    const ok = await purchaseRemoveAds()
+    if (ok) setAdsRemovedState(true)
+    return ok
+  }, [])
+
+  const buyStarterPack = useCallback(async (onSuccess: (cash: number) => void): Promise<boolean> => {
+    const ok = await purchaseStarterPack()
+    if (ok) {
+      const bonus = 10000
+      dispatch({ type: 'TAP', clickValue: bonus })
+      dispatch({ type: 'ADD_BOOST', boost: { id: 'starter', multiplier: 2, expiresAt: Date.now() + 3600000 } })
+      onSuccess(bonus)
+    }
+    return ok
+  }, [])
+
+  const restoreIAP = useCallback(async () => {
+    await restorePurchases()
+    const removed = await isAdsRemoved()
+    if (removed) setAdsRemovedState(true)
+  }, [])
 
   const devUnlockAll = useCallback(() => {
     // DEV ONLY — remove before shipping
@@ -287,6 +323,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         prestige: doPrestige,
         showPrestigeCelebration,
         devUnlockAll,
+        adsRemoved,
+        buyRemoveAds,
+        buyStarterPack,
+        restoreIAP,
         claimDailyReward,
         resetGame,
         showDailyReward,
