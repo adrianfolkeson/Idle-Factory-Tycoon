@@ -90,8 +90,11 @@ export default function FactoryScreen() {
     }, 1000)
   }, [dispatch])
 
-  useEffect(() => () => {
-    if (cooldownInterval.current) clearInterval(cooldownInterval.current)
+  useEffect(() => {
+    return () => {
+      const id = cooldownInterval.current
+      if (id != null) clearInterval(id)
+    }
   }, [])
 
   if (!world) return null

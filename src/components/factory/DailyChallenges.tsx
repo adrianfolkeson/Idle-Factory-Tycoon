@@ -31,7 +31,7 @@ function seed(world: number): Challenge[] {
 
 const todayKey = () => {
   const d = new Date()
-  return `dc_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`
+  return `dc_${d.getFullYear()}_${String(d.getMonth()).padStart(2,'0')}_${String(d.getDate()).padStart(2,'0')}`
 }
 
 export default function DailyChallenges({ accent }: { accent: string }) {

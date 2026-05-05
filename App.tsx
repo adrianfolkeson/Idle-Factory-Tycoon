@@ -66,7 +66,7 @@ function AppInner() {
     soundManager.load()
     initSentry()
     analytics.sessionStart(state.currentWorldId)
-    return () => { soundManager.unload(); analytics.flush() }
+    return () => { soundManager.unload(); analytics.flush().catch(() => {}) }
   }, [])
 
   // Notifications on background/foreground

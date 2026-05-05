@@ -44,7 +44,7 @@ export default function AdRewardModal({ visible, onClaim, onClose, accentColor =
     ])).start()
   }, [])
 
-  const barColor = barWidth.interpolate({ inputRange: [0, 1], outputRange: [accentColor, '#00FF88'] })
+  const barColor = barWidth.interpolate({ inputRange: [0, 1], outputRange: [accentColor, '#00FF88'], extrapolate: 'clamp' })
 
   return (
     <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
