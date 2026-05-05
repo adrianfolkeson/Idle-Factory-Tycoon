@@ -805,15 +805,27 @@ function WorldFloorProps({ worldId, accent, active }: { worldId: number; accent:
         <GlowOrb color="#4488FF" />
       </View>
     )
-    case 4: return ( // Viking: mead barrel + shield + axe
+    case 4: return ( // Viking: feast table + barrel + shield
       <View style={styles.floorPropsRow}>
+        {/* Feast table with roast pig */}
+        <View style={{ alignItems:'center' }}>
+          <View style={{ width:44, height:18, backgroundColor:'#5A3A14', borderRadius:3, borderWidth:1, borderColor:'#3A2008', justifyContent:'center', alignItems:'center' }}>
+            {/* Roast pig silhouette */}
+            <View style={{ width:28, height:10, backgroundColor:'#8B4010', borderRadius:5, position:'relative' }}>
+              <View style={{ position:'absolute', left:-6, top:2, width:8, height:7, borderRadius:4, backgroundColor:'#8B4010' }} />
+              <View style={{ position:'absolute', right:-4, top:3, width:6, height:5, borderRadius:3, backgroundColor:'#8B4010' }} />
+              {[0,1,2,3].map(i=>(
+                <View key={i} style={{ position:'absolute', bottom:-3, left:4+i*6, width:4, height:5, backgroundColor:'#5A3A14', borderRadius:1 }} />
+              ))}
+            </View>
+            {/* Mead cup */}
+            <View style={{ position:'absolute', right:3, top:2, width:6, height:8, backgroundColor:'#C8860A', borderRadius:2, borderTopWidth:1, borderColor:'#AA7000' }} />
+          </View>
+          <View style={{ width:44, height:6, backgroundColor:'#3A2008', borderRadius:2 }}>
+            {[8,22,36].map(x=><View key={x} style={{ position:'absolute', bottom:0, left:x, width:5, height:14, backgroundColor:'#3A2008', borderRadius:1 }} />)}
+          </View>
+        </View>
         <Barrel color="#5A3A00" stripe="#C8860A" />
-        <View style={{ width:22, height:22, borderRadius:11, backgroundColor:'#5A3A14', borderWidth:3, borderColor:'#C8860A' }}>
-          <View style={{ position:'absolute', top:8, left:8, width:6, height:6, borderRadius:3, backgroundColor:'#C8860A' }} />
-        </View>
-        <View style={{ width:6, height:28, backgroundColor:'#5A3A14', borderRadius:2 }}>
-          <View style={{ position:'absolute', top:0, left:-8, width:14, height:10, backgroundColor:'#888', borderRadius:2 }} />
-        </View>
       </View>
     )
     case 5: return ( // Dino: bones + fern + eggs
@@ -861,6 +873,7 @@ function WorldFloorProps({ worldId, accent, active }: { worldId: number; accent:
     )
     case 8: return ( // Jungle: idol + torch + treasure
       <View style={styles.floorPropsRow}>
+        {/* Ancient idol */}
         <View style={{ alignItems:'center' }}>
           <View style={{ width:10, height:28, backgroundColor:'#3A5A18', borderRadius:2 }}>
             <View style={{ width:10, height:8, backgroundColor:'#2A4A10', borderRadius:5, marginTop:0 }} />
@@ -868,12 +881,22 @@ function WorldFloorProps({ worldId, accent, active }: { worldId: number; accent:
             <View style={{ position:'absolute', top:14, right:1, width:2, height:2, backgroundColor:'#00CC55' }} />
           </View>
         </View>
+        {/* Lit torch */}
         <View style={{ alignItems:'center' }}>
-          <View style={{ width:6, height:3, backgroundColor:'#FF8800', borderRadius:3, opacity:active?0.9:0.2 }} />
+          <View style={{ width:8, height:4, backgroundColor:'#FF8800', borderRadius:3, opacity:active?0.95:0.2 }} />
           <View style={{ width:3, height:20, backgroundColor:'#5A3A14', borderRadius:1 }} />
         </View>
-        <View style={{ width:22, height:16, backgroundColor:'#8B6010', borderRadius:2, borderWidth:1, borderColor:'#C4A000' }}>
-          <View style={{ position:'absolute', top:-4, left:4, right:4, height:4, backgroundColor:'#8B6010', borderRadius:1 }} />
+        {/* Treasure chests — multiple */}
+        <View style={{ gap:4 }}>
+          <View style={{ width:22, height:14, backgroundColor:'#8B6010', borderRadius:2, borderWidth:1, borderColor:'#C4A000' }}>
+            <View style={{ position:'absolute', top:0, left:0, right:0, height:3, backgroundColor:'#C4A000' }} />
+            <View style={{ position:'absolute', top:5, left:3, width:4, height:4, borderRadius:2, backgroundColor:'#FFD700' }} />
+            <View style={{ position:'absolute', top:5, left:9, width:3, height:3, borderRadius:2, backgroundColor:'#FF4444' }} />
+          </View>
+          <View style={{ width:16, height:10, backgroundColor:'#7A5008', borderRadius:2, borderWidth:1, borderColor:'#C4A000' }}>
+            <View style={{ position:'absolute', top:0, left:0, right:0, height:2.5, backgroundColor:'#C4A000' }} />
+            <View style={{ position:'absolute', top:4, left:3, width:3, height:3, borderRadius:2, backgroundColor:'#FFD700' }} />
+          </View>
         </View>
       </View>
     )

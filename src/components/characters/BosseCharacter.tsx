@@ -56,41 +56,42 @@ function Hat1({ c }: { c: Costume }) { // Energy hard hat + bolt
   )
 }
 
-function Hat2({ c }: { c: Costume }) { // Lab cap + big round glasses
+function Hat2({ c }: { c: Costume }) { // Lab cap only — glasses are on face
   return (
     <View style={styles.hatWrap}>
       <View style={[styles.labCapTop, { backgroundColor: c.hatColor }]} />
       <View style={[styles.labCapBrim, { backgroundColor: c.hatAccent }]} />
-      {/* Big circular professor glasses sit on brim */}
-      <View style={styles.labGlassesRow}>
-        <View style={[styles.labLens, { borderColor: '#555' }]}>
-          <View style={styles.labLensGlass} />
-        </View>
-        <View style={styles.labBridge} />
-        <View style={[styles.labLens, { borderColor: '#555' }]}>
-          <View style={styles.labLensGlass} />
-        </View>
-      </View>
     </View>
   )
 }
 
-function Hat3({ c }: { c: Costume }) { // NASA astronaut helmet
+function Hat3({ c }: { c: Costume }) { // NASA full helmet — face drawn inside
   return (
     <View style={styles.hatWrap}>
       <View style={{ alignItems:'center' }}>
-        <View style={{ width:30, height:24, borderRadius:15, backgroundColor:'#E8EEFF', borderWidth:2.5, borderColor:'#AABBDD', overflow:'hidden', alignItems:'center', justifyContent:'center' }}>
-          {/* Gold NASA band */}
-          <View style={{ position:'absolute', top:4, left:0, right:0, height:4, backgroundColor:'#FFB800', opacity:0.45 }} />
-          {/* Blue visor */}
-          <View style={{ width:20, height:10, backgroundColor:'#2244AA', borderRadius:5, opacity:0.9 }}>
-            <View style={{ position:'absolute', top:2, left:2, width:8, height:3, backgroundColor:'#88AAFF', borderRadius:2, opacity:0.55 }} />
-          </View>
+        {/* Dome — tall enough to contain the face */}
+        <View style={{ width:32, height:38, borderRadius:16, backgroundColor:'#E8EEFF', borderWidth:2.5, borderColor:'#AABBDD', overflow:'hidden', alignItems:'center' }}>
+          {/* Gold NASA band at top */}
+          <View style={{ position:'absolute', top:4, left:0, right:0, height:4, backgroundColor:'#FFB800', opacity:0.5 }} />
           {/* Highlight */}
-          <View style={{ position:'absolute', top:4, left:5, width:8, height:6, backgroundColor:'rgba(255,255,255,0.35)', borderRadius:4 }} />
+          <View style={{ position:'absolute', top:6, left:5, width:10, height:8, backgroundColor:'rgba(255,255,255,0.4)', borderRadius:5 }} />
+          {/* Face visible through visor area */}
+          <View style={{ position:'absolute', top:14, left:4, right:4, height:16, backgroundColor:'rgba(180,210,255,0.15)', borderRadius:5 }}>
+            {/* Eyes */}
+            <View style={{ flexDirection:'row', gap:5, justifyContent:'center', marginTop:3 }}>
+              <View style={{ width:5, height:5, borderRadius:3, backgroundColor:'#3A2000' }} />
+              <View style={{ width:5, height:5, borderRadius:3, backgroundColor:'#3A2000' }} />
+            </View>
+            {/* Moustache */}
+            <View style={{ width:11, height:2.5, backgroundColor:'#3D2914', borderRadius:1, alignSelf:'center', marginTop:2 }} />
+          </View>
+          {/* Blue visor tint over face */}
+          <View style={{ position:'absolute', top:14, left:4, right:4, height:16, backgroundColor:'#2244AA', opacity:0.22, borderRadius:5 }} />
+          {/* Visor reflection */}
+          <View style={{ position:'absolute', top:15, left:5, width:8, height:4, backgroundColor:'rgba(255,255,255,0.3)', borderRadius:3 }} />
         </View>
         {/* Collar ring */}
-        <View style={{ width:32, height:5, backgroundColor:'#CCDDEE', borderRadius:2, marginTop:-1, borderWidth:1, borderColor:'#AABBCC' }} />
+        <View style={{ width:30, height:6, backgroundColor:'#CCDDEE', borderRadius:3, borderWidth:1, borderColor:'#AABBCC' }} />
       </View>
     </View>
   )
@@ -128,25 +129,41 @@ function Hat6({ c }: { c: Costume }) { // Diving helmet
   )
 }
 
-function Hat7({ c }: { c: Costume }) { // Full lava armor helmet
+function Hat7({ c }: { c: Costume }) { // Lava armor full helmet — face inside
   return (
     <View style={styles.hatWrap}>
       <View style={{ alignItems:'center' }}>
-        {/* Dome */}
-        <View style={{ width:26, height:14, backgroundColor:'#1A1A1A', borderRadius:7, borderWidth:1.5, borderColor:'#333', alignItems:'center' }}>
-          <View style={{ position:'absolute', top:-5, width:4, height:6, backgroundColor:'#FF4400', borderRadius:2 }} />
-          <View style={{ position:'absolute', top:3, left:0, right:0, height:2, backgroundColor:'#FF4400', opacity:0.3, borderRadius:1 }} />
-        </View>
-        {/* Face guard with orange visor slit */}
-        <View style={{ width:28, height:14, backgroundColor:'#1A1A1A', borderWidth:1.5, borderColor:'#333', alignItems:'center', justifyContent:'center', marginTop:-1 }}>
-          <View style={{ width:20, height:5, backgroundColor:'#FF4400', borderRadius:2, opacity:0.9 }}>
-            <View style={{ position:'absolute', top:1, left:2, right:2, height:2, backgroundColor:'#FF8800', borderRadius:1, opacity:0.6 }} />
+        {/* Top spike */}
+        <View style={{ width:4, height:7, backgroundColor:'#FF4400', borderRadius:2, marginBottom:-2 }} />
+        {/* Main helmet enclosing face */}
+        <View style={{ width:30, height:38, backgroundColor:'#111111', borderRadius:5, borderWidth:2, borderColor:'#2A2A2A', alignItems:'center', overflow:'hidden' }}>
+          {/* Top dome section */}
+          <View style={{ position:'absolute', top:0, left:0, right:0, height:12, backgroundColor:'#1A1A1A', borderTopLeftRadius:5, borderTopRightRadius:5 }}>
+            <View style={{ position:'absolute', top:3, left:0, right:0, height:2, backgroundColor:'#FF4400', opacity:0.35 }} />
           </View>
-          {/* Vent slots */}
-          {[0,1,2].map(i=><View key={i} style={{ position:'absolute', bottom:2, left:5+i*6, width:3, height:2.5, backgroundColor:'#333', borderRadius:1 }}/>)}
+          {/* Face inside — visible through visor slit */}
+          <View style={{ position:'absolute', top:14, left:4, right:4, height:14, backgroundColor:'rgba(30,10,5,0.6)', borderRadius:2 }}>
+            {/* Eyes glowing through visor */}
+            <View style={{ flexDirection:'row', gap:4, justifyContent:'center', marginTop:3 }}>
+              <View style={{ width:5, height:4, borderRadius:2, backgroundColor:'#FF6600', opacity:0.8 }} />
+              <View style={{ width:5, height:4, borderRadius:2, backgroundColor:'#FF6600', opacity:0.8 }} />
+            </View>
+            <View style={{ width:10, height:2, backgroundColor:'#3D2914', borderRadius:1, alignSelf:'center', marginTop:2 }} />
+          </View>
+          {/* Orange visor slit overlay */}
+          <View style={{ position:'absolute', top:14, left:4, right:4, height:14, backgroundColor:'#FF4400', opacity:0.18, borderRadius:2 }} />
+          {/* Visor frame */}
+          <View style={{ position:'absolute', top:13, left:3, right:3, height:16, borderWidth:1.5, borderColor:'#FF4400', borderRadius:3, opacity:0.7 }} />
+          {/* Vent slots bottom */}
+          {[0,1,2].map(i=>(
+            <View key={i} style={{ position:'absolute', bottom:4, left:5+i*7, width:4, height:3, backgroundColor:'#333', borderRadius:1 }} />
+          ))}
+          {/* Side armor detail */}
+          <View style={{ position:'absolute', left:0, top:8, bottom:8, width:3, backgroundColor:'#FF4400', opacity:0.25 }} />
+          <View style={{ position:'absolute', right:0, top:8, bottom:8, width:3, backgroundColor:'#FF4400', opacity:0.25 }} />
         </View>
-        {/* Chin guard */}
-        <View style={{ width:24, height:4, backgroundColor:'#222', borderRadius:2, marginTop:-1 }} />
+        {/* Chin guard / neck seal */}
+        <View style={{ width:28, height:5, backgroundColor:'#1A1A1A', borderRadius:2, borderWidth:1, borderColor:'#333', marginTop:-1 }} />
       </View>
     </View>
   )
@@ -233,20 +250,32 @@ function BosseStanding({ tapping, scale, worldId }: { tapping: boolean; scale: n
       transform: [{ translateY: Animated.add(bounce, bob) }, { scale }],
     }]}>
       <WorldHat worldId={worldId} costume={c} />
-      {/* Head */}
-      <View style={[styles.head, worldId === 3 && styles.headSpace]}>
-        <View style={styles.eyeRow}>
-          <Animated.View style={[styles.eye, { transform: [{ scaleY: eyeScale }] }]} />
-          <Animated.View style={[styles.eye, { transform: [{ scaleY: eyeScale }] }]} />
+      {/* Head — hidden for worlds 3+7 (face drawn inside helmet) */}
+      {worldId !== 3 && worldId !== 7 && (
+        <View style={[styles.head]}>
+          <View style={styles.eyeRow}>
+            <Animated.View style={[styles.eye, { transform: [{ scaleY: eyeScale }] }]} />
+            <Animated.View style={[styles.eye, { transform: [{ scaleY: eyeScale }] }]} />
+          </View>
+          <View style={styles.moustache} />
+          <View style={styles.mouth} />
+          {/* World 2: big circular glasses ON the face, over the eyes */}
+          {worldId === 2 && (
+            <View style={styles.labGlassesOnFace}>
+              <View style={styles.labLens}><View style={styles.labLensGlass} /></View>
+              <View style={styles.labBridge} />
+              <View style={styles.labLens}><View style={styles.labLensGlass} /></View>
+            </View>
+          )}
+          {/* World 9: cyber implant */}
+          {worldId === 9 && <View style={[styles.cyberDot, { backgroundColor: c.detail }]} />}
         </View>
-        <View style={styles.moustache} />
-        <View style={styles.mouth} />
-        {/* World 2: lab glasses */}
-        {worldId === 2 && <View style={styles.labGlasses} />}
-        {/* World 9: cyber implant dot */}
-        {worldId === 9 && <View style={[styles.cyberDot, { backgroundColor: c.detail }]} />}
-      </View>
-      <View style={styles.neck} />
+      )}
+      {/* Neck — hidden for world 3+7 (suit covers it) */}
+      {worldId !== 3 && worldId !== 7
+        ? <View style={[styles.neck, { backgroundColor: SKIN }]} />
+        : <View style={[styles.neck, { backgroundColor: worldId === 7 ? '#111' : '#CCDDEE' }]} />
+      }
       {/* Body */}
       <View style={[styles.body, { backgroundColor: c.overalls }]}>
         <View style={[styles.bib, { backgroundColor: c.bib }]} />
@@ -520,6 +549,7 @@ const styles = StyleSheet.create({
   labCapBrim: { width: 26, height: 3, borderRadius: 1 },
   labCapTop:  { width: 18, height: 7, borderRadius: 4 },
   labGlassesRow: { flexDirection:'row', alignItems:'center', marginTop:1 },
+  labGlassesOnFace: { position:'absolute', top:2, flexDirection:'row', alignItems:'center', alignSelf:'center' },
   labLens: { width:10, height:10, borderRadius:5, borderWidth:2, backgroundColor:'rgba(180,240,255,0.18)' },
   labLensGlass: { position:'absolute', top:1, left:1, width:4, height:4, borderRadius:2, backgroundColor:'rgba(255,255,255,0.35)' },
   labBridge: { width:4, height:1.5, backgroundColor:'#555' },

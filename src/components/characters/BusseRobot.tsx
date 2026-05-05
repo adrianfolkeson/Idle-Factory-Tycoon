@@ -158,8 +158,12 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
               <View style={{ width:9, height:22, backgroundColor:'#2A5018', borderRadius:3 }}>
                 <View style={{ width:11, height:6, backgroundColor:'#1A4010', borderRadius:2 }} />
               </View>
+              {/* Dino egg */}
               <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2, opacity:boxOpacity }}>
-                <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+                <View style={{ width:14, height:BOX_H+3, borderRadius:7, backgroundColor:'#88BB44', borderWidth:1.5, borderColor:'#6A9930' }}>
+                  <View style={{ position:'absolute', top:3, left:2, width:4, height:4, borderRadius:2, backgroundColor:'#6A9930', opacity:0.6 }} />
+                  <View style={{ position:'absolute', top:7, right:2, width:3, height:3, borderRadius:2, backgroundColor:'#6A9930', opacity:0.5 }} />
+                </View>
               </Animated.View>
             </Animated.View>
           </View>
@@ -235,9 +239,13 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
           <Animated.View style={{ position:'absolute', top:18, left:8, transform:[{rotate:finWag}] }}>
             <View style={{ width:14, height:8, backgroundColor:'#FF6600', borderRadius:4, opacity:0.85 }} />
           </Animated.View>
-          {/* ── Carry box (held near mouth) ── */}
+          {/* ── Oyster pearl (carried near mouth) ── */}
           <Animated.View style={{ position:'absolute', right:-BOX_W+2, top:10, opacity:boxOpacity }}>
-            <View style={{ width:BOX_W-2, height:BOX_H-2, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+            <View style={{ width:BOX_W, height:BOX_H, borderRadius:3, backgroundColor:'#8B8B7A', borderWidth:1, borderColor:'#AAA990', justifyContent:'center', alignItems:'center' }}>
+              <View style={{ width:9, height:9, borderRadius:5, backgroundColor:'#F8F0FF', borderWidth:1, borderColor:'#DDD0EE' }}>
+                <View style={{ position:'absolute', top:1, left:1, width:3, height:3, borderRadius:2, backgroundColor:'rgba(255,255,255,0.7)' }} />
+              </View>
+            </View>
           </Animated.View>
           {/* ── Propeller tail (mechanical detail) ── */}
           <View style={{ position:'absolute', top:12, left:-6, width:6, height:6, borderRadius:3, backgroundColor:'#888', borderWidth:1, borderColor:'#AAA' }} />
@@ -340,8 +348,12 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
             <View style={{ width:7, height:20, backgroundColor:'#1A3A2A', borderRadius:3, borderWidth:1, borderColor:'#00AA88' }}>
               <View style={{ width:9, height:6, backgroundColor:'#0D2A1A', borderRadius:2 }} />
             </View>
+            {/* Asteroid */}
             <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
-              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#5A5A6A', borderRadius:5, borderWidth:1, borderColor:'#8888AA', transform:[{rotate:'15deg'}] }}>
+                <View style={{ position:'absolute', top:2, left:2, width:4, height:3, borderRadius:2, backgroundColor:'#3A3A4A' }} />
+                <View style={{ position:'absolute', top:5, right:2, width:3, height:3, borderRadius:2, backgroundColor:'#3A3A4A' }} />
+              </View>
             </Animated.View>
           </Animated.View>
           <View style={{ position:'absolute', left:-7, top:38, width:7, height:20, backgroundColor:'#1A3A2A', borderRadius:3, borderWidth:1, borderColor:'#00AA88' }} />
@@ -387,8 +399,12 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
             <View style={{ width:10, height:22, backgroundColor:'#111', borderRadius:3, borderWidth:1, borderColor:'#333' }}>
               <Animated.View style={{ position:'absolute', top:7, left:1, right:1, height:2, backgroundColor:'#FF6600', opacity:lavaGlow, borderRadius:1 }} />
             </View>
+            {/* Magma stone */}
             <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
-              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#2A0800', borderRadius:4, borderWidth:1.5, borderColor:'#FF4400', transform:[{rotate:'-8deg'}] }}>
+                <Animated.View style={{ position:'absolute', top:2, left:2, width:5, height:2, backgroundColor:'#FF5500', opacity:lavaGlow, borderRadius:1 }} />
+                <Animated.View style={{ position:'absolute', bottom:2, right:2, width:4, height:2, backgroundColor:'#FF3300', opacity:lavaGlow, borderRadius:1 }} />
+              </View>
             </Animated.View>
           </Animated.View>
           <View style={{ width:36, height:5, backgroundColor:'#1A1A1A', borderRadius:2, marginTop:1 }}>
@@ -443,8 +459,13 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
               <View style={{ position:'absolute', bottom:2, width:11, height:6, backgroundColor:'#5A4008', borderRadius:2 }} />
             </View>
             <View style={{ position:'absolute', bottom:-8, right:0, width:4, height:10, backgroundColor:'#E8DDCC', opacity:0.6, borderRadius:2, transform:[{rotate:'15deg'}] }} />
+            {/* Treasure chest */}
             <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
-              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#8B5E0A', borderRadius:1, borderWidth:1, borderColor:'#C4A000' }} />
+              <View style={{ width:BOX_W, height:BOX_H, backgroundColor:'#5A3A08', borderRadius:2, borderWidth:1.5, borderColor:'#C4A000' }}>
+                <View style={{ position:'absolute', top:0, left:0, right:0, height:3, backgroundColor:'#C4A000' }} />
+                <View style={{ position:'absolute', top:5, left:2, width:4, height:4, borderRadius:2, backgroundColor:'#FFD700' }} />
+                <View style={{ position:'absolute', top:5, left:8, width:3, height:3, borderRadius:2, backgroundColor:'#FF4444' }} />
+              </View>
             </Animated.View>
           </Animated.View>
           <View style={{ position:'absolute', left:-8, top:33, width:9, height:21, backgroundColor:'#7A5A14', borderRadius:3 }}>
@@ -458,6 +479,83 @@ export default function BusseRobot({ color = '#8B6914', beltX = 10, hardHat = fa
                 <View style={{ position:'absolute', bottom:-4, left:-2, width:16, height:6, backgroundColor:'#5A4008', borderRadius:2 }} />
               </Animated.View>
             ))}
+          </View>
+        </View>
+      </Animated.View>
+    )
+  }
+
+  // ── World 9: BUSSE CYBER-AI ─────────────────────────────────────────────────
+  if (worldId === 9) {
+    const neonPulse = useRef(new Animated.Value(0.4)).current
+    useEffect(() => {
+      Animated.loop(Animated.sequence([
+        Animated.timing(neonPulse, { toValue:1,   duration:600, useNativeDriver:false }),
+        Animated.timing(neonPulse, { toValue:0.4, duration:600, useNativeDriver:false }),
+      ])).start()
+    }, [])
+    return (
+      <Animated.View style={{ transform:[{translateX:posX}] }}>
+        <View style={{ alignItems:'center', transform:[{scaleX}] }}>
+          {/* Neural antenna array */}
+          <View style={{ flexDirection:'row', gap:5, marginBottom:2 }}>
+            {[10,14,10].map((h,i)=>(
+              <Animated.View key={i} style={{ width:2, height:h, backgroundColor:'#FF00CC', borderRadius:1, opacity:neonPulse }} />
+            ))}
+          </View>
+          {/* Sleek angular head */}
+          <View style={{ width:30, height:20, backgroundColor:'#0A0A14', borderRadius:3, borderWidth:1.5, borderColor:'#FF00CC', alignItems:'center', justifyContent:'center' }}>
+            {/* LED eye strip — 5 eyes in a line */}
+            <Animated.View style={{ flexDirection:'row', gap:3, opacity:neonPulse }}>
+              {[0,1,2,3,4].map(i=>(
+                <View key={i} style={{ width:4, height:4, borderRadius:2,
+                  backgroundColor: i===2 ? '#FFFFFF' : i%2===0 ? '#FF00CC' : '#00FFFF' }} />
+              ))}
+            </Animated.View>
+            {/* Thin speaker grill at bottom */}
+            <View style={{ flexDirection:'row', gap:2, marginTop:3 }}>
+              {[0,1,2,3].map(i=><View key={i} style={{ width:4, height:1.5, backgroundColor:'#FF00CC', opacity:0.5 }} />)}
+            </View>
+            {/* Side neon trim */}
+            <Animated.View style={{ position:'absolute', left:0, top:4, bottom:4, width:2, backgroundColor:'#FF00CC', opacity:neonPulse }} />
+            <Animated.View style={{ position:'absolute', right:0, top:4, bottom:4, width:2, backgroundColor:'#00FFFF', opacity:neonPulse }} />
+          </View>
+          {/* Neck */}
+          <View style={{ width:12, height:4, backgroundColor:'#0A0A14', borderWidth:1, borderColor:'#FF00CC' }} />
+          {/* Sleek body with holographic chest */}
+          <View style={{ width:36, height:26, backgroundColor:'#050510', borderRadius:3, borderWidth:1.5, borderColor:'#FF00CC', alignItems:'center', justifyContent:'center', position:'relative' }}>
+            <View style={{ position:'absolute', left:-4, top:4, width:8, height:8, borderRadius:4, backgroundColor:'#0A0A14', borderWidth:1.5, borderColor:'#FF00CC' }} />
+            <View style={{ position:'absolute', right:-4, top:4, width:8, height:8, borderRadius:4, backgroundColor:'#0A0A14', borderWidth:1.5, borderColor:'#00FFFF' }} />
+            {/* Holographic chest display */}
+            <Animated.View style={{ width:20, height:14, borderRadius:2, borderWidth:1, borderColor:'#00FFFF', backgroundColor:'rgba(0,255,255,0.06)', opacity:neonPulse }}>
+              {[0,1,2].map(i=><View key={i} style={{ position:'absolute', top:3+i*4, left:2, width:12-i*2, height:1.5, backgroundColor:'#00FFFF', borderRadius:1, opacity:0.7 }} />)}
+            </Animated.View>
+            {/* Edge neon lines */}
+            <Animated.View style={{ position:'absolute', bottom:3, left:4, right:4, height:1.5, backgroundColor:'#FF00CC', opacity:neonPulse, borderRadius:1 }} />
+          </View>
+          {/* Arm animated */}
+          <Animated.View style={{ position:'absolute', right:-9, top:30, transform:[{rotate:armDeg}] }}>
+            <View style={{ width:9, height:22, backgroundColor:'#0A0A14', borderRadius:2, borderWidth:1.5, borderColor:'#FF00CC' }}>
+              <Animated.View style={{ position:'absolute', top:6, left:1, right:1, height:1.5, backgroundColor:'#FF00CC', opacity:neonPulse, borderRadius:1 }} />
+              <View style={{ position:'absolute', bottom:0, width:11, height:6, backgroundColor:'#050510', borderRadius:2, borderWidth:1, borderColor:'#00FFFF' }} />
+            </View>
+            <Animated.View style={{ position:'absolute', bottom:-BOX_H-2, right:-BOX_W/2-2, opacity:boxOpacity }}>
+              {/* Mini Busse carried */}
+              <View style={{ width:12, height:14, alignItems:'center' }}>
+                <View style={{ width:10, height:7, backgroundColor:'#FF00CC', borderRadius:2, borderWidth:1, borderColor:'#FF88FF' }}>
+                  <View style={{ position:'absolute', top:1, left:1, width:3, height:3, borderRadius:2, backgroundColor:'#00FFFF' }} />
+                </View>
+                <View style={{ width:8, height:5, backgroundColor:'#CC00AA', borderRadius:1 }} />
+              </View>
+            </Animated.View>
+          </Animated.View>
+          {/* Static arm */}
+          <View style={{ position:'absolute', left:-9, top:30, width:9, height:22, backgroundColor:'#0A0A14', borderRadius:2, borderWidth:1.5, borderColor:'#00FFFF' }}>
+            <Animated.View style={{ position:'absolute', top:6, left:1, right:1, height:1.5, backgroundColor:'#00FFFF', opacity:neonPulse, borderRadius:1 }} />
+          </View>
+          {/* Hover base — glowing platform instead of legs */}
+          <View style={{ width:38, height:6, backgroundColor:'#0A0A14', borderRadius:3, borderWidth:1.5, borderColor:'#FF00CC', marginTop:2 }}>
+            <Animated.View style={{ position:'absolute', bottom:-3, left:4, right:4, height:4, borderRadius:2, backgroundColor:'#FF00CC', opacity:neonPulse }} />
           </View>
         </View>
       </Animated.View>
