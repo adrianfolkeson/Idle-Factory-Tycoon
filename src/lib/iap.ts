@@ -1,82 +1,85 @@
-import * as InAppPurchases from 'expo-in-app-purchases'
+// expo-in-app-purchases requires a native build.
+// All functions are safe no-ops until included in an EAS build.
+// Add 'expo-in-app-purchases' to app.json plugins, then run:
+//   npx expo prebuild --clean && npx expo run:ios
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-// App Store Connect product IDs — create these in App Store Connect first
 export const IAP_PRODUCTS = {
-  REMOVE_ADS:    'com.idlefactory.tycoon.removeads',    // $2.99 non-consumable
-  STARTER_PACK:  'com.idlefactory.tycoon.starterpack',  // $0.99 consumable
-  BOOST_PACK:    'com.idlefactory.tycoon.boostpack',    // $4.99 consumable
+  REMOVE_ADS:   'com.idlefactory.tycoon.removeads',
+  STARTER_PACK: 'com.idlefactory.tycoon.starterpack',
 } as const
 
 const ADS_REMOVED_KEY = 'ads_removed'
 
-// ── Check if ads already removed (persisted purchase) ─────────────────────────
 export async function isAdsRemoved(): Promise<boolean> {
-  try {
-    const val = await AsyncStorage.getItem(ADS_REMOVED_KEY)
-    return val === 'true'
-  } catch { return false }
+  try { return (await AsyncStorage.getItem(ADS_REMOVED_KEY)) === 'true' }
+  catch { return false }
 }
 
 export async function setAdsRemoved(): Promise<void> {
   await AsyncStorage.setItem(ADS_REMOVED_KEY, 'true')
 }
 
-// ── IAP Manager ───────────────────────────────────────────────────────────────
+// Lazy-load the native module so missing module doesn't crash on import
+async function getIAP() {
+  try {
+    return await import('expo-in-app-purchases')
+  } catch {
+    return null
+  }
+}
+
 let initialized = false
 
 export async function initIAP(): Promise<void> {
   if (initialized) return
+  const IAP = await getIAP()
+  if (!IAP) return
   try {
-    await InAppPurchases.connectAsync()
+    await IAP.connectAsync()
     initialized = true
-
-    // Listen for purchases (handles pending + restored)
-    InAppPurchases.setPurchaseListener(async ({ responseCode, results }) => {
-      if (responseCode !== InAppPurchases.IAPResponseCode.OK || !results) return
+    IAP.setPurchaseListener(async ({ responseCode, results }) => {
+      if (responseCode !== IAP.IAPResponseCode.OK || !results) return
       for (const purchase of results) {
-        await handlePurchase(purchase)
+        if (!purchase.acknowledged) {
+          if (purchase.productId === IAP_PRODUCTS.REMOVE_ADS) await setAdsRemoved()
+          await IAP.finishTransactionAsync(purchase, true)
+        }
       }
     })
-
-    // Restore purchases on init (catches previous Remove Ads buyers)
-    await InAppPurchases.getPurchaseHistoryAsync()
-  } catch { /* non-critical — IAP unavailable in simulator */ }
+    await IAP.getPurchaseHistoryAsync()
+  } catch { /* native module not available */ }
 }
 
-async function handlePurchase(purchase: InAppPurchases.InAppPurchase) {
-  if (!purchase.acknowledged) {
-    if (purchase.productId === IAP_PRODUCTS.REMOVE_ADS) {
-      await setAdsRemoved()
-    }
-    await InAppPurchases.finishTransactionAsync(purchase, true)
-  }
-}
-
-// ── Purchase functions ─────────────────────────────────────────────────────────
 export async function purchaseRemoveAds(): Promise<boolean> {
+  const IAP = await getIAP()
+  if (!IAP) return false
   try {
-    await InAppPurchases.getProductsAsync([IAP_PRODUCTS.REMOVE_ADS])
-    await InAppPurchases.purchaseItemAsync(IAP_PRODUCTS.REMOVE_ADS)
+    await IAP.getProductsAsync([IAP_PRODUCTS.REMOVE_ADS])
+    await IAP.purchaseItemAsync(IAP_PRODUCTS.REMOVE_ADS)
     return true
   } catch { return false }
 }
 
 export async function purchaseStarterPack(): Promise<boolean> {
+  const IAP = await getIAP()
+  if (!IAP) return false
   try {
-    await InAppPurchases.getProductsAsync([IAP_PRODUCTS.STARTER_PACK])
-    await InAppPurchases.purchaseItemAsync(IAP_PRODUCTS.STARTER_PACK)
+    await IAP.getProductsAsync([IAP_PRODUCTS.STARTER_PACK])
+    await IAP.purchaseItemAsync(IAP_PRODUCTS.STARTER_PACK)
     return true
   } catch { return false }
 }
 
-export async function restorePurchases(): Promise<boolean> {
-  try {
-    await InAppPurchases.getPurchaseHistoryAsync()
-    return true
-  } catch { return false }
+export async function restorePurchases(): Promise<void> {
+  const IAP = await getIAP()
+  if (!IAP) return
+  try { await IAP.getPurchaseHistoryAsync() } catch {}
 }
 
 export async function disconnectIAP(): Promise<void> {
-  try { await InAppPurchases.disconnectAsync() } catch {}
+  const IAP = await getIAP()
+  if (!IAP) return
+  try { await IAP.disconnectAsync() } catch {}
 }

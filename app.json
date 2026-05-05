@@ -39,6 +39,7 @@
         }
       ],
       "expo-audio",
+      "expo-in-app-purchases",
       [
         "react-native-google-mobile-ads",
         {
