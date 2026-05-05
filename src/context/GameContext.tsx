@@ -51,6 +51,7 @@ interface GameContextType {
   prestige: () => void
   showPrestigeCelebration: boolean
   devUnlockAll: () => void
+  gameLoaded: boolean
   adsRemoved: boolean
   buyRemoveAds: () => Promise<boolean>
   buyStarterPack: (onSuccess: (cash: number) => void) => Promise<boolean>
@@ -301,7 +302,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const clickValue = computeClickValue(state)
   const canPrestige = state.totalEarned >= 5e14
 
-  if (!loaded) return null
+  // Don't block render — expose loaded state so App can show loading screen
 
   return (
     <GameContext.Provider
@@ -323,6 +324,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         prestige: doPrestige,
         showPrestigeCelebration,
         devUnlockAll,
+        gameLoaded: loaded,
         adsRemoved,
         buyRemoveAds,
         buyStarterPack,

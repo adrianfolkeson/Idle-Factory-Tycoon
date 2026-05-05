@@ -26,6 +26,13 @@ import {
 } from './src/lib/notifications'
 import { trackSessionAndMaybeRate } from './src/lib/ratingPrompt'
 import { soundManager } from './src/lib/soundManager'
+import { analytics } from './src/lib/analytics'
+import { initSentry } from './src/lib/sentry'
+import LoadingScreen from './src/components/LoadingScreen'
+import * as SplashScreen from 'expo-splash-screen'
+
+// Keep splash visible until app is ready
+SplashScreen.preventAutoHideAsync().catch(() => {})
 
 function AppInner() {
   const [activeTab, setActiveTab] = useState<TabName>('factory')
@@ -36,8 +43,11 @@ function AppInner() {
     offlineEarnings, dismissOfflineEarnings,
     showDailyReward, setShowDailyReward,
     showPrestigeCelebration,
+    gameLoaded,
     adsRemoved,
   } = useGame()
+
+  if (!gameLoaded) return <LoadingScreen />
 
   // World transition opacity
   const screenOp = useRef(new Animated.Value(1)).current
@@ -52,12 +62,15 @@ function AppInner() {
     }
   }, [state.currentWorldId])
 
-  // Init
+  // Init on mount
   useEffect(() => {
     requestNotificationPermissions()
     trackSessionAndMaybeRate()
     soundManager.load()
-    return () => { soundManager.unload() }
+    initSentry()
+    analytics.sessionStart(state.currentWorldId)
+    SplashScreen.hideAsync().catch(() => {})
+    return () => { soundManager.unload(); analytics.flush() }
   }, [])
 
   // Notifications on background/foreground
