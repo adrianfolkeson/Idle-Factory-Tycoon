@@ -134,106 +134,177 @@ function WindowStar({ i }: { i: number }) {
   )
 }
 
-type SpaceObjType = 'planet_purple' | 'planet_blue' | 'planet_red' | 'earth' | 'moon' | 'sun' | 'nebula'
-
-const SPACE_OBJS: SpaceObjType[] = [
-  'planet_purple', 'earth', 'moon', 'planet_blue', 'sun',
-  'planet_red', 'nebula', 'planet_purple', 'moon', 'earth',
-]
-
-function SpaceObject({ idx }: { idx: number }) {
-  const type = SPACE_OBJS[idx % SPACE_OBJS.length]
-  const fromRight = idx % 2 === 0
-  const x = useRef(new Animated.Value(fromRight ? WIN_W + 120 : -120)).current
-  const y = WIN_H * (0.15 + sr(idx * 3.7) * 0.6)
-  const speed = 18000 + sr(idx * 5.1) * 14000
-  const interval = 8000 + idx * 5000
+// ── Shooting star ──────────────────────────────────────────────
+function ShootingStar({ yPos, initialDelay, loopDelay }: { yPos: number; initialDelay: number; loopDelay: number }) {
+  const x   = useRef(new Animated.Value(WIN_W + 60)).current
+  const op  = useRef(new Animated.Value(0)).current
+  const len = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
-    const cycle = () => {
-      x.setValue(fromRight ? WIN_W + 120 : -120)
+    const run = () => {
+      x.setValue(WIN_W + 60); op.setValue(0); len.setValue(0.2)
       Animated.sequence([
-        Animated.delay(interval + sr(idx) * 4000),
-        Animated.timing(x, {
-          toValue: fromRight ? -120 : WIN_W + 120,
-          duration: speed,
-          useNativeDriver: true,
-        }),
-      ]).start(cycle)
+        Animated.delay(initialDelay),
+        Animated.parallel([
+          Animated.timing(x,   { toValue: -100, duration: 650, useNativeDriver: true }),
+          Animated.sequence([
+            Animated.timing(op, { toValue: 1,   duration: 80,  useNativeDriver: true }),
+            Animated.timing(op, { toValue: 0.8, duration: 400, useNativeDriver: true }),
+            Animated.timing(op, { toValue: 0,   duration: 170, useNativeDriver: true }),
+          ]),
+          Animated.timing(len, { toValue: 1,   duration: 650, useNativeDriver: false }),
+        ]),
+        Animated.delay(loopDelay),
+      ]).start(run)
     }
-    cycle()
+    run()
   }, [])
 
-  const renderObj = () => {
-    switch (type) {
-      case 'earth':
-        return (
-          <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#1A5A8A', overflow: 'hidden', shadowColor: '#4488FF', shadowOpacity: 0.6, shadowRadius: 12 }}>
-            <View style={{ position: 'absolute', top: 8,  left: 10, width: 28, height: 20, backgroundColor: '#2A8A3A', borderRadius: 6 }} />
-            <View style={{ position: 'absolute', top: 30, left: 22, width: 22, height: 14, backgroundColor: '#2A8A3A', borderRadius: 5 }} />
-            <View style={{ position: 'absolute', top: 4,  left: 30, width: 14, height: 10, backgroundColor: '#2A8A3A', borderRadius: 4 }} />
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 14, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 30 }} />
-          </View>
-        )
-      case 'moon':
-        return (
-          <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#8A8A7A', overflow: 'hidden', shadowColor: '#FFFFFF', shadowOpacity: 0.3, shadowRadius: 8 }}>
-            {[{ t: 8, l: 6, s: 10 }, { t: 20, l: 24, s: 8 }, { t: 6, l: 28, s: 6 }, { t: 28, l: 8, s: 7 }].map((c, i) => (
-              <View key={i} style={{ position: 'absolute', top: c.t, left: c.l, width: c.s, height: c.s, borderRadius: c.s / 2, backgroundColor: '#6A6A5A' }} />
-            ))}
-          </View>
-        )
-      case 'sun':
-        return (
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#FFD700', shadowColor: '#FFAA00', shadowOpacity: 1, shadowRadius: 30, elevation: 10 }}>
-              <View style={{ position: 'absolute', top: 6, left: 6, right: 6, bottom: 6, borderRadius: 29, backgroundColor: '#FFEE44' }} />
-              {/* Solar flares */}
-              {[0, 60, 120, 180, 240, 300].map((deg, i) => (
-                <View key={i} style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 4, backgroundColor: '#FFA500', borderRadius: 2, opacity: 0.7,
-                  transform: [{ rotate: `${deg}deg` }, { translateX: 28 }, { translateY: -2 }] }} />
-              ))}
-            </View>
-          </View>
-        )
-      case 'planet_purple':
-        return (
-          <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: '#6A2A8A', overflow: 'hidden', shadowColor: '#AA44FF', shadowOpacity: 0.5, shadowRadius: 10 }}>
-            <View style={{ position: 'absolute', top: 14, left: 0, right: 0, height: 8, backgroundColor: 'rgba(255,200,255,0.15)' }} />
-            <View style={{ position: 'absolute', top: 28, left: 0, right: 0, height: 5, backgroundColor: 'rgba(255,200,255,0.10)' }} />
-          </View>
-        )
-      case 'planet_blue':
-        return (
-          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1A3A8A', overflow: 'hidden', shadowColor: '#4488FF', shadowOpacity: 0.5, shadowRadius: 8 }}>
-            <View style={{ position: 'absolute', top: 10, left: 0, right: 0, height: 5, backgroundColor: 'rgba(200,220,255,0.2)' }} />
-            <View style={{ position: 'absolute', top: 22, left: 0, right: 0, height: 4, backgroundColor: 'rgba(200,220,255,0.15)' }} />
-          </View>
-        )
-      case 'planet_red':
-        return (
-          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#8A2A1A', overflow: 'hidden', shadowColor: '#FF4422', shadowOpacity: 0.4, shadowRadius: 8 }}>
-            <View style={{ position: 'absolute', top: 12, left: 0, right: 0, height: 6, backgroundColor: 'rgba(255,180,150,0.15)' }} />
-            <View style={{ position: 'absolute', top: 26, left: 8, width: 18, height: 4, backgroundColor: 'rgba(200,80,60,0.4)', borderRadius: 2 }} />
-          </View>
-        )
-      case 'nebula':
-        return (
-          <View style={{ width: 90, height: 55, borderRadius: 28, backgroundColor: 'transparent', overflow: 'hidden' }}>
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#2A0A4A', opacity: 0.6, borderRadius: 28 }} />
-            <View style={{ position: 'absolute', top: 5, left: 10, width: 50, height: 30, backgroundColor: '#6A0088', opacity: 0.4, borderRadius: 20 }} />
-            <View style={{ position: 'absolute', top: 15, left: 30, width: 40, height: 25, backgroundColor: '#0044AA', opacity: 0.35, borderRadius: 18 }} />
-            <View style={{ position: 'absolute', top: 8, left: 5, width: 2, height: 2, borderRadius: 1, backgroundColor: '#FFF' }} />
-            <View style={{ position: 'absolute', top: 20, left: 50, width: 2, height: 2, borderRadius: 1, backgroundColor: '#FFF' }} />
-          </View>
-        )
-      default: return null
-    }
-  }
+  const tailW = len.interpolate({ inputRange: [0,1], outputRange: [10, 90] })
 
   return (
-    <Animated.View style={{ position: 'absolute', top: y, transform: [{ translateX: x }] }}>
-      {renderObj()}
+    <Animated.View style={{ position:'absolute', top:yPos, opacity:op, transform:[{translateX:x},{rotate:'-12deg'}] }}>
+      <Animated.View style={{ width:tailW, height:2, borderRadius:1, backgroundColor:'#FFFFFF' }} />
+      <View style={{ position:'absolute', right:0, width:8, height:2, borderRadius:1, backgroundColor:'#FFFFFF' }} />
+    </Animated.View>
+  )
+}
+
+// ── Detailed space body — sequential animated ──────────────────
+type BodyType = 'earth' | 'mars' | 'sun' | 'moon' | 'nebula' | 'saturn'
+
+function SpaceBody({ type, yPos, initialDelay, loopDelay, speed }: {
+  type: BodyType; yPos: number; initialDelay: number; loopDelay: number; speed: number
+}) {
+  const x = useRef(new Animated.Value(WIN_W + 140)).current
+
+  useEffect(() => {
+    const run = () => {
+      x.setValue(WIN_W + 140)
+      Animated.sequence([
+        Animated.delay(initialDelay),
+        Animated.timing(x, { toValue: -140, duration: speed, useNativeDriver: true }),
+        Animated.delay(loopDelay),
+      ]).start(run)
+    }
+    run()
+  }, [])
+
+  const body = (() => {
+    switch (type) {
+      case 'earth': return (
+        <View style={{ width:72, height:72, borderRadius:36, backgroundColor:'#1055AA', overflow:'hidden',
+          shadowColor:'#4499FF', shadowOpacity:0.7, shadowRadius:16 }}>
+          {/* Oceans */}
+          {/* Continents */}
+          <View style={{ position:'absolute', top:8,  left:8,  width:34, height:26, backgroundColor:'#2A9A40', borderRadius:8 }} />
+          <View style={{ position:'absolute', top:28, left:28, width:28, height:18, backgroundColor:'#2A9A40', borderRadius:6 }} />
+          <View style={{ position:'absolute', top:6,  left:42, width:18, height:14, backgroundColor:'#2A9A40', borderRadius:5 }} />
+          <View style={{ position:'absolute', top:44, left:10, width:20, height:16, backgroundColor:'#2A9A40', borderRadius:5 }} />
+          {/* Antarctica */}
+          <View style={{ position:'absolute', bottom:0, left:10, right:10, height:10, backgroundColor:'#EEEEFF', borderRadius:6, opacity:0.8 }} />
+          {/* Cloud layer */}
+          <View style={{ position:'absolute', top:14, left:4, width:22, height:5, backgroundColor:'rgba(255,255,255,0.25)', borderRadius:3 }} />
+          <View style={{ position:'absolute', top:32, right:6, width:18, height:4, backgroundColor:'rgba(255,255,255,0.2)', borderRadius:3 }} />
+          {/* Atmosphere glow at edge */}
+          <View style={{ position:'absolute', top:0, left:0, right:0, height:10, backgroundColor:'rgba(100,200,255,0.1)', borderRadius:36 }} />
+        </View>
+      )
+      case 'mars': return (
+        <View style={{ width:58, height:58, borderRadius:29, backgroundColor:'#BB3A18', overflow:'hidden',
+          shadowColor:'#FF6633', shadowOpacity:0.5, shadowRadius:10 }}>
+          {/* Polar ice cap */}
+          <View style={{ position:'absolute', top:0, left:8, right:8, height:12, backgroundColor:'#EEF0FF', borderRadius:29, opacity:0.9 }} />
+          {/* Surface features — Valles Marineris canyon */}
+          <View style={{ position:'absolute', top:22, left:4, right:4, height:4, backgroundColor:'#8A2A0A', borderRadius:2, opacity:0.8 }} />
+          {/* Olympus Mons */}
+          <View style={{ position:'absolute', top:28, left:8, width:14, height:14, borderRadius:7, backgroundColor:'#CC4420', opacity:0.6 }} />
+          {/* Dust storms */}
+          <View style={{ position:'absolute', top:16, left:0, right:0, height:6, backgroundColor:'rgba(200,100,60,0.2)' }} />
+          {/* Atmosphere */}
+          <View style={{ position:'absolute', top:0, left:0, right:0, height:8, backgroundColor:'rgba(255,150,100,0.12)', borderRadius:29 }} />
+        </View>
+      )
+      case 'sun': return (
+        <View style={{ alignItems:'center', justifyContent:'center' }}>
+          {/* Outer corona glow */}
+          <View style={{ position:'absolute', width:180, height:180, borderRadius:90, backgroundColor:'#FF8800', opacity:0.08 }} />
+          <View style={{ position:'absolute', width:140, height:140, borderRadius:70, backgroundColor:'#FFAA00', opacity:0.15 }} />
+          <View style={{ position:'absolute', width:110, height:110, borderRadius:55, backgroundColor:'#FFD700', opacity:0.25 }} />
+          {/* Solar body */}
+          <View style={{ width:88, height:88, borderRadius:44, backgroundColor:'#FFD700',
+            shadowColor:'#FF8800', shadowOpacity:1, shadowRadius:40, elevation:12 }}>
+            <View style={{ position:'absolute', inset:5, borderRadius:39, backgroundColor:'#FFEE33' }}>
+              {/* Surface granules */}
+              {[{t:10,l:8,w:18,h:12},{t:30,l:20,w:22,h:10},{t:50,l:6,w:16,h:10},{t:20,l:45,w:14,h:14}].map((g,i) => (
+                <View key={i} style={{ position:'absolute', top:g.t, left:g.l, width:g.w, height:g.h,
+                  backgroundColor:'#FFD700', borderRadius:6, opacity:0.5 }} />
+              ))}
+            </View>
+            {/* Solar prominences */}
+            {[0,45,90,135,180,225,270,315].map((deg, i) => (
+              <View key={i} style={{ position:'absolute', top:'50%', left:'50%', width:22, height:5,
+                backgroundColor:'#FF6600', borderRadius:3, opacity:0.6,
+                transform:[{rotate:`${deg}deg`},{translateX:36},{translateY:-2}] }} />
+            ))}
+          </View>
+        </View>
+      )
+      case 'moon': return (
+        <View style={{ width:54, height:54, borderRadius:27, overflow:'hidden',
+          shadowColor:'#FFFFFF', shadowOpacity:0.4, shadowRadius:10 }}>
+          {/* Dark side */}
+          <View style={{ position:'absolute', inset:0, backgroundColor:'#3A3A30', borderRadius:27 }} />
+          {/* Lit side (right half) */}
+          <View style={{ position:'absolute', top:0, left:14, right:0, bottom:0, backgroundColor:'#B0B09A', borderRadius:27 }} />
+          {/* Craters */}
+          {[{t:8,l:20,s:12},{t:26,l:30,s:9},{t:38,l:18,s:8},{t:10,l:38,s:6},{t:30,l:16,s:7}].map((c,i)=>(
+            <View key={i} style={{ position:'absolute', top:c.t, left:c.l, width:c.s, height:c.s, borderRadius:c.s/2,
+              backgroundColor:'#8A8A78', borderWidth:1.5, borderColor:'#7A7A68' }} />
+          ))}
+          {/* Terminator shadow */}
+          <View style={{ position:'absolute', top:0, left:0, width:22, bottom:0, backgroundColor:'rgba(0,0,0,0.55)', borderTopLeftRadius:27, borderBottomLeftRadius:27 }} />
+        </View>
+      )
+      case 'nebula': return (
+        <View style={{ width:110, height:68, overflow:'hidden', borderRadius:30 }}>
+          <View style={{ position:'absolute', inset:0, backgroundColor:'#180830', opacity:0.7, borderRadius:30 }} />
+          <View style={{ position:'absolute', top:5, left:8, width:65, height:42, backgroundColor:'#6A0088', opacity:0.55, borderRadius:25 }} />
+          <View style={{ position:'absolute', top:18, left:35, width:55, height:35, backgroundColor:'#0044CC', opacity:0.45, borderRadius:22 }} />
+          <View style={{ position:'absolute', top:10, left:55, width:40, height:28, backgroundColor:'#AA00AA', opacity:0.35, borderRadius:18 }} />
+          {/* Stars in nebula */}
+          {[{t:6,l:12},{t:22,l:40},{t:38,l:20},{t:14,l:70},{t:30,l:90}].map((p,i)=>(
+            <View key={i} style={{ position:'absolute', top:p.t, left:p.l, width:2, height:2, borderRadius:1, backgroundColor:'#FFFFFF', opacity:0.8 }} />
+          ))}
+        </View>
+      )
+      case 'saturn': return (
+        <View style={{ alignItems:'center', justifyContent:'center' }}>
+          {/* Rings behind */}
+          <View style={{ position:'absolute', width:100, height:22, borderRadius:50,
+            borderWidth:4, borderColor:'rgba(200,180,120,0.55)', backgroundColor:'transparent',
+            transform:[{scaleY:0.28}] }} />
+          {/* Planet body */}
+          <View style={{ width:56, height:56, borderRadius:28, backgroundColor:'#C8A860', overflow:'hidden',
+            shadowColor:'#AA8840', shadowOpacity:0.5, shadowRadius:10 }}>
+            {[0.25,0.45,0.65].map((f,i)=>(
+              <View key={i} style={{ position:'absolute', top:f*56-3, left:0, right:0, height:5,
+                backgroundColor:['#AA8840','#D4B870','#BBAA58'][i], opacity:0.45 }} />
+            ))}
+          </View>
+          {/* Rings in front */}
+          <View style={{ position:'absolute', bottom:14, width:100, height:10,
+            borderRadius:50, borderWidth:3, borderColor:'rgba(200,180,120,0.35)',
+            backgroundColor:'transparent', transform:[{scaleY:0.28}] }} />
+        </View>
+      )
+      default: return null
+    }
+  })()
+
+  return (
+    <Animated.View style={{ position:'absolute', top:yPos, transform:[{translateX:x}] }}>
+      {body}
     </Animated.View>
   )
 }
@@ -271,9 +342,20 @@ export function SpaceEscapePodScene({ accent, active }: { accent: string; active
         borderWidth: 8, borderColor: '#2A2A3A',
       }}>
         {/* Star field */}
-        {Array.from({ length: 22 }, (_, i) => <WindowStar key={i} i={i} />)}
-        {/* Drifting space objects */}
-        {Array.from({ length: 4 }, (_, i) => <SpaceObject key={i} idx={i} />)}
+        {Array.from({ length: 28 }, (_, i) => <WindowStar key={i} i={i} />)}
+
+        {/* Sequential space bodies — Earth → Mars → Sun → Moon → Saturn → Nebula */}
+        <SpaceBody type="earth"  yPos={WIN_H*0.12} initialDelay={2000}  loopDelay={12000} speed={22000} />
+        <SpaceBody type="mars"   yPos={WIN_H*0.45} initialDelay={18000} loopDelay={10000} speed={20000} />
+        <SpaceBody type="sun"    yPos={WIN_H*0.05} initialDelay={32000} loopDelay={20000} speed={28000} />
+        <SpaceBody type="moon"   yPos={WIN_H*0.5}  initialDelay={55000} loopDelay={12000} speed={19000} />
+        <SpaceBody type="saturn" yPos={WIN_H*0.2}  initialDelay={70000} loopDelay={15000} speed={24000} />
+        <SpaceBody type="nebula" yPos={WIN_H*0.35} initialDelay={90000} loopDelay={18000} speed={30000} />
+
+        {/* Shooting stars — 3 with staggered timing */}
+        <ShootingStar yPos={WIN_H * 0.18} initialDelay={6000}  loopDelay={14000} />
+        <ShootingStar yPos={WIN_H * 0.42} initialDelay={22000} loopDelay={18000} />
+        <ShootingStar yPos={WIN_H * 0.28} initialDelay={45000} loopDelay={16000} />
         {/* Subtle space gradient */}
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: WIN_H * 0.3, backgroundColor: 'rgba(10,5,30,0.4)' }} />
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: WIN_H * 0.2, backgroundColor: 'rgba(5,5,20,0.5)' }} />
