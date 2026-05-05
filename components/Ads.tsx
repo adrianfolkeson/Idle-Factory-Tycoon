@@ -41,8 +41,6 @@ export default function Ads() {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    bottom: 0,
     width: '100%',
     alignItems: 'center',
     backgroundColor: '#0C0C0C',

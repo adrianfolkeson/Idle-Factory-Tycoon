@@ -99,6 +99,9 @@ function AppInner() {
         {renderScreen()}
       </Animated.View>
 
+      {/* Ad banner sits between screen and tab bar — no overlap */}
+      <Ads />
+
       <TabBar active={activeTab} onPress={setActiveTab} upgradeBadge={upgradeBadge} />
 
       {/* Overlays */}
@@ -112,7 +115,6 @@ function AppInner() {
         newPrestige={state.prestige ?? 0}
         multiplier={state.prestigeMultiplier ?? 1}
       />
-      <Ads />
 
       <Modal visible={showPrivacy} animationType="slide" onRequestClose={() => setShowPrivacy(false)}>
         <PrivacyPolicyScreen onClose={() => setShowPrivacy(false)} />
