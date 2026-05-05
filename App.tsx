@@ -43,11 +43,8 @@ function AppInner() {
     offlineEarnings, dismissOfflineEarnings,
     showDailyReward, setShowDailyReward,
     showPrestigeCelebration,
-    gameLoaded,
     adsRemoved,
   } = useGame()
-
-  if (!gameLoaded) return <LoadingScreen />
 
   // World transition opacity
   const screenOp = useRef(new Animated.Value(1)).current
@@ -69,7 +66,6 @@ function AppInner() {
     soundManager.load()
     initSentry()
     analytics.sessionStart(state.currentWorldId)
-    SplashScreen.hideAsync().catch(() => {})
     return () => { soundManager.unload(); analytics.flush() }
   }, [])
 

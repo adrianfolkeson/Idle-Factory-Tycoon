@@ -13,6 +13,7 @@ import { gameReducer } from '../reducers/gameReducer'
 import { saveGame, loadGame, clearSave } from '../lib/storage'
 import { soundManager } from '../lib/soundManager'
 import { initIAP, isAdsRemoved, purchaseRemoveAds, purchaseStarterPack, restorePurchases, disconnectIAP } from '../lib/iap'
+import * as SplashScreen from 'expo-splash-screen'
 import {
   createInitialState,
   computeProductionRate,
@@ -51,7 +52,6 @@ interface GameContextType {
   prestige: () => void
   showPrestigeCelebration: boolean
   devUnlockAll: () => void
-  gameLoaded: boolean
   adsRemoved: boolean
   buyRemoveAds: () => Promise<boolean>
   buyStarterPack: (onSuccess: (cash: number) => void) => Promise<boolean>
@@ -118,6 +118,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setShowDailyReward(true)
       }
       setLoaded(true)
+      SplashScreen.hideAsync().catch(() => {})   // reveal app once save loaded
     }
     init()
   }, [])
@@ -302,7 +303,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const clickValue = computeClickValue(state)
   const canPrestige = state.totalEarned >= 5e14
 
-  // Don't block render — expose loaded state so App can show loading screen
+  if (!loaded) return null   // Wait for save — prevents blank-state tick flash
 
   return (
     <GameContext.Provider
@@ -324,7 +325,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         prestige: doPrestige,
         showPrestigeCelebration,
         devUnlockAll,
-        gameLoaded: loaded,
         adsRemoved,
         buyRemoveAds,
         buyStarterPack,
