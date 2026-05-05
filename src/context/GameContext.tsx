@@ -48,6 +48,7 @@ interface GameContextType {
   canPrestige: boolean
   prestige: () => void
   showPrestigeCelebration: boolean
+  devUnlockAll: () => void
   claimDailyReward: () => void
   resetGame: () => void
   showDailyReward: boolean
@@ -229,6 +230,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const [showPrestigeCelebration, setShowPrestigeCelebration] = useState(false)
 
+  const devUnlockAll = useCallback(() => {
+    // DEV ONLY — remove before shipping
+    dispatch({ type: 'TAP', clickValue: 2e18 })
+    for (const w of [1,2,3,4,5,6,7,8,9]) {
+      dispatch({ type: 'PURCHASE_WORLD', worldId: w, cost: 0 })
+    }
+  }, [])
+
   const doPrestige = useCallback(() => {
     dispatch({ type: 'PRESTIGE' })
     setShowPrestigeCelebration(true)
@@ -274,6 +283,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         canPrestige,
         prestige: doPrestige,
         showPrestigeCelebration,
+        devUnlockAll,
         claimDailyReward,
         resetGame,
         showDailyReward,
