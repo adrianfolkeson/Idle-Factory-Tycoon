@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background gradient -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1A1A08"/>
+      <stop offset="100%" stop-color="#0A0A04"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="180" fill="url(#bg)"/>
+
+  <!-- Factory building — pixel art style, centered -->
+  <!-- Chimneys -->
+  <rect x="280" y="200" width="60" height="180" rx="8" fill="#2A1A04"/>
+  <rect x="420" y="220" width="50" height="160" rx="8" fill="#2A1A04"/>
+  <!-- Chimney smoke (gold circles) -->
+  <circle cx="310" cy="190" r="24" fill="#C4A000" opacity="0.6"/>
+  <circle cx="295" cy="168" r="18" fill="#C4A000" opacity="0.4"/>
+  <circle cx="315" cy="150" r="13" fill="#C4A000" opacity="0.25"/>
+  <circle cx="445" cy="210" r="20" fill="#C4A000" opacity="0.5"/>
+  <circle cx="432" cy="192" r="14" fill="#C4A000" opacity="0.3"/>
+
+  <!-- Main building body -->
+  <rect x="180" y="360" width="580" height="320" rx="12" fill="#3A2810"/>
+  <!-- Roof line -->
+  <rect x="168" y="348" width="604" height="28" rx="6" fill="#4A3418"/>
+
+  <!-- Windows — 4 across, 2 rows, glowing gold -->
+  <!-- Row 1 -->
+  <rect x="220" y="400" width="80" height="80" rx="6" fill="#C4A000" opacity="0.9" filter="url(#glow)"/>
+  <rect x="340" y="400" width="80" height="80" rx="6" fill="#C4A000" opacity="0.85"/>
+  <rect x="460" y="400" width="80" height="80" rx="6" fill="#C4A000" opacity="0.9"/>
+  <rect x="580" y="400" width="80" height="80" rx="6" fill="#C4A000" opacity="0.8"/>
+  <!-- Window cross bars -->
+  <rect x="256" y="400" width="8" height="80" fill="#2A1A04" opacity="0.4"/>
+  <rect x="220" y="436" width="80" height="8" fill="#2A1A04" opacity="0.4"/>
+  <rect x="376" y="400" width="8" height="80" fill="#2A1A04" opacity="0.4"/>
+  <rect x="340" y="436" width="80" height="8" fill="#2A1A04" opacity="0.4"/>
+  <rect x="496" y="400" width="8" height="80" fill="#2A1A04" opacity="0.4"/>
+  <rect x="460" y="436" width="80" height="8" fill="#2A1A04" opacity="0.4"/>
+  <rect x="616" y="400" width="8" height="80" fill="#2A1A04" opacity="0.4"/>
+  <rect x="580" y="436" width="80" height="8" fill="#2A1A04" opacity="0.4"/>
+  <!-- Row 2 -->
+  <rect x="220" y="520" width="80" height="60" rx="6" fill="#C4A000" opacity="0.7"/>
+  <rect x="340" y="520" width="80" height="60" rx="6" fill="#C4A000" opacity="0.8"/>
+  <rect x="460" y="520" width="80" height="60" rx="6" fill="#C4A000" opacity="0.75"/>
+  <rect x="580" y="520" width="80" height="60" rx="6" fill="#C4A000" opacity="0.7"/>
+
+  <!-- Door -->
+  <rect x="440" y="600" width="120" height="80" rx="10" fill="#1A0C04"/>
+  <rect x="458" y="614" width="38" height="52" rx="4" fill="#2A1808"/>
+  <rect x="504" y="614" width="38" height="52" rx="4" fill="#2A1808"/>
+  <circle cx="500" cy="640" r="6" fill="#C4A000"/>
+
+  <!-- Big gear — lower right -->
+  <g transform="translate(750,620)">
+    <!-- Gear teeth (simplified as polygon points) -->
+    <circle cx="0" cy="0" r="120" fill="#C4A000" opacity="0.15"/>
+    <circle cx="0" cy="0" r="90" fill="none" stroke="#C4A000" stroke-width="18" opacity="0.9"/>
+    <circle cx="0" cy="0" r="35" fill="#1A1208"/>
+    <!-- 8 teeth -->
+    <rect x="-12" y="-108" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9"/>
+    <rect x="-12" y="72" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9"/>
+    <rect x="-108" y="-12" width="36" height="24" rx="4" fill="#C4A000" opacity="0.9"/>
+    <rect x="72" y="-12" width="36" height="24" rx="4" fill="#C4A000" opacity="0.9"/>
+    <!-- Diagonal teeth -->
+    <rect x="42" y="-95" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9" transform="rotate(45)"/>
+    <rect x="42" y="-95" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9" transform="rotate(135)"/>
+    <rect x="42" y="-95" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9" transform="rotate(225)"/>
+    <rect x="42" y="-95" width="24" height="36" rx="4" fill="#C4A000" opacity="0.9" transform="rotate(315)"/>
+    <!-- Center bolt -->
+    <circle cx="0" cy="0" r="20" fill="#C4A000" opacity="0.7"/>
+    <circle cx="0" cy="0" r="10" fill="#1A1208"/>
+  </g>
+
+  <!-- Bosse character — small, left side, standing -->
+  <g transform="translate(155,580) scale(1.4)">
+    <!-- Hard hat -->
+    <rect x="-22" y="-105" width="44" height="10" rx="3" fill="#C4A000"/>
+    <rect x="-14" y="-115" width="28" height="14" rx="3" fill="#C4A000"/>
+    <!-- Head -->
+    <rect x="-14" y="-95" width="28" height="24" rx="4" fill="#F4A460"/>
+    <!-- Eyes -->
+    <circle cx="-5" cy="-85" r="3.5" fill="#3A2000"/>
+    <circle cx="5" cy="-85" r="3.5" fill="#3A2000"/>
+    <!-- Moustache -->
+    <rect x="-7" y="-78" width="14" height="4" rx="1.5" fill="#3D2914"/>
+    <!-- Body / overalls -->
+    <rect x="-16" y="-68" width="32" height="26" rx="3" fill="#2244AA"/>
+    <!-- Bib -->
+    <rect x="-8" y="-66" width="16" height="12" rx="1" fill="#3355CC"/>
+    <!-- Arms -->
+    <rect x="-26" y="-66" width="10" height="20" rx="3" fill="#F4A460"/>
+    <rect x="16" y="-66" width="10" height="20" rx="3" fill="#F4A460"/>
+    <!-- Legs -->
+    <rect x="-14" y="-40" width="12" height="18" rx="2" fill="#2244AA"/>
+    <rect x="2" y="-40" width="12" height="18" rx="2" fill="#2244AA"/>
+    <!-- Boots -->
+    <rect x="-15" y="-24" width="14" height="6" rx="2" fill="#3D2914"/>
+    <rect x="1" y="-24" width="14" height="6" rx="2" fill="#3D2914"/>
+  </g>
+
+  <!-- Ground / floor line -->
+  <rect x="160" y="682" width="600" height="12" rx="4" fill="#2A1A04"/>
+
+  <!-- Game title text -->
+  <text x="512" y="810" text-anchor="middle"
+    font-family="monospace" font-weight="bold" font-size="72"
+    fill="#C4A000" letter-spacing="4">IDLE FACTORY</text>
+  <text x="512" y="878" text-anchor="middle"
+    font-family="monospace" font-weight="bold" font-size="48"
+    fill="#8B6A00" letter-spacing="8">TYCOON</text>
+
+  <!-- Gold border glow -->
+  <rect x="16" y="16" width="992" height="992" rx="168"
+    fill="none" stroke="#C4A000" stroke-width="4" opacity="0.3"/>
+</svg>

@@ -11,6 +11,7 @@ import { AppState } from 'react-native'
 import { GameState, GameAction, ActiveBoost } from '../types'
 import { gameReducer } from '../reducers/gameReducer'
 import { saveGame, loadGame, clearSave } from '../lib/storage'
+import { soundManager } from '../lib/soundManager'
 import {
   createInitialState,
   computeProductionRate,
@@ -188,6 +189,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       }
       dispatch({ type: 'ADD_BOOST', boost })
       dispatch({ type: 'COMBO_ACTIVATED' })
+      soundManager.play('combo')
       setTimeout(() => {
         comboActive.current = false
       }, COMBO_DURATION_MS)
@@ -241,6 +243,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const doPrestige = useCallback(() => {
     dispatch({ type: 'PRESTIGE' })
     setShowPrestigeCelebration(true)
+    soundManager.play('prestige')
     setTimeout(() => setShowPrestigeCelebration(false), 4000)
   }, [])
 

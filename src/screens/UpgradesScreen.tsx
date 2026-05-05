@@ -8,6 +8,7 @@ import { getUpgradeCost, getUpgradeCount } from '../lib/gameEngine'
 import PixelIcon from '../components/ui/PixelIcon'
 import UpgradeBurst, { UpgradeBurstRef } from '../components/factory/UpgradeBurst'
 import { useRef } from 'react'
+import { soundManager } from '../lib/soundManager'
 
 type BulkMode = 1 | 10 | 'max'
 
@@ -144,7 +145,7 @@ export default function UpgradesScreen() {
 
               <TouchableOpacity
                 style={[styles.buyBtn, canAffordOne ? styles.buyBtnActive : styles.buyBtnDisabled, { borderColor: canAffordOne ? world.theme.accent : COLORS.border }]}
-                onPress={() => { buyUpgrade(upg.id, buyN); burstRef.current?.trigger(world.theme.accent) }}
+                onPress={() => { buyUpgrade(upg.id, buyN); burstRef.current?.trigger(world.theme.accent); soundManager.play('upgrade') }}
                 disabled={!canAffordOne}
                 activeOpacity={0.7}
               >

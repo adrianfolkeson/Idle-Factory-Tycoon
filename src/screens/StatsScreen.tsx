@@ -155,16 +155,7 @@ export default function StatsScreen({ onOpenPrivacy }: StatsProps) {
             </Text>
           </TouchableOpacity>
         )}
-        {/* DEV ONLY — remove before App Store submission */}
-        <TouchableOpacity style={[styles.settingBtn, { borderColor:'#FF6600', backgroundColor:'#1A0A00' }]}
-          onPress={devUnlockAll} activeOpacity={0.7}>
-          <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-            <PixelIcon name="crown" size={13} color="#FF6600" />
-            <Text style={[styles.settingText, { color:'#FF6600' }]}>DEV: Unlock All Worlds</Text>
-          </View>
-        </TouchableOpacity>
-
-        <Text style={styles.version}>Idle Factory Tycoon v1.0.0</Text>
+<Text style={styles.version}>Idle Factory Tycoon v1.0.0</Text>
         <Text style={styles.version}>av Bosse & BUSSE</Text>
       </View>
 

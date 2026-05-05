@@ -12,6 +12,7 @@ import FactoryBuilding from '../components/factory/FactoryBuilding'
 import FloatingDollars, { useFloatingDollars } from '../components/hud/FloatingDollar'
 import AdRewardModal from '../components/modals/AdRewardModal'
 import DailyChallenges from '../components/factory/DailyChallenges'
+import { soundManager } from '../lib/soundManager'
 import { ActiveBoost } from '../types'
 
 const { width: SW } = Dimensions.get('window')
@@ -53,6 +54,7 @@ export default function FactoryScreen() {
 
   const handleTap = useCallback((evt: any) => {
     tap()
+    soundManager.play('tap')
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     const x = evt?.nativeEvent?.locationX ?? SW / 2
     const y = evt?.nativeEvent?.locationY ?? 40
