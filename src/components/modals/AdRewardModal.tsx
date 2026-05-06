@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, Modal, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import { COLORS } from '../../constants/colors'
 import { s } from '../../lib/i18n'
+import { formatMoney } from '../../lib/formatting'
 import PixelIcon from '../ui/PixelIcon'
 
 interface Props {
@@ -9,11 +10,13 @@ interface Props {
   onClaim: () => void
   onClose: () => void
   accentColor?: string
+  cashBonus?: number   // if set → cash bonus mode instead of 3x boost
 }
 
 const AD_DURATION = 5
 
-export default function AdRewardModal({ visible, onClaim, onClose, accentColor = COLORS.gold }: Props) {
+export default function AdRewardModal({ visible, onClaim, onClose, accentColor = COLORS.gold, cashBonus }: Props) {
+  const isCashMode = cashBonus !== undefined
   const [phase, setPhase] = useState<'intro' | 'watching' | 'done'>('intro')
   const [countdown, setCountdown] = useState(AD_DURATION)
   const barWidth = useRef(new Animated.Value(0)).current
@@ -58,10 +61,23 @@ export default function AdRewardModal({ visible, onClaim, onClose, accentColor =
 
           {phase === 'intro' && (
             <>
-              <Text style={styles.body}>{s.adBody}</Text>
+              <Text style={styles.body}>
+                {isCashMode
+                  ? 'Titta på en kort reklam och få en kontantbonus direkt!'
+                  : s.adBody}
+              </Text>
               <View style={styles.rewardBox}>
-                <Text style={[styles.rewardNum, { color: accentColor }]}>3x</Text>
-                <Text style={styles.rewardSub}>{s.watchAdSub}</Text>
+                {isCashMode ? (
+                  <>
+                    <Text style={[styles.rewardNum, { color: accentColor }]}>{formatMoney(cashBonus!)}</Text>
+                    <Text style={styles.rewardSub}>5 minuters passiv inkomst</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={[styles.rewardNum, { color: accentColor }]}>3x</Text>
+                    <Text style={styles.rewardSub}>{s.watchAdSub}</Text>
+                  </>
+                )}
               </View>
               <TouchableOpacity
                 style={[styles.btn, { borderColor: accentColor, backgroundColor: '#1A1A0A' }]}
@@ -96,9 +112,13 @@ export default function AdRewardModal({ visible, onClaim, onClose, accentColor =
           {phase === 'done' && (
             <>
               <View style={styles.doneBox}>
-                <PixelIcon name="bolt" size={32} color={accentColor} />
-                <Text style={[styles.doneTitle, { color: accentColor }]}>{s.adThanks}</Text>
-                <Text style={styles.doneBody}>3x bonus · 60 sekunder</Text>
+                <PixelIcon name={isCashMode ? 'coin' : 'bolt'} size={32} color={accentColor} />
+                <Text style={[styles.doneTitle, { color: accentColor }]}>
+                  {isCashMode ? `+${formatMoney(cashBonus!)} INKOMST!` : s.adThanks}
+                </Text>
+                <Text style={styles.doneBody}>
+                  {isCashMode ? 'Direkt insatt på ditt konto!' : '3x bonus · 60 sekunder'}
+                </Text>
               </View>
               <TouchableOpacity
                 style={[styles.btn, { borderColor: accentColor, backgroundColor: accentColor }]}

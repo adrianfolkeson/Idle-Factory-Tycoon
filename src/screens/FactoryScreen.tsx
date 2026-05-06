@@ -16,7 +16,9 @@ import { soundManager } from '../lib/soundManager'
 import { ActiveBoost } from '../types'
 
 const { width: SW } = Dimensions.get('window')
-const AD_COOLDOWN_SECS = 5 * 60  // 5 minute cooldown
+const AD_COOLDOWN_SECS   = 5 * 60   // 5 min — 3x boost
+const CASH_COOLDOWN_SECS = 10 * 60  // 10 min — cash bonus
+const CASH_BONUS_SECS    = 300      // 5 minutes of passive income
 
 export default function FactoryScreen() {
   const { state, dispatch, tap, productionRate, clickValue, skuggaVisible } = useGame()
@@ -26,12 +28,18 @@ export default function FactoryScreen() {
   const tapScale   = useRef(new Animated.Value(1)).current
   const { items: floatItems, spawn: spawnFloat } = useFloatingDollars()
 
-  // Ad state
+  // 3x boost ad
   const [showAd, setShowAd] = useState(false)
   const [adCooldown, setAdCooldown] = useState(0)
   const cooldownInterval = useRef<ReturnType<typeof setInterval> | null>(null)
   const adPulse = useRef(new Animated.Value(1)).current
   const adGlow  = useRef(new Animated.Value(0)).current
+
+  // Cash bonus ad
+  const [showCashAd, setShowCashAd] = useState(false)
+  const [cashCooldown, setCashCooldown] = useState(0)
+  const cashCooldownRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const cashPulse = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
     if (adCooldown > 0) { adPulse.setValue(1); adGlow.setValue(0); return }
@@ -46,6 +54,14 @@ export default function FactoryScreen() {
       ]),
     ])).start()
   }, [adCooldown])
+
+  useEffect(() => {
+    if (cashCooldown > 0) { cashPulse.setValue(1); return }
+    Animated.loop(Animated.sequence([
+      Animated.timing(cashPulse, { toValue: 1.05, duration: 800, useNativeDriver: false }),
+      Animated.timing(cashPulse, { toValue: 1.0,  duration: 800, useNativeDriver: false }),
+    ])).start()
+  }, [cashCooldown])
 
   const progress = state.worldProgress?.find(p => p.worldId === state.currentWorldId)
   const lastUpgradeId = world?.upgrades[world.upgrades.length - 1]?.id ?? ''
@@ -90,10 +106,29 @@ export default function FactoryScreen() {
     }, 1000)
   }, [dispatch])
 
+  const cashBonus = Math.max(100, productionRate * CASH_BONUS_SECS)
+
+  const handleCashAdClaim = useCallback(() => {
+    setShowCashAd(false)
+    dispatch({ type: 'TAP', clickValue: cashBonus })
+    soundManager.play('daily')
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    setCashCooldown(CASH_COOLDOWN_SECS)
+    if (cashCooldownRef.current) clearInterval(cashCooldownRef.current)
+    cashCooldownRef.current = setInterval(() => {
+      setCashCooldown(c => {
+        if (c <= 1) { clearInterval(cashCooldownRef.current!); return 0 }
+        return c - 1
+      })
+    }, 1000)
+  }, [dispatch, cashBonus])
+
   useEffect(() => {
     return () => {
       const id = cooldownInterval.current
       if (id != null) clearInterval(id)
+      const id2 = cashCooldownRef.current
+      if (id2 != null) clearInterval(id2)
     }
   }, [])
 
@@ -164,6 +199,35 @@ export default function FactoryScreen() {
           </Animated.View>
         </TouchableOpacity>
 
+        {/* Cash bonus ad button */}
+        <TouchableOpacity
+          onPress={() => cashCooldown === 0 && setShowCashAd(true)}
+          activeOpacity={cashCooldown > 0 ? 1 : 0.75}
+        >
+          <Animated.View style={[
+            styles.adBtn,
+            cashCooldown > 0 && styles.adBtnCooldown,
+            cashCooldown === 0 && { borderColor: '#00CC88', shadowColor: '#00AA66', shadowOpacity: 0.6, shadowRadius: 8 },
+            { transform: [{ scale: cashCooldown > 0 ? 1 : cashPulse }] },
+          ]}>
+            {cashCooldown > 0 ? (
+              <>
+                <PixelIcon name="coin" size={12} color="#444" />
+                <Text style={[styles.adBigNum, { color: '#444', fontSize: 12 }]}>
+                  {Math.floor(cashCooldown / 60)}:{String(cashCooldown % 60).padStart(2,'0')}
+                </Text>
+                <Text style={[styles.adSub, { color: '#333' }]}>VÄNTAR</Text>
+              </>
+            ) : (
+              <>
+                <PixelIcon name="coin" size={16} color="#00CC88" />
+                <Text style={[styles.adBigNum, { color: '#00CC88' }]}>{formatMoney(cashBonus)}</Text>
+                <Text style={[styles.adSub, { color: '#00AA66' }]}>GRATIS</Text>
+              </>
+            )}
+          </Animated.View>
+        </TouchableOpacity>
+
         {/* Tap button */}
         <TouchableOpacity
           onPress={handleTap}
@@ -196,6 +260,13 @@ export default function FactoryScreen() {
         onClaim={handleAdClaim}
         onClose={() => setShowAd(false)}
         accentColor={accent}
+      />
+      <AdRewardModal
+        visible={showCashAd}
+        onClaim={handleCashAdClaim}
+        onClose={() => setShowCashAd(false)}
+        accentColor="#00CC88"
+        cashBonus={cashBonus}
       />
     </View>
   )
