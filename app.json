@@ -4,6 +4,7 @@
     "slug": "idle-factory-tycoon",
     "version": "1.0.0",
     "orientation": "portrait",
+    "platforms": ["ios", "android", "web"],
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "backgroundColor": "#0C0C0C",

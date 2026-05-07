@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
+import { isWeb } from './platform'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,7 +13,7 @@ Notifications.setNotificationHandler({
 })
 
 export async function requestNotificationPermissions(): Promise<boolean> {
-  if (Platform.OS === 'web') return false
+  if (isWeb) return false
   const { status } = await Notifications.requestPermissionsAsync()
   return status === 'granted'
 }
@@ -23,6 +24,7 @@ const NOTIF_IDS = {
 }
 
 export async function scheduleFactoryNotifications(productionRate: number, dollars: number) {
+  if (isWeb) return
   await cancelFactoryNotifications()
 
   const earned2h = productionRate * 7200
@@ -54,6 +56,7 @@ export async function scheduleFactoryNotifications(productionRate: number, dolla
 }
 
 export async function cancelFactoryNotifications() {
+  if (isWeb) return
   await Notifications.cancelAllScheduledNotificationsAsync()
 }
 

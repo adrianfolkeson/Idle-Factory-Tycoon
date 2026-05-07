@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as StoreReview from 'expo-store-review'
+import { Platform } from 'react-native'
 
 const KEY = 'session_count'
 const RATED_KEY = 'has_rated'
 const PROMPT_SESSIONS = [3, 7, 15]  // prompt at sessions 3, 7, 15
 
 export async function trackSessionAndMaybeRate() {
+  if (Platform.OS === 'web') return
   try {
     const [countStr, hasRated] = await Promise.all([
       AsyncStorage.getItem(KEY),

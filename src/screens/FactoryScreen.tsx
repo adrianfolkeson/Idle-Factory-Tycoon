@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { View, TouchableOpacity, StyleSheet, Text, Dimensions, Animated } from 'react-native'
 import * as Haptics from 'expo-haptics'
+import { isWeb } from '../lib/platform'
 import { useGame } from '../context/GameContext'
 import { WORLDS } from '../constants/worlds'
 import { COLORS } from '../constants/colors'
@@ -71,7 +72,7 @@ export default function FactoryScreen() {
   const handleTap = useCallback((evt: any) => {
     tap()
     soundManager.play('tap')
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    if (!isWeb) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     const x = evt?.nativeEvent?.locationX ?? SW / 2
     const y = evt?.nativeEvent?.locationY ?? 40
     spawnFloat(x, y, clickValue)
@@ -112,7 +113,7 @@ export default function FactoryScreen() {
     setShowCashAd(false)
     dispatch({ type: 'TAP', clickValue: cashBonus })
     soundManager.play('daily')
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    if (!isWeb) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     setCashCooldown(CASH_COOLDOWN_SECS)
     if (cashCooldownRef.current) clearInterval(cashCooldownRef.current)
     cashCooldownRef.current = setInterval(() => {

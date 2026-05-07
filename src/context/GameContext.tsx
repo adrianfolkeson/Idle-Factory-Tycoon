@@ -14,6 +14,7 @@ import { saveGame, loadGame, clearSave } from '../lib/storage'
 import { soundManager } from '../lib/soundManager'
 import { initIAP, isAdsRemoved, purchaseRemoveAds, purchaseStarterPack, restorePurchases, disconnectIAP } from '../lib/iap'
 import * as SplashScreen from 'expo-splash-screen'
+import { isWeb } from '../lib/platform'
 import {
   createInitialState,
   computeProductionRate,
@@ -118,7 +119,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setShowDailyReward(true)
       }
       setLoaded(true)
-      SplashScreen.hideAsync().catch(() => {})   // reveal app once save loaded
+      if (!isWeb) SplashScreen.hideAsync().catch(() => {})   // reveal app once save loaded
     }
     init()
   }, [])
