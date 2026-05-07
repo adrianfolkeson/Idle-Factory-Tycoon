@@ -92,14 +92,6 @@ export default function SettingsScreen({ onOpenPrivacy }: Props) {
           <PixelIcon name="bolt" size={10} color="#AA44FF" />
         </TouchableOpacity>
 
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={[styles.row, styles.rowBtn]} onPress={() => restoreIAP()}>
-          <View style={styles.rowLeft}>
-            <PixelIcon name="arrow_up" size={14} color={COLORS.grey} />
-            <Text style={styles.rowLabel}>Återställ köp</Text>
-          </View>
-        </TouchableOpacity>
       </View>
 
       {/* ── Game ── */}
@@ -134,24 +126,6 @@ export default function SettingsScreen({ onOpenPrivacy }: Props) {
           <View style={styles.rowLeft}>
             <PixelIcon name="trash" size={14} color={COLORS.redLight} />
             <Text style={[styles.rowLabel, { color: COLORS.redLight }]}>Återställ spel</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/* ── DEV (testing) ── */}
-      <Text style={styles.section}>UTVECKLARE</Text>
-      <View style={styles.card}>
-        <TouchableOpacity style={[styles.row, styles.rowBtn, { borderColor: '#FF6600' }]}
-          onPress={() => {
-            devUnlockAll()
-            Alert.alert('DEV', 'Alla världar upplåsta + $2Qa tillagd!')
-          }}>
-          <View style={styles.rowLeft}>
-            <PixelIcon name="crown" size={14} color="#FF6600" />
-            <View>
-              <Text style={[styles.rowLabel, { color: '#FF6600' }]}>Lås upp alla världar</Text>
-              <Text style={styles.rowSub}>Ta bort innan lansering</Text>
-            </View>
           </View>
         </TouchableOpacity>
       </View>
