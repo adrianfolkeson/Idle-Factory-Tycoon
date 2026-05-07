@@ -109,8 +109,7 @@ function AppInner() {
         {renderScreen()}
       </Animated.View>
 
-      {/* Ad banner — hidden if user purchased Remove Ads */}
-      {!adsRemoved && <Ads />}
+      {/* Banner ad removed — revenue via rewarded ads only */}
 
       <TabBar active={activeTab} onPress={setActiveTab} upgradeBadge={upgradeBadge} />
 

@@ -108,8 +108,8 @@ export function createInitialState(): GameState {
   return {
     version: 1,
     currentWorldId: 0,
-    dollars: 0,
-    totalEarned: 0,
+    dollars: 15,        // enough to buy first upgrade immediately
+    totalEarned: 15,
     worldProgress: WORLDS.map(w => createInitialWorldProgress(w.id)),
     dailyReward: {
       lastClaimedDate: null,

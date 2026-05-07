@@ -8,6 +8,7 @@ import BusseRobot from '../characters/BusseRobot'
 import BosseCharacter from '../characters/BosseCharacter'
 import SkuggaGhost from '../characters/SkuggaGhost'
 import {
+  RustyFactoryScene,
   EnergyScene, LabScene, SpaceEscapePodScene, SpaceRocketScene, VikingScene,
   DinoScene, OceanScene, FireScene, JungleTempleScene, CyberpunkScene,
 } from './WorldScenes'
@@ -555,6 +556,7 @@ export default function FactoryBuilding({ theme, skuggaVisible, tapping, product
     <View style={[styles.scene, { backgroundColor: theme.sky }]}>
       <SkuggaGhost visible={skuggaVisible} />
 
+      {worldId === 0 && <RustyFactoryScene active={active} />}
       {worldId === 1 && <EnergyScene accent={theme.accent} />}
       {worldId === 2 && <LabScene accent={theme.accent} />}
 

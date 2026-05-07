@@ -156,9 +156,10 @@ export default function FactoryScreen() {
       {/* Daily challenges */}
       <DailyChallenges accent={accent} />
 
-      {/* Bottom bar: ad button + tap button */}
+      {/* Bottom bar: [3x LEFT] [KLICKA CENTER] [CASH RIGHT] */}
       <View style={styles.bottomBar}>
-        {/* Ad reward button */}
+
+        {/* LEFT — 3x boost ad */}
         <TouchableOpacity
           onPress={() => adCooldown === 0 && !adBoost && setShowAd(true)}
           activeOpacity={adCooldown > 0 || adBoost ? 1 : 0.75}
@@ -168,67 +169,30 @@ export default function FactoryScreen() {
             adCooldown > 0 && styles.adBtnCooldown,
             adBoost && styles.adBtnActive,
             !adCooldown && !adBoost && {
-              borderColor: adGlow.interpolate({ inputRange: [0, 1], outputRange: [accent + '88', accent] }),
-              shadowColor: accent,
-              shadowOpacity: adGlow,
-              shadowRadius: 10,
+              borderColor: adGlow.interpolate({ inputRange:[0,1], outputRange:[accent+'88', accent] }),
+              shadowColor: accent, shadowOpacity: adGlow, shadowRadius: 10,
             },
             { transform: [{ scale: adCooldown > 0 || adBoost ? 1 : adPulse }] },
           ]}>
             {adBoost ? (
-              <>
-                <PixelIcon name="bolt" size={14} color="#00FF88" />
-                <Text style={[styles.adBigNum, { color: '#00FF88' }]}>3x</Text>
-                <Text style={[styles.adSub, { color: '#00CC66' }]}>AKTIV</Text>
-              </>
+              <><PixelIcon name="bolt" size={14} color="#00FF88" />
+                <Text style={[styles.adBigNum, { color:'#00FF88' }]}>3x</Text>
+                <Text style={[styles.adSub, { color:'#00CC66' }]}>AKTIV</Text></>
             ) : adCooldown > 0 ? (
-              <>
-                <PixelIcon name="warning" size={12} color="#444" />
-                <Text style={[styles.adBigNum, { color: '#444' }]}>
-                  {Math.floor(adCooldown / 60)}:{String(adCooldown % 60).padStart(2,'0')}
+              <><PixelIcon name="warning" size={12} color="#444" />
+                <Text style={[styles.adBigNum, { color:'#444' }]}>
+                  {Math.floor(adCooldown/60)}:{String(adCooldown%60).padStart(2,'0')}
                 </Text>
-                <Text style={[styles.adSub, { color: '#333' }]}>VÄNTAR</Text>
-              </>
+                <Text style={[styles.adSub, { color:'#333' }]}>VÄNTAR</Text></>
             ) : (
-              <>
-                <PixelIcon name="gift" size={16} color={accent} />
+              <><PixelIcon name="gift" size={16} color={accent} />
                 <Text style={[styles.adBigNum, { color: accent }]}>3x</Text>
-                <Text style={[styles.adSub, { color: accent + 'BB' }]}>GRATIS</Text>
-              </>
+                <Text style={[styles.adSub, { color: accent+'BB' }]}>GRATIS</Text></>
             )}
           </Animated.View>
         </TouchableOpacity>
 
-        {/* Cash bonus ad button */}
-        <TouchableOpacity
-          onPress={() => cashCooldown === 0 && setShowCashAd(true)}
-          activeOpacity={cashCooldown > 0 ? 1 : 0.75}
-        >
-          <Animated.View style={[
-            styles.adBtn,
-            cashCooldown > 0 && styles.adBtnCooldown,
-            cashCooldown === 0 && { borderColor: '#00CC88', shadowColor: '#00AA66', shadowOpacity: 0.6, shadowRadius: 8 },
-            { transform: [{ scale: cashCooldown > 0 ? 1 : cashPulse }] },
-          ]}>
-            {cashCooldown > 0 ? (
-              <>
-                <PixelIcon name="coin" size={12} color="#444" />
-                <Text style={[styles.adBigNum, { color: '#444', fontSize: 12 }]}>
-                  {Math.floor(cashCooldown / 60)}:{String(cashCooldown % 60).padStart(2,'0')}
-                </Text>
-                <Text style={[styles.adSub, { color: '#333' }]}>VÄNTAR</Text>
-              </>
-            ) : (
-              <>
-                <PixelIcon name="coin" size={16} color="#00CC88" />
-                <Text style={[styles.adBigNum, { color: '#00CC88' }]}>{formatMoney(cashBonus)}</Text>
-                <Text style={[styles.adSub, { color: '#00AA66' }]}>GRATIS</Text>
-              </>
-            )}
-          </Animated.View>
-        </TouchableOpacity>
-
-        {/* Tap button */}
+        {/* CENTER — Tap button */}
         <TouchableOpacity
           onPress={handleTap}
           activeOpacity={1}
@@ -251,6 +215,32 @@ export default function FactoryScreen() {
             </View>
           </Animated.View>
         </TouchableOpacity>
+
+        {/* RIGHT — cash bonus ad */}
+        <TouchableOpacity
+          onPress={() => cashCooldown === 0 && setShowCashAd(true)}
+          activeOpacity={cashCooldown > 0 ? 1 : 0.75}
+        >
+          <Animated.View style={[
+            styles.adBtn,
+            cashCooldown > 0 && styles.adBtnCooldown,
+            cashCooldown === 0 && { borderColor:'#00CC88', shadowColor:'#00AA66', shadowOpacity:0.6, shadowRadius:8 },
+            { transform:[{ scale: cashCooldown > 0 ? 1 : cashPulse }] },
+          ]}>
+            {cashCooldown > 0 ? (
+              <><PixelIcon name="coin" size={12} color="#444" />
+                <Text style={[styles.adBigNum, { color:'#444', fontSize:12 }]}>
+                  {Math.floor(cashCooldown/60)}:{String(cashCooldown%60).padStart(2,'0')}
+                </Text>
+                <Text style={[styles.adSub, { color:'#333' }]}>VÄNTAR</Text></>
+            ) : (
+              <><PixelIcon name="coin" size={16} color="#00CC88" />
+                <Text style={[styles.adBigNum, { color:'#00CC88' }]}>{formatMoney(cashBonus)}</Text>
+                <Text style={[styles.adSub, { color:'#00AA66' }]}>GRATIS</Text></>
+            )}
+          </Animated.View>
+        </TouchableOpacity>
+
       </View>
 
       <FloatingDollars items={floatItems} />

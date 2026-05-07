@@ -30,6 +30,101 @@ function useLoopNonNative(from: number, to: number, duration: number, delay = 0)
 }
 
 // ════════════════════════════════════════════════════════════════
+// WORLD 0 — ROSTIG FABRIK (hook-worthy opening scene)
+// ════════════════════════════════════════════════════════════════
+
+function RustSpark({ x, delay }: { x: number; delay: number }) {
+  const y   = useRef(new Animated.Value(0)).current
+  const op  = useRef(new Animated.Value(0)).current
+  const dx  = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    const run = () => {
+      y.setValue(0); op.setValue(0); dx.setValue(0)
+      const dir = (Math.random() - 0.5) * 40
+      Animated.sequence([
+        Animated.delay(delay + Math.random() * 2000),
+        Animated.parallel([
+          Animated.timing(y,  { toValue: -35, duration: 600, useNativeDriver: true }),
+          Animated.timing(dx, { toValue: dir, duration: 600, useNativeDriver: true }),
+          Animated.sequence([
+            Animated.timing(op, { toValue: 1,   duration: 80,  useNativeDriver: true }),
+            Animated.timing(op, { toValue: 0,   duration: 520, useNativeDriver: true }),
+          ]),
+        ]),
+        Animated.delay(1000 + Math.random() * 2000),
+      ]).start(run)
+    }
+    run()
+  }, [])
+  const color = Math.random() > 0.5 ? '#FFB800' : '#FF6600'
+  return (
+    <Animated.View style={{ position:'absolute', bottom:30, left:x,
+      width:4, height:4, borderRadius:2, backgroundColor:color,
+      opacity:op, transform:[{translateY:y},{translateX:dx}] }} />
+  )
+}
+
+function DramaticSmoke({ x, delay }: { x: number; delay: number }) {
+  const y  = useRef(new Animated.Value(0)).current
+  const op = useRef(new Animated.Value(0)).current
+  const sc = useRef(new Animated.Value(0.5)).current
+  useEffect(() => {
+    const run = () => {
+      y.setValue(0); op.setValue(0); sc.setValue(0.5)
+      Animated.sequence([
+        Animated.delay(delay),
+        Animated.parallel([
+          Animated.timing(y,  { toValue:-60, duration:2500, useNativeDriver:true }),
+          Animated.timing(sc, { toValue:2,   duration:2500, useNativeDriver:true }),
+          Animated.sequence([
+            Animated.timing(op, { toValue:0.4, duration:400,  useNativeDriver:true }),
+            Animated.timing(op, { toValue:0,   duration:2100, useNativeDriver:true }),
+          ]),
+        ]),
+        Animated.delay(500),
+      ]).start(run)
+    }
+    run()
+  }, [])
+  return (
+    <Animated.View style={{ position:'absolute', bottom:40, left:x,
+      width:18, height:18, borderRadius:9, backgroundColor:'#555',
+      opacity:op, transform:[{translateY:y},{scale:sc}] }} />
+  )
+}
+
+export function RustyFactoryScene({ active }: { active: boolean }) {
+  return (
+    <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+      {/* Gritty atmosphere — subtle brownish overlay */}
+      <View style={{ position:'absolute', inset:0, backgroundColor:'rgba(60,30,5,0.12)' }} />
+      {/* Grease stains on walls */}
+      {[{l:8,t:80,w:18,h:50},{l:SW-30,t:60,w:20,h:40}].map((s,i)=>(
+        <View key={i} style={{ position:'absolute', top:s.t, left:s.l,
+          width:s.w, height:s.h, backgroundColor:'rgba(0,0,0,0.25)', borderRadius:6 }} />
+      ))}
+      {/* Metal sparks flying from floor machines */}
+      {active && [SW*0.25, SW*0.4, SW*0.6, SW*0.75].map((x,i)=>(
+        <RustSpark key={i} x={x} delay={i*800} />
+      ))}
+      {/* Atmospheric smoke from machinery */}
+      {active && [SW*0.3, SW*0.55, SW*0.7].map((x,i)=>(
+        <DramaticSmoke key={i} x={x} delay={i*1100} />
+      ))}
+      {/* Dim red warning light pulsing on ceiling */}
+      <View style={{ position:'absolute', top:8, right:20,
+        width:14, height:14, borderRadius:7, backgroundColor:'#FF1100',
+        shadowColor:'#FF0000', shadowOpacity:0.8, shadowRadius:10 }} />
+      {/* Rust streaks on floor */}
+      {[SW*0.15, SW*0.5, SW*0.8].map((x,i)=>(
+        <View key={i} style={{ position:'absolute', bottom:6, left:x,
+          width:24, height:3, backgroundColor:'rgba(100,40,0,0.4)', borderRadius:1 }} />
+      ))}
+    </View>
+  )
+}
+
+// ════════════════════════════════════════════════════════════════
 // WORLD 1 — ENERGY FACTORY
 // ════════════════════════════════════════════════════════════════
 function EnergyCoil({ x, y, color }: { x: number; y: number; color: string }) {
