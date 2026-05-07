@@ -103,13 +103,17 @@ export function RustyFactoryScene({ active }: { active: boolean }) {
         <View key={i} style={{ position:'absolute', top:s.t, left:s.l,
           width:s.w, height:s.h, backgroundColor:'rgba(0,0,0,0.25)', borderRadius:6 }} />
       ))}
-      {/* Metal sparks flying from floor machines */}
-      {active && [SW*0.25, SW*0.4, SW*0.6, SW*0.75].map((x,i)=>(
-        <RustSpark key={i} x={x} delay={i*800} />
+      {/* Metal sparks — always visible (hooks new players from first second) */}
+      {[SW*0.22, SW*0.4, SW*0.58, SW*0.76].map((x,i)=>(
+        <RustSpark key={i} x={x} delay={i*700} />
       ))}
-      {/* Atmospheric smoke from machinery */}
-      {active && [SW*0.3, SW*0.55, SW*0.7].map((x,i)=>(
+      {/* Atmospheric smoke — always visible */}
+      {[SW*0.3, SW*0.52, SW*0.72].map((x,i)=>(
         <DramaticSmoke key={i} x={x} delay={i*1100} />
+      ))}
+      {/* Extra sparks when factory running */}
+      {active && [SW*0.32, SW*0.64].map((x,i)=>(
+        <RustSpark key={`a${i}`} x={x} delay={300+i*500} />
       ))}
       {/* Dim red warning light pulsing on ceiling */}
       <View style={{ position:'absolute', top:8, right:20,

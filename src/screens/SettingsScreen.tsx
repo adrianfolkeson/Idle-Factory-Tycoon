@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Switch, Alert, Modal } from 'react-native'
 import { useGame } from '../context/GameContext'
 import { COLORS } from '../constants/colors'
 import PixelIcon from '../components/ui/PixelIcon'
