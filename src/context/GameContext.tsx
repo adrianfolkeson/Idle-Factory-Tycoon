@@ -125,15 +125,19 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loaded) return
+    let tickCount = 0
     const interval = setInterval(() => {
+      tickCount++
       const s = stateRef.current
       const rate = computeProductionRate(s)
       const earnings = rate * 0.1
-      if (earnings > 0) {
-        dispatch({ type: 'TICK', earnings, deltaMs: 100 })
-      }
-      dispatch({ type: 'EXPIRE_BOOSTS' })
-      dispatch({ type: 'TICK_STATS', deltaMs: 100 })
+      // ONE dispatch per tick (was 3) — massive perf win
+      dispatch({
+        type: 'GAME_TICK',
+        earnings,
+        deltaMs: 100,
+        checkAch: tickCount % 10 === 0,  // achievement check once per second
+      })
     }, 100)
     return () => clearInterval(interval)
   }, [loaded])
@@ -295,8 +299,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const resetGame = useCallback(async () => {
     await clearSave()
-    dispatch({ type: 'RESET_GAME' })
-    dispatch({ type: 'LOAD_SAVE', state: createInitialState() })
+    dispatch({ type: 'LOAD_SAVE', state: createInitialState() })  // single dispatch
   }, [])
 
   const productionRate = computeProductionRate(state)

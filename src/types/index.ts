@@ -82,6 +82,7 @@ export interface GameState {
 export type GameAction =
   | { type: 'TAP'; clickValue: number }
   | { type: 'TICK'; earnings: number; deltaMs: number }
+  | { type: 'GAME_TICK'; earnings: number; deltaMs: number; checkAch: boolean }
   | { type: 'BUY_UPGRADE'; upgradeId: string; cost: number }
   | { type: 'BUY_UPGRADE_N'; upgradeId: string; n: number }
   | { type: 'SWITCH_WORLD'; worldId: number }

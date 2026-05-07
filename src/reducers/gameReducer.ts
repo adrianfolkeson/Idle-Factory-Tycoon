@@ -82,6 +82,33 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         : withProgress
     }
 
+    // ── Combined tick: TICK + EXPIRE_BOOSTS + TICK_STATS in one reducer call ──
+    case 'GAME_TICK': {
+      const now = Date.now()
+      // Expire boosts + update time in one pass
+      let s: GameState = {
+        ...state,
+        stats: { ...state.stats, totalTimePlayed: state.stats.totalTimePlayed + action.deltaMs },
+        activeBoosts: state.activeBoosts.filter(b => b.expiresAt > now),
+      }
+      // Add earnings
+      if (action.earnings > 0) {
+        s = { ...s, dollars: s.dollars + action.earnings, totalEarned: s.totalEarned + action.earnings }
+        const wpIdx = s.worldProgress.findIndex(p => p.worldId === s.currentWorldId)
+        if (wpIdx >= 0) {
+          const newProgress = [...s.worldProgress]
+          newProgress[wpIdx] = { ...newProgress[wpIdx], totalEarnedInWorld: newProgress[wpIdx].totalEarnedInWorld + action.earnings }
+          s = { ...s, worldProgress: newProgress }
+        }
+      }
+      // Achievement check only every 10th tick (1s) to avoid 47-check×10/s overhead
+      if (action.checkAch) {
+        const newAch = checkAchievements(s)
+        if (newAch.length > 0) s = { ...s, unlockedAchievements: [...s.unlockedAchievements, ...newAch] }
+      }
+      return s
+    }
+
     case 'TICK_STATS': {
       return {
         ...state,
