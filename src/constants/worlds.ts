@@ -81,7 +81,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'bolt',
     product: 'Energiceller',
     description: 'Nu pratar vi kraft! Producera energi för hela Sverige.',
-    unlockCost: 35_000_000,
+    unlockCost: 1_000_000,
     theme: {
       primary: '#7A4F00',
       secondary: '#3A2800',
@@ -155,7 +155,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'flask',
     product: 'Nanoformler',
     description: 'Vetenskap! BUSSE har en doktorstitel nu (oklart var ifrån).',
-    unlockCost: 1_500_000_000,
+    unlockCost: 50_000_000,
     theme: {
       primary: '#0A1E30',
       secondary: '#051018',
@@ -229,7 +229,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'rocket',
     product: 'Rymdsonder',
     description: 'Bosse erövrar universum. BUSSE har raketmotorer nu.',
-    unlockCost: 40_000_000_000,
+    unlockCost: 2_000_000_000,
     theme: {
       primary: '#0A0A2A',
       secondary: '#1A1A0A',
@@ -305,7 +305,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'hammer',
     product: 'Vikingsvapen',
     description: 'Oden välsignar fabriken! BUSSE bär vikingahjälm. Bosse dricker mjöd.',
-    unlockCost: 800_000_000_000,
+    unlockCost: 100_000_000_000,
     theme: {
       primary: '#4A2800',
       secondary: '#2A1500',
@@ -381,7 +381,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'bone',
     product: 'Dinoägg',
     description: 'BUSSE har tämjat en T-rex. Bosse är oroad men imponerad.',
-    unlockCost: 25_000_000_000_000,
+    unlockCost: 5_000_000_000_000,
     theme: {
       primary: '#1A3A08',
       secondary: '#0E2004',
@@ -457,7 +457,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'wave',
     product: 'Havskristaller',
     description: 'En undervattenfabrik på 4000m djup. BUSSE andas vatten nu.',
-    unlockCost: 600_000_000_000_000,
+    unlockCost: 300_000_000_000_000,
     theme: {
       primary: '#003A5A',
       secondary: '#001E34',
@@ -533,7 +533,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'fire',
     product: 'Vulkanstål',
     description: 'En fabrik inuti en aktiv vulkan. BUSSE svettas. Bosse likaså.',
-    unlockCost: 16_000_000_000_000_000,
+    unlockCost: 20_000_000_000_000_000,
     theme: {
       primary: '#5A1200',
       secondary: '#380800',
@@ -609,7 +609,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'leaf',
     product: 'Tempelguld',
     description: 'Mayacivilisationens industri återuppstår. BUSSE är nu arkeolog.',
-    unlockCost: 440_000_000_000_000_000,
+    unlockCost: 1_000_000_000_000_000_000,
     theme: {
       primary: '#083A14',
       secondary: '#041E0A',
@@ -685,7 +685,7 @@ export const WORLDS: WorldDef[] = [
     icon: 'circuit',
     product: 'Kvantminnen',
     description: 'År 2089. BUSSE är en AI. Bosse har neural-implantat och kaffe.',
-    unlockCost: 12_000_000_000_000_000_000,
+    unlockCost: 50_000_000_000_000_000_000,
     theme: {
       primary: '#1A0038',
       secondary: '#0A0020',
