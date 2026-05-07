@@ -8,6 +8,7 @@ import FactoryScreen from './src/screens/FactoryScreen'
 import UpgradesScreen from './src/screens/UpgradesScreen'
 import WorldsScreen from './src/screens/WorldsScreen'
 import StatsScreen from './src/screens/StatsScreen'
+import SettingsScreen from './src/screens/SettingsScreen'
 import PrivacyPolicyScreen from './src/screens/PrivacyPolicyScreen'
 import AchievementToast from './src/components/modals/AchievementToast'
 import OfflineEarningsModal from './src/components/modals/OfflineEarningsModal'
@@ -98,6 +99,7 @@ function AppInner() {
       case 'upgrades': return <UpgradesScreen />
       case 'worlds':   return <WorldsScreen />
       case 'stats':    return <StatsScreen onOpenPrivacy={() => setShowPrivacy(true)} />
+      case 'settings': return <SettingsScreen onOpenPrivacy={() => setShowPrivacy(true)} />
     }
   }
 

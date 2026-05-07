@@ -5,7 +5,7 @@ import { COLORS } from '../../constants/colors'
 import PixelIcon from './PixelIcon'
 import { s } from '../../lib/i18n'
 
-export type TabName = 'factory' | 'upgrades' | 'worlds' | 'stats'
+export type TabName = 'factory' | 'upgrades' | 'worlds' | 'stats' | 'settings'
 
 interface Tab {
   name: TabName
@@ -14,10 +14,11 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-  { name: 'factory',  label: s.tabFactory,  icon: 'factory' },
-  { name: 'upgrades', label: s.tabUpgrades, icon: 'gear'    },
-  { name: 'worlds',   label: s.tabWorlds,   icon: 'globe'   },
-  { name: 'stats',    label: s.tabStats,    icon: 'trophy'  },
+  { name: 'factory',  label: s.tabFactory,  icon: 'factory'  },
+  { name: 'upgrades', label: s.tabUpgrades, icon: 'gear'     },
+  { name: 'worlds',   label: s.tabWorlds,   icon: 'globe'    },
+  { name: 'stats',    label: s.tabStats,    icon: 'trophy'   },
+  { name: 'settings', label: 'Inställn.',   icon: 'settings' },
 ]
 
 interface Props {
