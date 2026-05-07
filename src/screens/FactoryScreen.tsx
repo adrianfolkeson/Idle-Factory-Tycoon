@@ -175,7 +175,7 @@ export default function FactoryScreen() {
             { transform: [{ scale: adCooldown > 0 || adBoost ? 1 : adPulse }] },
           ]}>
             {adBoost ? (
-              <><PixelIcon name="bolt" size={14} color="#00FF88" />
+              <><PixelIcon name="bolt" size={11} color="#00FF88" />
                 <Text style={[styles.adBigNum, { color:'#00FF88' }]}>3x</Text>
                 <Text style={[styles.adSub, { color:'#00CC66' }]}>AKTIV</Text></>
             ) : adCooldown > 0 ? (
@@ -185,7 +185,7 @@ export default function FactoryScreen() {
                 </Text>
                 <Text style={[styles.adSub, { color:'#333' }]}>VÄNTAR</Text></>
             ) : (
-              <><PixelIcon name="gift" size={16} color={accent} />
+              <><PixelIcon name="gift" size={13} color={accent} />
                 <Text style={[styles.adBigNum, { color: accent }]}>3x</Text>
                 <Text style={[styles.adSub, { color: accent+'BB' }]}>GRATIS</Text></>
             )}
@@ -234,7 +234,7 @@ export default function FactoryScreen() {
                 </Text>
                 <Text style={[styles.adSub, { color:'#333' }]}>VÄNTAR</Text></>
             ) : (
-              <><PixelIcon name="coin" size={16} color="#00CC88" />
+              <><PixelIcon name="coin" size={13} color="#00CC88" />
                 <Text style={[styles.adBigNum, { color:'#00CC88' }]}>{formatMoney(cashBonus)}</Text>
                 <Text style={[styles.adSub, { color:'#00AA66' }]}>GRATIS</Text></>
             )}
@@ -277,32 +277,32 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderWidth: 2,
-    borderBottomWidth: 4,
-    borderRadius: 14,
+    gap: 2,
+    paddingVertical: 7,
+    paddingHorizontal: 8,
+    borderWidth: 1.5,
+    borderBottomWidth: 3,
+    borderRadius: 10,
     borderColor: COLORS.border,
     backgroundColor: '#111',
-    minWidth: 72,
+    minWidth: 58,
     shadowOffset: { width: 0, height: 0 },
-    elevation: 6,
+    elevation: 4,
   },
   adBtnCooldown: { borderColor: '#1A1A1A', backgroundColor: '#0A0A0A' },
   adBtnActive:   { borderColor: '#00FF88', backgroundColor: '#001A0A' },
   adBigNum: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'Courier New',
     fontWeight: 'bold',
     letterSpacing: 1,
-    lineHeight: 22,
+    lineHeight: 18,
   },
   adSub: {
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: 'Courier New',
     fontWeight: 'bold',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
 
   tapOuter: { flex: 1 },
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   tapBtnInner: {
     borderRadius: 11,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     alignItems: 'center',
     flexDirection: 'row',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   tapMain: {
-    fontSize: 18,
+    fontSize: 22,
     fontFamily: 'Courier New',
     fontWeight: 'bold',
     letterSpacing: 2,
