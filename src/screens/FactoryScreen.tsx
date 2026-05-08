@@ -207,7 +207,7 @@ export default function FactoryScreen() {
           ]}>
             <View style={[styles.tapBtnInner, { backgroundColor: hasCombo ? '#3A0000' : '#111' }]}>
               <PixelIcon name={world.icon} size={22} color={accent} />
-              <Text style={[styles.tapMain, { color: accent }]}>
+              <Text style={[styles.tapMain, { color: accent }]} numberOfLines={1}>
                 {hasCombo ? s.combo : s.click}
               </Text>
               <Text style={styles.tapSub}>
@@ -268,10 +268,9 @@ const styles = StyleSheet.create({
   factoryWrap: { flex: 1, overflow: 'hidden' },
   bottomBar: {
     flexDirection: 'row',
-    alignItems: 'stretch',
+    alignItems: 'center',    // center instead of stretch — prevents height reflow
+    height: 76,              // fixed height — combo text can't shift the factory view
     paddingHorizontal: 12,
-    paddingBottom: 8,
-    paddingTop: 4,
     gap: 10,
   },
   adBtn: {
