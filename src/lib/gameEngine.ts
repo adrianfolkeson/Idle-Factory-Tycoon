@@ -7,6 +7,8 @@ export const MAX_OFFLINE_MS = 2 * 60 * 60 * 1000  // was 4h — 2h offline cap
 export const PRODUCTION_MULTIPLIER = 0.32 // global auto-production nerf
 export const CLICK_MULTIPLIER = 0.38      // global click-bonus nerf
 export const PRESTIGE_THRESHOLD = 5e14    // $500T total earned to unlock prestige
+export const IDLE_GRACE_MS   = 5 * 60 * 1000  // 5 min at full rate when away
+export const IDLE_RATE       = 0.60           // 60% rate after grace period
 export const SKUGGA_MULTIPLIER = 1.1
 export const SKUGGA_DURATION_MS = 30000
 export const SKUGGA_MIN_INTERVAL_MS = 25000   // first Skugga in ~25s — hook early
@@ -75,7 +77,15 @@ export function computeOfflineEarnings(state: GameState): number {
   const awayMs = Math.min(now - state.lastSavedAt, MAX_OFFLINE_MS)
   if (awayMs < 60000) return 0
   const rate = computeProductionRateWithoutBoosts(state)
-  return rate * (awayMs / 1000)
+
+  if (awayMs <= IDLE_GRACE_MS) {
+    // Under 5 min — full rate
+    return rate * (awayMs / 1000)
+  }
+  // First 5 min full, rest at 60%
+  const grace = rate * (IDLE_GRACE_MS / 1000)
+  const idle  = rate * IDLE_RATE * ((awayMs - IDLE_GRACE_MS) / 1000)
+  return grace + idle
 }
 
 function computeProductionRateWithoutBoosts(state: GameState): number {
