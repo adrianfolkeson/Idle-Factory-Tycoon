@@ -32,12 +32,8 @@ import { initSentry } from './src/lib/sentry'
 import LoadingScreen from './src/components/LoadingScreen'
 import * as SplashScreen from 'expo-splash-screen'
 
-// Keep splash visible until app is ready (native only)
-if (typeof navigator === 'undefined' || navigator.product !== 'ReactNative') {
-  // web — no splash
-} else {
-  SplashScreen.preventAutoHideAsync().catch(() => {})
-}
+// Keep splash visible until app is ready (native only, safe try-catch)
+try { SplashScreen.preventAutoHideAsync() } catch { /* Expo Go / web ignore */ }
 
 function AppInner() {
   const [activeTab, setActiveTab] = useState<TabName>('factory')
